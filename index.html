@@ -1,0 +1,1091 @@
+!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Mess Queue Manager</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- FontAwesome Icons CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#ecfeff',
+                            100: '#cffaff',
+                            500: '#06b6d4',
+                            600: '#0891b2',
+                            700: '#0e7490',
+                            800: '#155e75',
+                            900: '#164e63',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @keyframes pulse-subtle {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.95; transform: scale(1.01); }
+        }
+        .pulse-card {
+            animation: pulse-subtle 3s infinite ease-in-out;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            height: 6px;
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 flex flex-col min-h-screen font-sans">
+
+    <!-- NAVIGATION BAR -->
+    <header class="bg-gradient-to-r from-brand-900 via-brand-800 to-slate-900 text-white sticky top-0 z-50 shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <div class="flex items-center space-x-3">
+                    <div class="bg-brand-500 text-white p-2.5 rounded-xl shadow-md">
+                        <i class="fa-solid fa-utensils text-2xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="font-extrabold text-lg sm:text-xl tracking-wider text-cyan-300">SMART MESS QUEUE MANAGER</h1>
+                        <p class="text-xs text-slate-300 hidden sm:block">A Smart Digital Token & FIFO Queue Management System</p>
+                    </div>
+                </div>
+                
+                <nav class="hidden md:flex space-x-1 lg:space-x-2">
+                    <a href="#dashboard" class="px-3 py-2 rounded-md text-sm font-medium text-white hover:bg-brand-700/50 hover:text-cyan-300 transition-all"><i class="fa-solid fa-chart-line mr-1"></i> Dashboard</a>
+                    <a href="#generate" class="px-3 py-2 rounded-md text-sm font-medium text-slate-200 hover:bg-brand-700/50 hover:text-cyan-300 transition-all"><i class="fa-solid fa-ticket mr-1"></i> Generate Token</a>
+                    <a href="#queue-status" class="px-3 py-2 rounded-md text-sm font-medium text-slate-200 hover:bg-brand-700/50 hover:text-cyan-300 transition-all"><i class="fa-solid fa-list-check mr-1"></i> Status & Controls</a>
+                    <a href="#how-it-works" class="px-3 py-2 rounded-md text-sm font-medium text-slate-200 hover:bg-brand-700/50 hover:text-cyan-300 transition-all"><i class="fa-solid fa-gears mr-1"></i> How It Works</a>
+                    <a href="#about" class="px-3 py-2 rounded-md text-sm font-medium text-slate-200 hover:bg-brand-700/50 hover:text-cyan-300 transition-all"><i class="fa-solid fa-circle-info mr-1"></i> About</a>
+                </nav>
+
+                <div class="md:hidden">
+                    <button id="mobile-menu-btn" class="text-slate-200 hover:text-white focus:outline-none text-xl p-2">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mobile menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-brand-900 border-t border-brand-800 px-4 pt-2 pb-4 space-y-1">
+            <a href="#dashboard" class="block px-3 py-2 rounded-md text-base font-medium text-white hover:bg-brand-800">Dashboard</a>
+            <a href="#generate" class="block px-3 py-2 rounded-md text-base font-medium text-slate-200 hover:bg-brand-800">Generate Token</a>
+            <a href="#queue-status" class="block px-3 py-2 rounded-md text-base font-medium text-slate-200 hover:bg-brand-800">Queue Status & Controls</a>
+            <a href="#how-it-works" class="block px-3 py-2 rounded-md text-base font-medium text-slate-200 hover:bg-brand-800">How It Works</a>
+            <a href="#about" class="block px-3 py-2 rounded-md text-base font-medium text-slate-200 hover:bg-brand-800">About Project</a>
+        </div>
+    </header>
+
+    <!-- NOTIFICATION TOAST -->
+    <div id="toast" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 transition-all duration-300 ease-out max-w-md">
+        <div id="toast-body" class="bg-slate-900 text-white px-5 py-4 rounded-xl shadow-2xl flex items-center space-x-3 border-l-4 border-brand-500">
+            <i id="toast-icon" class="fa-solid fa-circle-check text-brand-500 text-xl"></i>
+            <span id="toast-message" class="text-sm font-medium">Notification message</span>
+        </div>
+    </div>
+
+    <!-- MAIN CONTAINER -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-10">
+
+        <!-- DASHBOARD HERO SECTION -->
+        <section id="dashboard" class="space-y-6">
+            <div class="bg-gradient-to-br from-brand-800 to-slate-900 text-white p-8 rounded-2xl shadow-xl relative overflow-hidden">
+                <div class="absolute -right-10 -bottom-10 opacity-10 text-white">
+                    <i class="fa-solid fa-utensils text-[220px]"></i>
+                </div>
+                <div class="relative z-10 max-w-3xl">
+                    <span class="bg-brand-500/20 text-cyan-300 border border-cyan-500/30 text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider mb-3 inline-block">FIFO Queue Data Structure</span>
+                    <h2 class="text-2xl sm:text-4xl font-extrabold mb-3 leading-tight">Manage your mess queue smartly with digital tokens and FIFO-based service.</h2>
+                    <p class="text-slate-300 text-sm sm:text-base mb-6">Eliminate congestion, optimize service speed, and provide real-time status visibility for college canteens.</p>
+                    <div class="flex flex-wrap gap-3">
+                        <a href="#generate" class="bg-brand-500 hover:bg-brand-600 text-white font-semibold px-5 py-2.5 rounded-lg shadow-lg hover:shadow-brand-500/30 transition duration-200 flex items-center">
+                            <i class="fa-solid fa-ticket mr-2"></i> Generate Token
+                        </a>
+                        <a href="#queue-status" class="bg-slate-800 hover:bg-slate-700 text-white border border-slate-700 font-semibold px-5 py-2.5 rounded-lg shadow transition duration-200 flex items-center">
+                            <i class="fa-solid fa-list-ol mr-2"></i> View Queue
+                        </a>
+                        <button onclick="loadDemoData()" class="bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 font-semibold px-5 py-2.5 rounded-lg transition duration-200 flex items-center">
+                            <i class="fa-solid fa-flask mr-2"></i> Start Demo Mode
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- DASHBOARD STATS GRID -->
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200/80 hover:shadow-md transition">
+                    <div class="text-slate-500 text-xs font-semibold uppercase tracking-wider mb-1">In Queue</div>
+                    <div class="flex items-center justify-between">
+                        <span id="stat-total-queue" class="text-3xl font-extrabold text-slate-800">0</span>
+                        <div class="w-10 h-10 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center text-lg"><i class="fa-solid fa-users"></i></div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200/80 hover:shadow-md transition">
+                    <div class="text-slate-500 text-xs font-semibold uppercase tracking-wider mb-1">Currently Serving</div>
+                    <div class="flex items-center justify-between">
+                        <span id="stat-currently-serving" class="text-3xl font-extrabold text-brand-600">--</span>
+                        <div class="w-10 h-10 rounded-lg bg-cyan-50 text-brand-600 flex items-center justify-center text-lg"><i class="fa-solid fa-bell"></i></div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200/80 hover:shadow-md transition">
+                    <div class="text-slate-500 text-xs font-semibold uppercase tracking-wider mb-1">Next Token</div>
+                    <div class="flex items-center justify-between">
+                        <span id="stat-next-token" class="text-3xl font-extrabold text-slate-700">--</span>
+                        <div class="w-10 h-10 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center text-lg"><i class="fa-solid fa-forward"></i></div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200/80 hover:shadow-md transition">
+                    <div class="text-slate-500 text-xs font-semibold uppercase tracking-wider mb-1">Max Wait Time</div>
+                    <div class="flex items-center justify-between">
+                        <span id="stat-max-wait" class="text-3xl font-extrabold text-amber-600">0m</span>
+                        <div class="w-10 h-10 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center text-lg"><i class="fa-solid fa-clock"></i></div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200/80 hover:shadow-md transition col-span-2 md:col-span-1">
+                    <div class="text-slate-500 text-xs font-semibold uppercase tracking-wider mb-1">Avg Service Time</div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-3xl font-extrabold text-emerald-600"><span id="avg-time-val">3</span>m</span>
+                        <div class="w-10 h-10 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center text-lg"><i class="fa-solid fa-stopwatch"></i></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- NOW SERVING HERO CARD & GENERATE FORM GRID -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            
+            <!-- NOW SERVING HERO CARD -->
+            <div class="lg:col-span-5 flex flex-col">
+                <div class="bg-gradient-to-br from-brand-900 to-slate-900 text-white rounded-2xl shadow-xl p-6 flex-1 flex flex-col justify-between border border-brand-700/50 pulse-card relative">
+                    <div class="flex justify-between items-center border-b border-brand-800 pb-4">
+                        <span class="flex items-center text-emerald-400 font-bold text-sm uppercase tracking-widest">
+                            <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 mr-2 animate-ping"></span> Live Counter Status
+                        </span>
+                        <span id="pause-status-badge" class="bg-emerald-500/20 text-emerald-300 text-xs px-2.5 py-1 rounded-full border border-emerald-500/30">Active</span>
+                    </div>
+
+                    <div class="my-6 text-center">
+                        <p class="text-slate-400 text-xs font-semibold uppercase tracking-widest mb-1">NOW SERVING</p>
+                        <h3 id="hero-serving-token" class="text-6xl font-black text-cyan-300 tracking-wider">--</h3>
+                        <p id="hero-serving-name" class="text-xl font-bold text-white mt-2">No active student</p>
+                        <p id="hero-serving-details" class="text-xs text-slate-400 mt-1">Ready for serving</p>
+                    </div>
+
+                    <div class="bg-brand-950/60 rounded-xl p-4 border border-brand-800/80 flex justify-between items-center">
+                        <div>
+                            <span class="text-xs text-slate-400 block uppercase font-medium">Up Next</span>
+                            <span id="hero-next-token" class="text-lg font-bold text-amber-300">--</span>
+                        </div>
+                        <div class="text-right">
+                            <span id="hero-next-name" class="text-xs font-semibold text-slate-300 block">Queue Empty</span>
+                            <span id="hero-next-meal" class="text-[10px] text-slate-400"></span>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 flex space-x-2">
+                        <button onclick="serveNextStudent()" class="flex-1 bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3 px-4 rounded-xl shadow-lg transition duration-200 flex items-center justify-center">
+                            <i class="fa-solid fa-circle-check mr-2"></i> Serve Next
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- GENERATE TOKEN SECTION -->
+            <section id="generate" class="lg:col-span-7 bg-white p-6 sm:p-8 rounded-2xl shadow-sm border border-slate-200/80">
+                <div class="border-b border-slate-100 pb-4 mb-6">
+                    <h3 class="text-xl font-bold text-slate-800 flex items-center">
+                        <i class="fa-solid fa-ticket text-brand-600 mr-2"></i> Generate Digital Token
+                    </h3>
+                    <p class="text-xs text-slate-500 mt-1">Enter student details to get a FIFO queue token</p>
+                </div>
+
+                <form id="token-form" onsubmit="handleGenerateToken(event)" class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Student Name</label>
+                        <input type="text" id="student-name" required placeholder="e.g. Sai Prasanna" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition text-sm">
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Student ID / Roll Number</label>
+                            <input type="text" id="student-id" required placeholder="e.g. 25B21A4601" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition text-sm">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Meal Type</label>
+                            <select id="meal-type" required class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition text-sm bg-white">
+                                <option value="Breakfast">Breakfast</option>
+                                <option value="Lunch" selected>Lunch</option>
+                                <option value="Snacks">Snacks</option>
+                                <option value="Dinner">Dinner</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-bold py-3 rounded-xl shadow-md transition duration-200 flex items-center justify-center text-sm">
+                        <i class="fa-solid fa-plus-circle mr-2"></i> Enqueue Student (Generate Token)
+                    </button>
+                </form>
+
+                <!-- LAST GENERATED TOKEN RESULT -->
+                <div id="token-result" class="hidden mt-6 p-4 rounded-xl bg-brand-50 border border-brand-200">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <span class="text-xs font-bold text-brand-700 uppercase tracking-wide">Token Issued Successfully</span>
+                            <div class="text-2xl font-black text-brand-900 mt-1" id="res-token">M101</div>
+                        </div>
+                        <div class="text-right">
+                            <span class="text-xs text-slate-500 block">Queue Position</span>
+                            <span class="text-lg font-bold text-slate-800" id="res-pos">#1</span>
+                        </div>
+                    </div>
+                    <div class="mt-3 pt-3 border-t border-brand-200/60 grid grid-cols-2 text-xs">
+                        <div><span class="text-slate-500">Student:</span> <strong id="res-name" class="text-slate-800">--</strong></div>
+                        <div><span class="text-slate-500">Est. Waiting Time:</span> <strong id="res-wait" class="text-amber-700">0 mins</strong></div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- VISUAL FIFO QUEUE PIPELINE -->
+        <section class="bg-white p-6 sm:p-8 rounded-2xl shadow-sm border border-slate-200/80 space-y-4">
+            <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-2 border-b border-slate-100 pb-4">
+                <div>
+                    <h3 class="text-xl font-bold text-slate-800 flex items-center">
+                        <i class="fa-solid fa-diagram-project text-brand-600 mr-2"></i> FIFO Queue Structural Visualization
+                    </h3>
+                    <p class="text-xs text-slate-500 mt-1">Demonstration of First-In, First-Out execution order</p>
+                </div>
+                <div class="bg-slate-100 text-slate-700 font-semibold px-3 py-1 rounded-full text-xs self-start">
+                    Formula: Wait Time = People Ahead × Avg Time (3 min)
+                </div>
+            </div>
+
+            <!-- QUEUE CARDS PIPELINE CONTAINER -->
+            <div class="overflow-x-auto py-4 custom-scrollbar">
+                <div id="fifo-visual-container" class="flex items-center space-x-3 min-w-max px-2">
+                    <!-- Dynamic Queue Elements render here -->
+                </div>
+            </div>
+            
+            <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 text-xs text-slate-600 flex flex-col md:flex-row justify-between items-start md:items-center gap-2">
+                <div>
+                    <i class="fa-solid fa-calculator text-brand-600 mr-1"></i> <strong>Wait Time Logic:</strong> <span class="font-mono bg-white px-2 py-0.5 rounded border border-slate-200">Waiting Time = (Queue Position - 1) × 3 Minutes</span>
+                </div>
+                <div class="text-slate-500 italic">
+                    First token at FRONT gets served next; REAR accepts new enqueues.
+                </div>
+            </div>
+        </section>
+
+        <!-- LIVE QUEUE STATUS & ADMIN CONTROLS -->
+        <section id="queue-status" class="bg-white p-6 sm:p-8 rounded-2xl shadow-sm border border-slate-200/80 space-y-6">
+            <div class="flex flex-col md:flex-row justify-between md:items-center gap-4 border-b border-slate-100 pb-4">
+                <div>
+                    <h3 class="text-xl font-bold text-slate-800 flex items-center">
+                        <i class="fa-solid fa-list-check text-brand-600 mr-2"></i> Active Queue Status & Controls
+                    </h3>
+                    <p class="text-xs text-slate-500 mt-1">Live queue operations and state management</p>
+                </div>
+
+                <!-- ADMIN CONTROL BUTTONS -->
+                <div class="flex flex-wrap gap-2">
+                    <button onclick="serveNextStudent()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs px-3.5 py-2 rounded-lg shadow transition">
+                        <i class="fa-solid fa-circle-check mr-1"></i> Serve Next
+                    </button>
+                    <button id="toggle-pause-btn" onclick="togglePauseQueue()" class="bg-amber-500 hover:bg-amber-600 text-white font-semibold text-xs px-3.5 py-2 rounded-lg shadow transition">
+                        <i class="fa-solid fa-pause mr-1"></i> Pause Queue
+                    </button>
+                    <button onclick="clearQueue()" class="bg-rose-600 hover:bg-rose-700 text-white font-semibold text-xs px-3.5 py-2 rounded-lg shadow transition">
+                        <i class="fa-solid fa-trash-can mr-1"></i> Clear Queue
+                    </button>
+                </div>
+            </div>
+
+            <!-- LIVE QUEUE TABLE -->
+            <div class="overflow-x-auto custom-scrollbar">
+                <table class="w-full text-left border-collapse text-sm">
+                    <thead>
+                        <tr class="bg-slate-50 text-slate-600 text-xs uppercase font-bold border-b border-slate-200">
+                            <th class="py-3 px-4">Token</th>
+                            <th class="py-3 px-4">Student Name</th>
+                            <th class="py-3 px-4">Roll Number</th>
+                            <th class="py-3 px-4">Meal</th>
+                            <th class="py-3 px-4">Pos</th>
+                            <th class="py-3 px-4">Est. Wait</th>
+                            <th class="py-3 px-4">Status</th>
+                            <th class="py-3 px-4 text-right">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="queue-table-body" class="divide-y divide-slate-100 font-medium">
+                        <!-- Dynamic Queue Rows -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- ANALYTICS & CHARTS SECTION -->
+        <section class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200/80">
+                <div class="mb-4">
+                    <h4 class="font-bold text-slate-800 text-base flex items-center">
+                        <i class="fa-solid fa-chart-line text-brand-600 mr-2"></i> Hourly Queue Load Patterns
+                    </h4>
+                    <p class="text-xs text-slate-500">Student influx during mess hours</p>
+                </div>
+                <div class="h-64">
+                    <canvas id="attendanceChart"></canvas>
+                </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200/80">
+                <div class="mb-4">
+                    <h4 class="font-bold text-slate-800 text-base flex items-center">
+                        <i class="fa-solid fa-chart-column text-brand-600 mr-2"></i> Students vs Estimated Wait Time
+                    </h4>
+                    <p class="text-xs text-slate-500">Calculated linear waiting time curve</p>
+                </div>
+                <div class="h-64">
+                    <canvas id="waitTimeChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- ALL RECORDS & HISTORY SECTION -->
+        <section class="bg-white p-6 sm:p-8 rounded-2xl shadow-sm border border-slate-200/80 space-y-4">
+            <div class="flex flex-col md:flex-row justify-between md:items-center gap-4 border-b border-slate-100 pb-4">
+                <div>
+                    <h3 class="text-xl font-bold text-slate-800 flex items-center">
+                        <i class="fa-solid fa-database text-brand-600 mr-2"></i> All Token History Records
+                    </h3>
+                    <p class="text-xs text-slate-500 mt-1">Search and filter historical logs saved in LocalStorage</p>
+                </div>
+
+                <div class="flex flex-wrap gap-2">
+                    <button onclick="clearAllHistory()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold text-xs px-3.5 py-2 rounded-lg transition">
+                        <i class="fa-solid fa-eraser mr-1"></i> Clear Log History
+                    </button>
+                </div>
+            </div>
+
+            <!-- SEARCH & FILTERS -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <input type="text" id="record-search" oninput="renderRecordsTable()" placeholder="Search by name or token..." class="px-3.5 py-2 rounded-lg border border-slate-300 text-xs focus:ring-2 focus:ring-brand-500 outline-none">
+                
+                <select id="record-meal-filter" onchange="renderRecordsTable()" class="px-3.5 py-2 rounded-lg border border-slate-300 text-xs focus:ring-2 focus:ring-brand-500 outline-none bg-white">
+                    <option value="ALL">All Meals</option>
+                    <option value="Breakfast">Breakfast</option>
+                    <option value="Lunch">Lunch</option>
+                    <option value="Snacks">Snacks</option>
+                    <option value="Dinner">Dinner</option>
+                </select>
+
+                <select id="record-status-filter" onchange="renderRecordsTable()" class="px-3.5 py-2 rounded-lg border border-slate-300 text-xs focus:ring-2 focus:ring-brand-500 outline-none bg-white">
+                    <option value="ALL">All Statuses</option>
+                    <option value="Serving">Serving</option>
+                    <option value="Waiting">Waiting</option>
+                    <option value="Served">Served</option>
+                </select>
+            </div>
+
+            <div class="overflow-x-auto custom-scrollbar">
+                <table class="w-full text-left border-collapse text-xs">
+                    <thead>
+                        <tr class="bg-slate-50 text-slate-600 uppercase font-bold border-b border-slate-200">
+                            <th class="py-2.5 px-3">Token</th>
+                            <th class="py-2.5 px-3">Name</th>
+                            <th class="py-2.5 px-3">Roll No</th>
+                            <th class="py-2.5 px-3">Meal</th>
+                            <th class="py-2.5 px-3">Timestamp</th>
+                            <th class="py-2.5 px-3">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="records-table-body" class="divide-y divide-slate-100">
+                        <!-- Dynamic Records -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- HOW IT WORKS SECTION -->
+        <section id="how-it-works" class="bg-white p-6 sm:p-8 rounded-2xl shadow-sm border border-slate-200/80 space-y-6">
+            <div class="border-b border-slate-100 pb-4">
+                <h3 class="text-xl font-bold text-slate-800 flex items-center">
+                    <i class="fa-solid fa-gears text-brand-600 mr-2"></i> How It Works
+                </h3>
+                <p class="text-xs text-slate-500 mt-1">Step-by-step workflow of the digital FIFO queue</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 relative">
+                    <span class="w-7 h-7 rounded-full bg-brand-600 text-white font-bold text-xs flex items-center justify-center mb-3">1</span>
+                    <h4 class="font-bold text-sm text-slate-800 mb-1">Student Entry</h4>
+                    <p class="text-xs text-slate-600">Student submits name, roll number, and selects meal type.</p>
+                </div>
+
+                <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 relative">
+                    <span class="w-7 h-7 rounded-full bg-brand-600 text-white font-bold text-xs flex items-center justify-center mb-3">2</span>
+                    <h4 class="font-bold text-sm text-slate-800 mb-1">Token Allocation</h4>
+                    <p class="text-xs text-slate-600">System generates a unique token (e.g., M101) and enqueues the request.</p>
+                </div>
+
+                <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 relative">
+                    <span class="w-7 h-7 rounded-full bg-brand-600 text-white font-bold text-xs flex items-center justify-center mb-3">3</span>
+                    <h4 class="font-bold text-sm text-slate-800 mb-1">Wait Calculation</h4>
+                    <p class="text-xs text-slate-600">Wait time is computed based on position and average service time (3 mins).</p>
+                </div>
+
+                <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 relative">
+                    <span class="w-7 h-7 rounded-full bg-brand-600 text-white font-bold text-xs flex items-center justify-center mb-3">4</span>
+                    <h4 class="font-bold text-sm text-slate-800 mb-1">FIFO Service</h4>
+                    <p class="text-xs text-slate-600">First student in queue gets served first. Positions update automatically.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- PROJECT INFO, ADVANTAGES, APPLICATIONS & FUTURE SCOPE -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            
+            <!-- ABOUT & STUDENT CREDIT -->
+            <section id="about" class="bg-gradient-to-br from-slate-900 to-brand-950 text-white p-6 rounded-2xl shadow-md border border-slate-800 space-y-4">
+                <div class="border-b border-slate-800 pb-3">
+                    <h3 class="text-lg font-bold text-cyan-300 flex items-center">
+                        <i class="fa-solid fa-graduation-cap mr-2"></i> Project & Developer Details
+                    </h3>
+                </div>
+
+                <div class="space-y-2 text-xs">
+                    <div>
+                        <span class="text-slate-400 block">Project Title</span>
+                        <span class="font-bold text-sm text-white">Smart Mess Queue Manager</span>
+                    </div>
+                    <div>
+                        <span class="text-slate-400 block">Student Developer</span>
+                        <span class="font-bold text-sm text-cyan-200">K. Sai Prasanna</span>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <span class="text-slate-400 block">Roll Number</span>
+                            <span class="font-bold text-slate-200">25B21A4601</span>
+                        </div>
+                        <div>
+                            <span class="text-slate-400 block">Branch</span>
+                            <span class="font-bold text-slate-200">CSC (Cyber Security)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pt-3 border-t border-slate-800">
+                    <span class="text-xs text-slate-400 block mb-2 font-semibold uppercase">Core Technical Concepts</span>
+                    <div class="flex flex-wrap gap-1.5">
+                        <span class="bg-brand-900/80 border border-brand-700 text-cyan-300 text-[10px] px-2 py-0.5 rounded">C Programming Concepts</span>
+                        <span class="bg-brand-900/80 border border-brand-700 text-cyan-300 text-[10px] px-2 py-0.5 rounded">Queue Data Structure</span>
+                        <span class="bg-brand-900/80 border border-brand-700 text-cyan-300 text-[10px] px-2 py-0.5 rounded">FIFO Principle</span>
+                        <span class="bg-brand-900/80 border border-brand-700 text-cyan-300 text-[10px] px-2 py-0.5 rounded">File Handling / LocalStorage</span>
+                        <span class="bg-brand-900/80 border border-brand-700 text-cyan-300 text-[10px] px-2 py-0.5 rounded">Wait-Time Algorithm</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ADVANTAGES -->
+            <section class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200/80 space-y-4">
+                <div class="border-b border-slate-100 pb-3">
+                    <h3 class="text-lg font-bold text-slate-800 flex items-center">
+                        <i class="fa-solid fa-thumbs-up text-brand-600 mr-2"></i> Key Advantages
+                    </h3>
+                </div>
+
+                <ul class="space-y-2.5 text-xs text-slate-600">
+                    <li class="flex items-start"><i class="fa-solid fa-check text-emerald-500 mt-0.5 mr-2"></i> <strong>Reduces Physical Crowding:</strong> Eliminates physical queues in mess areas.</li>
+                    <li class="flex items-start"><i class="fa-solid fa-check text-emerald-500 mt-0.5 mr-2"></i> <strong>Fair FIFO Ordering:</strong> Ensures strictly First-In First-Out service.</li>
+                    <li class="flex items-start"><i class="fa-solid fa-check text-emerald-500 mt-0.5 mr-2"></i> <strong>Accurate Time Estimates:</strong> Prevents unnecessary waiting at the counter.</li>
+                    <li class="flex items-start"><i class="fa-solid fa-check text-emerald-500 mt-0.5 mr-2"></i> <strong>Digital Records:</strong> Replaces manual paper token tracking.</li>
+                    <li class="flex items-start"><i class="fa-solid fa-check text-emerald-500 mt-0.5 mr-2"></i> <strong>Zero Hardware Cost:</strong> Runs on standard browser/display setups.</li>
+                </ul>
+            </section>
+
+            <!-- APPLICATIONS & FUTURE SCOPE -->
+            <section class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200/80 space-y-4">
+                <div class="border-b border-slate-100 pb-3">
+                    <h3 class="text-lg font-bold text-slate-800 flex items-center">
+                        <i class="fa-solid fa-rocket text-brand-600 mr-2"></i> Scope & Applications
+                    </h3>
+                </div>
+
+                <div class="space-y-3 text-xs">
+                    <div>
+                        <strong class="text-slate-800 block mb-1">Target Applications</strong>
+                        <p class="text-slate-600">College canteens, school cafeterias, hospital canteens, food courts, bank counters, and ticket offices.</p>
+                    </div>
+
+                    <div>
+                        <strong class="text-slate-800 block mb-1">Future Scope Upgrades</strong>
+                        <ul class="list-disc list-inside text-slate-600 space-y-1">
+                            <li>QR Code Digital Tickets</li>
+                            <li>Mobile App & Push Notifications</li>
+                            <li>AI-based Peak Hour Wait Time Prediction</li>
+                            <li>Cloud Database Integration</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-slate-900 text-slate-400 text-xs py-6 mt-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-2">
+            <p class="font-medium text-slate-300">Smart Mess Queue Manager — College Canteen Digital Management System</p>
+            <p>Developed by <strong>K. Sai Prasanna</strong> (Roll No: 25B21A4601, CSC Cyber Security)</p>
+            <p class="text-slate-500 text-[11px]">Demonstrating Queue Data Structures, FIFO Logic, and LocalStorage File Handling</p>
+        </div>
+    </footer>
+
+    <!-- JAVASCRIPT APP LOGIC -->
+    <script>
+        // GLOBAL SYSTEM STATE
+        const AVG_SERVICE_TIME = 3; // Minutes per student
+        let queue = [];
+        let historyRecords = [];
+        let tokenCounter = 101;
+        let isPaused = false;
+
+        // CHART INSTANCES
+        let attendanceChartInstance = null;
+        let waitTimeChartInstance = null;
+
+        // DOM INITIALIZATION
+        document.addEventListener("DOMContentLoaded", () => {
+            loadFromLocalStorage();
+            setupMobileMenu();
+            renderAll();
+            initCharts();
+        });
+
+        // LOCAL STORAGE OPERATIONS
+        function saveToLocalStorage() {
+            localStorage.setItem("mess_queue", JSON.stringify(queue));
+            localStorage.setItem("mess_history", JSON.stringify(historyRecords));
+            localStorage.setItem("mess_token_counter", tokenCounter.toString());
+        }
+
+        function loadFromLocalStorage() {
+            const savedQueue = localStorage.getItem("mess_queue");
+            const savedHistory = localStorage.getItem("mess_history");
+            const savedCounter = localStorage.getItem("mess_token_counter");
+
+            if (savedQueue) queue = JSON.parse(savedQueue);
+            if (savedHistory) historyRecords = JSON.parse(savedHistory);
+            if (savedCounter) tokenCounter = parseInt(savedCounter, 10);
+        }
+
+        // MOBILE MENU TOGGLE
+        function setupMobileMenu() {
+            const btn = document.getElementById("mobile-menu-btn");
+            const menu = document.getElementById("mobile-menu");
+            btn.addEventListener("click", () => {
+                menu.classList.toggle("hidden");
+            });
+        }
+
+        // GENERATE TOKEN FORM HANDLER (ENQUEUE)
+        function handleGenerateToken(e) {
+            e.preventDefault();
+
+            if (isPaused) {
+                showToast("Queue is currently PAUSED by Admin.", "warning");
+                return;
+            }
+
+            const nameInput = document.getElementById("student-name");
+            const idInput = document.getElementById("student-id");
+            const mealInput = document.getElementById("meal-type");
+
+            const name = nameInput.value.trim();
+            const studentId = idInput.value.trim();
+            const meal = mealInput.value;
+
+            if (!name || !studentId) return;
+
+            const tokenNumber = "M" + tokenCounter++;
+
+            const newStudent = {
+                token: tokenNumber,
+                name: name,
+                studentId: studentId,
+                meal: meal,
+                timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                status: "Waiting" // Waiting, Serving, Served
+            };
+
+            // FIFO ENQUEUE LOGIC
+            queue.push(newStudent);
+
+            // If queue only has this newly added student, set to Serving
+            if (queue.length === 1) {
+                queue[0].status = "Serving";
+            }
+
+            // Save to overall history
+            historyRecords.unshift({ ...newStudent, status: queue.length === 1 ? "Serving" : "Waiting" });
+
+            saveToLocalStorage();
+            renderAll();
+
+            // Display Token Success Result Box
+            const resBox = document.getElementById("token-result");
+            document.getElementById("res-token").innerText = tokenNumber;
+            document.getElementById("res-pos").innerText = "#" + queue.length;
+            document.getElementById("res-name").innerText = name;
+            document.getElementById("res-wait").innerText = ((queue.length - 1) * AVG_SERVICE_TIME) + " mins";
+            resBox.classList.remove("hidden");
+
+            // Reset form
+            nameInput.value = "";
+            idInput.value = "";
+
+            showToast(`Token ${tokenNumber} issued to ${name}!`, "success");
+        }
+
+        // SERVE NEXT (DEQUEUE LOGIC)
+        function serveNextStudent() {
+            if (queue.length === 0) {
+                showToast("The queue is currently empty!", "info");
+                return;
+            }
+
+            // Dequeue front student
+            const servedStudent = queue.shift();
+            servedStudent.status = "Served";
+
+            // Update status in history log
+            const historyItem = historyRecords.find(item => item.token === servedStudent.token);
+            if (historyItem) {
+                historyItem.status = "Served";
+            }
+
+            // Move next front student to 'Serving'
+            if (queue.length > 0) {
+                queue[0].status = "Serving";
+                const nextHistoryItem = historyRecords.find(item => item.token === queue[0].token);
+                if (nextHistoryItem) {
+                    nextHistoryItem.status = "Serving";
+                }
+            }
+
+            saveToLocalStorage();
+            renderAll();
+
+            showToast(`Token ${servedStudent.token} (${servedStudent.name}) has been Served!`, "success");
+        }
+
+        // REMOVE SPECIFIC STUDENT FROM QUEUE
+        function removeStudent(token) {
+            const index = queue.findIndex(item => item.token === token);
+            if (index !== -1) {
+                const removed = queue.splice(index, 1)[0];
+                
+                // If we removed the currently serving student, make the new front student 'Serving'
+                if (index === 0 && queue.length > 0) {
+                    queue[0].status = "Serving";
+                    const nextHist = historyRecords.find(item => item.token === queue[0].token);
+                    if (nextHist) nextHist.status = "Serving";
+                }
+
+                // Update history item
+                const hist = historyRecords.find(item => item.token === token);
+                if (hist) hist.status = "Removed";
+
+                saveToLocalStorage();
+                renderAll();
+                showToast(`Removed Token ${token} from queue.`, "info");
+            }
+        }
+
+        // CLEAR ACTIVE QUEUE
+        function clearQueue() {
+            if (queue.length === 0) {
+                showToast("Queue is already empty.", "info");
+                return;
+            }
+            if (confirm("Are you sure you want to clear the entire active queue?")) {
+                queue = [];
+                saveToLocalStorage();
+                renderAll();
+                showToast("Active queue cleared successfully.", "warning");
+            }
+        }
+
+        // PAUSE / RESUME QUEUE
+        function togglePauseQueue() {
+            isPaused = !isPaused;
+            const badge = document.getElementById("pause-status-badge");
+            const btn = document.getElementById("toggle-pause-btn");
+
+            if (isPaused) {
+                badge.innerText = "Paused";
+                badge.className = "bg-amber-500/20 text-amber-300 text-xs px-2.5 py-1 rounded-full border border-amber-500/30";
+                btn.innerHTML = `<i class="fa-solid fa-play mr-1"></i> Resume Queue`;
+                showToast("Queue acceptance paused by admin.", "warning");
+            } else {
+                badge.innerText = "Active";
+                badge.className = "bg-emerald-500/20 text-emerald-300 text-xs px-2.5 py-1 rounded-full border border-emerald-500/30";
+                btn.innerHTML = `<i class="fa-solid fa-pause mr-1"></i> Pause Queue`;
+                showToast("Queue acceptance resumed.", "success");
+            }
+        }
+
+        // LOAD DEMO DATA
+        function loadDemoData() {
+            queue = [
+                { token: "M101", name: "Sai", studentId: "25B21A4601", meal: "Lunch", timestamp: "12:15 PM", status: "Serving" },
+                { token: "M102", name: "chakra paul", studentId: "25B21A4602", meal: "Lunch", timestamp: "12:16 PM", status: "Waiting" },
+                { token: "M103", name: "vinay", studentId: "25B21A4603", meal: "Lunch", timestamp: "12:18 PM", status: "Waiting" },
+                { token: "M104", name: "tejas", studentId: "25B21A4604", meal: "Lunch", timestamp: "12:20 PM", status: "Waiting" }
+            ];
+
+            tokenCounter = 105;
+            historyRecords = [...queue];
+
+            saveToLocalStorage();
+            renderAll();
+            showToast("Demo data loaded with tokens M101 - M104!", "info");
+        }
+
+        // CLEAR HISTORY RECORDS
+        function clearAllHistory() {
+            if (confirm("Clear all historical token records?")) {
+                historyRecords = [];
+                saveToLocalStorage();
+                renderRecordsTable();
+                showToast("History records cleared.", "warning");
+            }
+        }
+
+        // RENDER ALL COMPONENTS
+        function renderAll() {
+            renderDashboardStats();
+            renderHeroServingCard();
+            renderFifoPipeline();
+            renderQueueTable();
+            renderRecordsTable();
+            updateWaitTimeChart();
+        }
+
+        // DASHBOARD STATS
+        function renderDashboardStats() {
+            document.getElementById("stat-total-queue").innerText = queue.length;
+            
+            const serving = queue.length > 0 ? queue[0].token : "--";
+            document.getElementById("stat-currently-serving").innerText = serving;
+
+            const next = queue.length > 1 ? queue[1].token : "--";
+            document.getElementById("stat-next-token").innerText = next;
+
+            const maxWait = queue.length > 0 ? (queue.length - 1) * AVG_SERVICE_TIME : 0;
+            document.getElementById("stat-max-wait").innerText = maxWait + "m";
+        }
+
+        // NOW SERVING HERO CARD
+        function renderHeroServingCard() {
+            const servingTokenEl = document.getElementById("hero-serving-token");
+            const servingNameEl = document.getElementById("hero-serving-name");
+            const servingDetailsEl = document.getElementById("hero-serving-details");
+
+            const nextTokenEl = document.getElementById("hero-next-token");
+            const nextNameEl = document.getElementById("hero-next-name");
+            const nextMealEl = document.getElementById("hero-next-meal");
+
+            if (queue.length > 0) {
+                const current = queue[0];
+                servingTokenEl.innerText = current.token;
+                servingNameEl.innerText = current.name;
+                servingDetailsEl.innerText = `${current.studentId} • ${current.meal} • Token Issued: ${current.timestamp}`;
+            } else {
+                servingTokenEl.innerText = "--";
+                servingNameEl.innerText = "No active student";
+                servingDetailsEl.innerText = "Queue is empty. Waiting for tokens.";
+            }
+
+            if (queue.length > 1) {
+                const next = queue[1];
+                nextTokenEl.innerText = next.token;
+                nextNameEl.innerText = next.name;
+                nextMealEl.innerText = next.meal;
+            } else {
+                nextTokenEl.innerText = "--";
+                nextNameEl.innerText = "Queue Empty";
+                nextMealEl.innerText = "";
+            }
+        }
+
+        // FIFO STRUCTURAL VISUAL PIPELINE
+        function renderFifoPipeline() {
+            const container = document.getElementById("fifo-visual-container");
+            container.innerHTML = "";
+
+            if (queue.length === 0) {
+                container.innerHTML = `<div class="text-xs text-slate-400 py-6 italic w-full text-center">Queue is currently empty. Generated tokens will appear here in FIFO order.</div>`;
+                return;
+            }
+
+            // FRONT LABEL
+            const frontLabel = document.createElement("div");
+            frontLabel.className = "flex flex-col items-center justify-center font-black text-xs text-emerald-600 px-2";
+            frontLabel.innerHTML = `<span>FRONT</span><i class="fa-solid fa-arrow-down text-lg"></i>`;
+            container.appendChild(frontLabel);
+
+            // RENDER QUEUE NODES
+            queue.forEach((item, idx) => {
+                const isServing = idx === 0;
+                const node = document.createElement("div");
+                node.className = `p-3 rounded-xl border flex flex-col items-center min-w-[120px] transition-all ${
+                    isServing 
+                    ? "bg-brand-600 text-white border-brand-700 shadow-md scale-105" 
+                    : "bg-white text-slate-800 border-slate-200 shadow-sm"
+                }`;
+
+                node.innerHTML = `
+                    <span class="text-[10px] font-extrabold uppercase tracking-wider ${isServing ? "text-cyan-200" : "text-slate-400"}">
+                        ${isServing ? "SERVING" : "POS #" + (idx + 1)}
+                    </span>
+                    <span class="text-xl font-black my-0.5">${item.token}</span>
+                    <span class="text-xs font-semibold truncate max-w-[100px]">${item.name}</span>
+                    <span class="text-[10px] ${isServing ? "text-cyan-100" : "text-amber-600 font-medium"} mt-1">
+                        ${isServing ? "At Counter" : (idx * AVG_SERVICE_TIME) + "m wait"}
+                    </span>
+                `;
+
+                container.appendChild(node);
+
+                // Add Arrow between nodes
+                if (idx < queue.length - 1) {
+                    const arrow = document.createElement("div");
+                    arrow.className = "text-slate-300 text-sm";
+                    arrow.innerHTML = `<i class="fa-solid fa-arrow-right"></i>`;
+                    container.appendChild(arrow);
+                }
+            });
+
+            // REAR LABEL
+            const rearLabel = document.createElement("div");
+            rearLabel.className = "flex flex-col items-center justify-center font-black text-xs text-slate-400 px-2";
+            rearLabel.innerHTML = `<span>REAR</span><i class="fa-solid fa-arrow-down text-lg"></i>`;
+            container.appendChild(rearLabel);
+        }
+
+        // QUEUE STATUS TABLE
+        function renderQueueTable() {
+            const tbody = document.getElementById("queue-table-body");
+            tbody.innerHTML = "";
+
+            if (queue.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="8" class="text-center py-6 text-slate-400 text-xs">No active tokens in queue.</td></tr>`;
+                return;
+            }
+
+            queue.forEach((item, index) => {
+                const isServing = index === 0;
+                const waitTime = index * AVG_SERVICE_TIME;
+
+                const tr = document.createElement("tr");
+                tr.className = isServing 
+                    ? "bg-cyan-50/70 border-l-4 border-brand-600 font-semibold" 
+                    : "hover:bg-slate-50 transition";
+
+                tr.innerHTML = `
+                    <td class="py-3 px-4 font-bold ${isServing ? "text-brand-700 text-base" : "text-slate-800"}">${item.token}</td>
+                    <td class="py-3 px-4">${item.name}</td>
+                    <td class="py-3 px-4 font-mono text-xs text-slate-500">${item.studentId}</td>
+                    <td class="py-3 px-4">${item.meal}</td>
+                    <td class="py-3 px-4 font-bold">${index + 1}</td>
+                    <td class="py-3 px-4 text-amber-600 font-semibold">${isServing ? '0 mins' : waitTime + ' mins'}</td>
+                    <td class="py-3 px-4">
+                        <span class="px-2.5 py-1 rounded-full text-[11px] font-bold ${
+                            isServing 
+                            ? "bg-brand-600 text-white animate-pulse" 
+                            : "bg-slate-200 text-slate-700"
+                        }">
+                            ${isServing ? "Serving" : "Waiting"}
+                        </span>
+                    </td>
+                    <td class="py-3 px-4 text-right">
+                        <button onclick="removeStudent('${item.token}')" title="Remove Student" class="text-rose-500 hover:text-rose-700 text-xs p-1">
+                            <i class="fa-solid fa-user-xmark"></i>
+                        </button>
+                    </td>
+                `;
+
+                tbody.appendChild(tr);
+            });
+        }
+
+        // RECORDS TABLE
+        function renderRecordsTable() {
+            const tbody = document.getElementById("records-table-body");
+            tbody.innerHTML = "";
+
+            const searchQuery = document.getElementById("record-search").value.toLowerCase();
+            const mealFilter = document.getElementById("record-meal-filter").value;
+            const statusFilter = document.getElementById("record-status-filter").value;
+
+            const filtered = historyRecords.filter(item => {
+                const matchesSearch = item.name.toLowerCase().includes(searchQuery) || item.token.toLowerCase().includes(searchQuery);
+                const matchesMeal = mealFilter === "ALL" || item.meal === mealFilter;
+                const matchesStatus = statusFilter === "ALL" || item.status === statusFilter;
+                return matchesSearch && matchesMeal && matchesStatus;
+            });
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="text-center py-6 text-slate-400">No matching records found.</td></tr>`;
+                return;
+            }
+
+            filtered.forEach(item => {
+                const tr = document.createElement("tr");
+                tr.className = "hover:bg-slate-50 transition";
+
+                let statusBadge = "bg-slate-100 text-slate-600";
+                if (item.status === "Serving") statusBadge = "bg-cyan-100 text-brand-800 font-bold";
+                if (item.status === "Served") statusBadge = "bg-emerald-100 text-emerald-800 font-bold";
+                if (item.status === "Removed") statusBadge = "bg-rose-100 text-rose-800";
+
+                tr.innerHTML = `
+                    <td class="py-2.5 px-3 font-bold text-slate-800">${item.token}</td>
+                    <td class="py-2.5 px-3">${item.name}</td>
+                    <td class="py-2.5 px-3 font-mono text-slate-500">${item.studentId}</td>
+                    <td class="py-2.5 px-3">${item.meal}</td>
+                    <td class="py-2.5 px-3 text-slate-400">${item.timestamp}</td>
+                    <td class="py-2.5 px-3">
+                        <span class="px-2 py-0.5 rounded text-[10px] ${statusBadge}">${item.status}</span>
+                    </td>
+                `;
+
+                tbody.appendChild(tr);
+            });
+        }
+
+        // CHART.JS INITIALIZATION
+        function initCharts() {
+            // Chart 1: Time of day vs Students
+            const ctx1 = document.getElementById("attendanceChart").getContext("2d");
+            attendanceChartInstance = new Chart(ctx1, {
+                type: 'line',
+                data: {
+                    labels: ['9 AM', '10 AM', '12 PM', '1 PM', '2 PM', '7 PM'],
+                    datasets: [{
+                        label: 'Students in Queue',
+                        data: [4, 7, 12, 18, 9, 14],
+                        borderColor: '#06b6d4',
+                        backgroundColor: 'rgba(6, 182, 212, 0.1)',
+                        fill: true,
+                        tension: 0.4,
+                        borderWidth: 3,
+                        pointBackgroundColor: '#0891b2'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { beginAtZero: true, grid: { borderDash: [2, 4] } },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+
+            // Chart 2: Students Ahead vs Wait Time
+            const ctx2 = document.getElementById("waitTimeChart").getContext("2d");
+            waitTimeChartInstance = new Chart(ctx2, {
+                type: 'bar',
+                data: {
+                    labels: ['1 Student', '2 Students', '3 Students', '4 Students', '5 Students'],
+                    datasets: [{
+                        label: 'Estimated Wait (Minutes)',
+                        data: [0, 3, 6, 9, 12],
+                        backgroundColor: '#3b82f6',
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { beginAtZero: true, grid: { borderDash: [2, 4] } },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+        }
+
+        // UPDATE CHART DATA DYNAMICALLY BASED ON CURRENT QUEUE
+        function updateWaitTimeChart() {
+            if (!waitTimeChartInstance) return;
+
+            const labels = [];
+            const data = [];
+
+            const count = Math.max(queue.length, 5);
+            for (let i = 1; i <= count; i++) {
+                labels.push(`${i} ${i === 1 ? 'Student' : 'Students'}`);
+                data.push((i - 1) * AVG_SERVICE_TIME);
+            }
+
+            waitTimeChartInstance.data.labels = labels;
+            waitTimeChartInstance.data.datasets[0].data = data;
+            waitTimeChartInstance.update();
+        }
+
+        // TOAST NOTIFICATION UTILITY
+        function showToast(message, type = "success") {
+            const toast = document.getElementById("toast");
+            const toastMessage = document.getElementById("toast-message");
+            const toastIcon = document.getElementById("toast-icon");
+            const toastBody = document.getElementById("toast-body");
+
+            toastMessage.innerText = message;
+
+            if (type === "success") {
+                toastIcon.className = "fa-solid fa-circle-check text-emerald-400 text-xl";
+                toastBody.style.borderLeftColor = "#10b981";
+            } else if (type === "warning") {
+                toastIcon.className = "fa-solid fa-triangle-exclamation text-amber-400 text-xl";
+                toastBody.style.borderLeftColor = "#f59e0b";
+            } else {
+                toastIcon.className = "fa-solid fa-circle-info text-cyan-400 text-xl";
+                toastBody.style.borderLeftColor = "#06b6d4";
+            }
+
+            toast.classList.remove("translate-y-20", "opacity-0");
+
+            setTimeout(() => {
+                toast.classList.add("translate-y-20", "opacity-0");
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
