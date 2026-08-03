@@ -11,7 +11,7 @@
 </head>
 <body class="bg-slate-950 text-slate-100 font-sans flex h-screen overflow-hidden">
 
-    <!-- Left Sidebar with Navigation -->
+    <!-- Left Sidebar Navigation -->
     <div class="w-64 bg-slate-900 border-r border-slate-800 flex flex-col justify-between p-4 shadow-2xl shrink-0">
         <div>
             <div class="flex items-center gap-3 mb-8">
@@ -22,13 +22,13 @@
                 </div>
             </div>
             <nav class="space-y-2">
-                <button onclick="switchTab('dashboard')" id="nav-dashboard" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl bg-emerald-500/10 text-emerald-400 text-xs font-bold border border-emerald-500/20 transition cursor-pointer">
+                <button onclick="switchTab('dashboard')" id="nav-dashboard" class="w-full text-left flex items-center gap-3 px-3.5 py-2.5 rounded-xl bg-emerald-500/10 text-emerald-400 text-xs font-bold border border-emerald-500/20 transition cursor-pointer">
                     ⚡ Live Dashboard
                 </button>
-                <button onclick="switchTab('kitchen')" id="nav-kitchen" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-slate-800 text-slate-300 text-xs font-medium transition cursor-pointer">
-                    🍳 3D Mess Kitchen & Cooking
+                <button onclick="switchTab('kitchen')" id="nav-kitchen" class="w-full text-left flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-slate-800 text-slate-300 text-xs font-medium transition cursor-pointer">
+                    🍳 3D Kitchen Simulation
                 </button>
-                <button onclick="switchTab('menu')" id="nav-menu" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-slate-800 text-slate-300 text-xs font-medium transition cursor-pointer">
+                <button onclick="switchTab('menu')" id="nav-menu" class="w-full text-left flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-slate-800 text-slate-300 text-xs font-medium transition cursor-pointer">
                     🍲 Mess Food Menu
                 </button>
             </nav>
@@ -126,7 +126,7 @@
                 </div>
             </div>
 
-            <!-- Food Menu Cards on Dashboard Too -->
+            <!-- Food Menu Cards Section (Always visible on dashboard) -->
             <div class="bg-slate-900 border border-slate-800 p-5 rounded-2xl shadow-lg">
                 <h3 class="font-bold text-sm mb-4 text-emerald-400 flex items-center gap-2">
                     <span>🍲</span> Today's Special Mess Menu & Food Items
@@ -238,7 +238,7 @@
         let queueList = [];
         let tokenCounter = 101;
 
-        // Tab Switching Function
+        // Tab Switching Functionality
         function switchTab(tabId) {
             ['dashboard', 'kitchen', 'menu'].forEach(t => {
                 const tabEl = document.getElementById(`tab-${t}`);
@@ -246,7 +246,7 @@
                 
                 const navBtn = document.getElementById(`nav-${t}`);
                 if(navBtn) {
-                    navBtn.className = "w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-slate-800 text-slate-300 text-xs font-medium transition cursor-pointer";
+                    navBtn.className = "w-full text-left flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-slate-800 text-slate-300 text-xs font-medium transition cursor-pointer";
                 }
             });
 
@@ -255,7 +255,7 @@
 
             const activeBtn = document.getElementById(`nav-${tabId}`);
             if(activeBtn) {
-                activeBtn.className = "w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl bg-emerald-500/10 text-emerald-400 text-xs font-bold border border-emerald-500/20 transition cursor-pointer";
+                activeBtn.className = "w-full text-left flex items-center gap-3 px-3.5 py-2.5 rounded-xl bg-emerald-500/10 text-emerald-400 text-xs font-bold border border-emerald-500/20 transition cursor-pointer";
             }
 
             const titles = {
@@ -266,11 +266,11 @@
             document.getElementById('pageTitle').innerText = titles[tabId];
 
             if(tabId === 'kitchen') {
-                setTimeout(initFullKitchen3D, 200);
+                setTimeout(initFullKitchen3D, 150);
             }
         }
 
-        // 3D Mess Counter & Kitchen Scene (Enhanced Three.js)
+        // 3D Mess Counter & Kitchen Scene Renderer
         function setupKitchenScene(containerEl) {
             containerEl.innerHTML = '';
             const scene = new THREE.Scene();
@@ -298,33 +298,26 @@
             table.position.y = -0.5;
             scene.add(table);
 
-            // Cooking Stove / Pot 1 (Biryani Pot)
+            // Cooking Pot (Biryani Pot)
             const potGeo = new THREE.CylinderGeometry(0.5, 0.4, 0.7, 32);
             const potMat = new THREE.MeshStandardMaterial({ color: 0x64748b, metalness: 0.9, roughness: 0.1 });
             const pot = new THREE.Mesh(potGeo, potMat);
             pot.position.set(-1.5, 0.15, 0);
             scene.add(pot);
 
-            // Food Tray / Plate (Thali)
+            // Food Plate (Thali)
             const plateGeo = new THREE.CylinderGeometry(0.8, 0.8, 0.1, 32);
             const plateMat = new THREE.MeshStandardMaterial({ color: 0xf8fafc });
             const plate = new THREE.Mesh(plateGeo, plateMat);
             plate.position.set(0.2, -0.25, 0);
             scene.add(plate);
 
-            // Food Item on Plate (Curry/Rice bowl representation)
+            // Food Item on Plate
             const foodGeo = new THREE.SphereGeometry(0.35, 16, 16);
             const foodMat = new THREE.MeshStandardMaterial({ color: 0xf59e0b });
             const food = new THREE.Mesh(foodGeo, foodMat);
             food.position.set(0.2, -0.1, 0);
             scene.add(food);
-
-            // Serving Counter Sign Box
-            const signGeo = new THREE.BoxGeometry(1.2, 0.4, 0.1);
-            const signMat = new THREE.MeshStandardMaterial({ color: 0x10b981 });
-            const sign = new THREE.Mesh(signGeo, signMat);
-            sign.position.set(1.6, 0.5, 0);
-            scene.add(sign);
 
             // Animation Loop
             function animateKitchen() {
@@ -336,7 +329,7 @@
             animateKitchen();
         }
 
-        // Initialize mini 3D view on dashboard
+        // Initialize Mini 3D View on Dashboard
         const miniContainer = document.getElementById('canvas-container-mini');
         if(miniContainer) setupKitchenScene(miniContainer);
 
@@ -347,7 +340,7 @@
             }
         }
 
-        // Twilio SMS Function with Simulation Fallback
+        // Token Generation & SMS Simulation Trigger
         async function sendSMS(phone, name, token, food) {
             let formattedPhone = phone.trim();
             if (!formattedPhone.startsWith('+')) {
@@ -409,7 +402,7 @@
         document.getElementById('tokenForm').addEventListener('submit', (e) => {
             e.preventDefault();
             const name = document.getElementById('studentName').value;
-            const phone = document.getElementById('phoneNum.value') || document.getElementById('phoneNum').value;
+            const phone = document.getElementById('phoneNum').value;
             const food = document.getElementById('foodItem').value;
             const token = `T-${tokenCounter++}`;
 
