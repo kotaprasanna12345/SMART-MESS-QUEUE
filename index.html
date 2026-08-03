@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>3D Smart Mess Queue — Full Enterprise Dashboard</title>
+    <title>3D Smart Mess Queue — Supabase Live</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome Icons -->
@@ -11,6 +11,8 @@
     <!-- Three.js Library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <!-- Supabase JS Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <style>
         #canvas-container {
@@ -27,26 +29,6 @@
     </style>
 </head>
 <body class="bg-slate-950 text-slate-100 flex min-h-screen font-sans">
-
-    <!-- SMS NOTIFICATION MODAL ALERTS -->
-    <div id="sms-modal" class="fixed top-6 right-6 z-50 transform translate-y-[-150%] transition-all duration-500 ease-in-out max-w-sm w-full">
-        <div class="bg-slate-900 border-2 border-emerald-500 text-white p-4 rounded-2xl shadow-2xl flex items-start space-x-3">
-            <div class="bg-emerald-500 text-slate-950 p-2.5 rounded-xl font-bold">
-                <i class="fa-solid fa-comment-sms text-xl"></i>
-            </div>
-            <div class="flex-1">
-                <div class="flex justify-between items-center">
-                    <span class="text-[10px] font-bold text-emerald-400 uppercase tracking-widest">SMS Sent Successfully</span>
-                    <span class="text-[10px] text-slate-500">Just Now</span>
-                </div>
-                <p id="sms-phone" class="font-bold text-xs text-amber-300 mt-1">+91 9876543210</p>
-                <p id="sms-msg" class="text-xs text-slate-300 mt-0.5">Your food order is ready at Counter #1!</p>
-            </div>
-            <button onclick="closeSmsModal()" class="text-slate-500 hover:text-white text-xs">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
-        </div>
-    </div>
 
     <!-- LEFT SIDEBAR NAVIGATION -->
     <aside class="w-64 bg-slate-900 border-r border-slate-800 flex flex-col justify-between hidden md:flex shrink-0">
@@ -74,7 +56,7 @@
                 </a>
                 <a href="#food-menu" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white transition">
                     <i class="fa-solid fa-utensils text-base"></i>
-                    <span>Food Menu & Prices</span>
+                    <span>Mess Food Menu</span>
                 </a>
                 <a href="#how-it-works" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white transition">
                     <i class="fa-solid fa-circle-info text-base"></i>
@@ -124,9 +106,6 @@
                         <button onclick="handleDequeue3D()" class="bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-extrabold px-4 py-2 rounded-xl text-xs transition flex items-center">
                             <i class="fa-solid fa-circle-check mr-1.5"></i> Serve Head (Dequeue)
                         </button>
-                        <button onclick="loadDemo3D()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold px-3 py-2 rounded-xl text-xs border border-slate-700">
-                            Demo Data
-                        </button>
                     </div>
                 </div>
 
@@ -139,47 +118,40 @@
                 <!-- ENQUEUE FORM -->
                 <div class="lg:col-span-5 bg-slate-900 p-6 rounded-3xl border border-slate-800">
                     <h3 class="font-bold text-white text-base mb-4 flex items-center">
-                        <i class="fa-solid fa-ticket text-emerald-400 mr-2"></i> Issue Student Token & SMS Alert
+                        <i class="fa-solid fa-ticket text-emerald-400 mr-2"></i> Issue Student Token
                     </h3>
 
-                    <form id="token-form" onsubmit="handleEnqueue3D(event)" class="space-y-3.5 text-xs">
+                    <form id="token-form" onsubmit="handleEnqueue3D(event)" class="space-y-4 text-xs">
                         <div>
                             <label class="block font-bold text-slate-400 uppercase tracking-wider mb-1">Student Name</label>
-                            <input type="text" id="stu-name" required placeholder="e.g. Sai Prasanna" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-emerald-500">
+                            <input type="text" id="stu-name" required placeholder="e.g. Sai Prasanna" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-emerald-500">
                         </div>
 
                         <div>
                             <label class="block font-bold text-slate-400 uppercase tracking-wider mb-1">Roll Number</label>
-                            <input type="text" id="stu-id" required placeholder="e.g. 25B21A4601" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-emerald-500 font-mono">
+                            <input type="text" id="stu-id" required placeholder="e.g. 25B21A4601" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-emerald-500 font-mono">
                         </div>
 
                         <div>
-                            <label class="block font-bold text-slate-400 uppercase tracking-wider mb-1">Mobile Number (For Food Ready SMS)</label>
-                            <input type="tel" id="stu-phone" required placeholder="e.g. 9876543210" pattern="[0-9]{10}" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-emerald-500 font-mono">
+                            <label class="block font-bold text-slate-400 uppercase tracking-wider mb-1">Meal Category</label>
+                            <select id="meal-category" onchange="updateFoodItemsOptions()" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-emerald-500">
+                                <option value="Breakfast">Breakfast (Morning)</option>
+                                <option value="Lunch" selected>Lunch (Afternoon)</option>
+                                <option value="Snacks">Snacks (Evening)</option>
+                                <option value="Dinner">Dinner (Night)</option>
+                            </select>
                         </div>
 
-                        <div class="grid grid-cols-2 gap-3">
-                            <div>
-                                <label class="block font-bold text-slate-400 uppercase tracking-wider mb-1">Meal Category</label>
-                                <select id="meal-category" onchange="updateFoodItemsOptions()" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-emerald-500">
-                                    <option value="Breakfast">Breakfast</option>
-                                    <option value="Lunch" selected>Lunch</option>
-                                    <option value="Snacks">Snacks</option>
-                                    <option value="Dinner">Dinner</option>
-                                </select>
-                            </div>
-
-                            <div>
-                                <label class="block font-bold text-slate-400 uppercase tracking-wider mb-1">Food Item & Price</label>
-                                <select id="food-item" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-emerald-500">
-                                    <!-- Dynamic Options loaded via JS -->
-                                </select>
-                            </div>
+                        <div>
+                            <label class="block font-bold text-slate-400 uppercase tracking-wider mb-1">Food Item Select</label>
+                            <select id="food-item" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-emerald-500">
+                                <!-- Dynamic Options -->
+                            </select>
                         </div>
 
-                        <button type="submit" class="w-full bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-black py-3.5 rounded-xl text-xs transition flex items-center justify-center space-x-2">
+                        <button type="submit" id="submit-btn" class="w-full bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-black py-3.5 rounded-xl text-xs transition flex items-center justify-center space-x-2">
                             <i class="fa-solid fa-plus-circle text-sm"></i>
-                            <span>GENERATE TOKEN & ENABLE SMS</span>
+                            <span>GENERATE TOKEN & SAVE DATABASE</span>
                         </button>
                     </form>
                 </div>
@@ -188,7 +160,7 @@
                 <div class="lg:col-span-7 bg-slate-900 p-6 rounded-3xl border border-slate-800 flex flex-col justify-between">
                     <div>
                         <h3 class="font-bold text-white text-base mb-4 flex items-center border-b border-slate-800 pb-3">
-                            <i class="fa-solid fa-database text-emerald-400 mr-2"></i> Stored Queue Data Log
+                            <i class="fa-solid fa-database text-emerald-400 mr-2"></i> Supabase Live Database Log
                         </h3>
 
                         <div class="overflow-x-auto">
@@ -197,14 +169,14 @@
                                     <tr class="text-slate-500 font-mono border-b border-slate-800">
                                         <th class="py-2.5">Token</th>
                                         <th class="py-2.5">Student</th>
-                                        <th class="py-2.5">Phone</th>
+                                        <th class="py-2.5">Roll No</th>
                                         <th class="py-2.5">Food Item</th>
-                                        <th class="py-2.5">Price</th>
+                                        <th class="py-2.5">Time Stored</th>
                                         <th class="py-2.5 text-right">Status</th>
                                     </tr>
                                 </thead>
                                 <tbody id="queue-table-body" class="divide-y divide-slate-800/60 font-mono">
-                                    <!-- Dynamic rows -->
+                                    <!-- Dynamic rows from Supabase -->
                                 </tbody>
                             </table>
                         </div>
@@ -212,119 +184,100 @@
 
                     <div class="pt-4 border-t border-slate-800 flex justify-between items-center text-xs text-slate-500">
                         <span id="queue-count-text">0 Tokens Active</span>
-                        <span class="text-emerald-400 font-bold">Data Storage: LocalStorage Active</span>
+                        <span class="text-emerald-400 font-bold flex items-center">
+                            <i class="fa-solid fa-bolt mr-1"></i> Supabase Database Connected
+                        </span>
                     </div>
                 </div>
 
             </section>
 
-            <!-- MESS FOOD MENU CARDS WITH PICTURES & PRICES -->
-            <section id="food-menu" class="bg-slate-900 p-6 rounded-3xl border border-slate-800 space-y-6">
-                <div>
-                    <h3 class="font-bold text-white text-base flex items-center">
-                        <i class="fa-solid fa-utensils text-emerald-400 mr-2"></i> Mess Food Menu — Items, Pictures & Prices
-                    </h3>
-                    <p class="text-xs text-slate-400 mt-1">Check today's canteen food items with price list</p>
-                </div>
+            <!-- MESS FOOD MENU DISPLAY CARDS -->
+            <section id="food-menu" class="bg-slate-900 p-6 rounded-3xl border border-slate-800 space-y-4">
+                <h3 class="font-bold text-white text-base flex items-center">
+                    <i class="fa-solid fa-utensils text-emerald-400 mr-2"></i> Daily Mess Food Menu Categories
+                </h3>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 text-xs">
-                    
-                    <!-- BREAKFAST -->
-                    <div class="bg-slate-950 rounded-2xl border border-slate-800 overflow-hidden space-y-3">
-                        <img src="https://images.unsplash.com/photo-1589301760014-d929f3979dbc?auto=format&fit=crop&w=400&q=80" alt="Idly" class="w-full h-36 object-cover">
-                        <div class="p-4 space-y-2">
-                            <div class="flex justify-between items-center text-amber-400 font-bold border-b border-slate-800 pb-2">
-                                <span>Breakfast Items</span>
-                                <i class="fa-solid fa-sun"></i>
-                            </div>
-                            <ul class="text-slate-300 space-y-2">
-                                <li class="flex justify-between"><span>Hot Idly with Chutney</span> <strong class="text-emerald-400">₹30</strong></li>
-                                <li class="flex justify-between"><span>Puri with Curry</span> <strong class="text-emerald-400">₹40</strong></li>
-                                <li class="flex justify-between"><span>Masala Dosa</span> <strong class="text-emerald-400">₹50</strong></li>
-                                <li class="flex justify-between"><span>Vada & Sambar</span> <strong class="text-emerald-400">₹35</strong></li>
-                            </ul>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
+                    <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-2">
+                        <div class="flex justify-between items-center text-amber-400 font-bold">
+                            <span>Breakfast</span>
+                            <i class="fa-solid fa-sun"></i>
                         </div>
+                        <ul class="text-slate-300 space-y-1">
+                            <li>• Hot Idly with Chutney</li>
+                            <li>• Puri with Curry</li>
+                            <li>• Masala Dosa</li>
+                            <li>• Vada & Sambar</li>
+                        </ul>
                     </div>
 
-                    <!-- LUNCH -->
-                    <div class="bg-slate-950 rounded-2xl border border-slate-800 overflow-hidden space-y-3">
-                        <img src="https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?auto=format&fit=crop&w=400&q=80" alt="Biryani" class="w-full h-36 object-cover">
-                        <div class="p-4 space-y-2">
-                            <div class="flex justify-between items-center text-emerald-400 font-bold border-b border-slate-800 pb-2">
-                                <span>Lunch Specials</span>
-                                <i class="fa-solid fa-bowl-rice"></i>
-                            </div>
-                            <ul class="text-slate-300 space-y-2">
-                                <li class="flex justify-between"><span>Rice & Sambar</span> <strong class="text-emerald-400">₹60</strong></li>
-                                <li class="flex justify-between"><span>Special Veg Biryani</span> <strong class="text-emerald-400">₹90</strong></li>
-                                <li class="flex justify-between"><span>Curd Rice</span> <strong class="text-emerald-400">₹40</strong></li>
-                                <li class="flex justify-between"><span>Full Veg Meals</span> <strong class="text-emerald-400">₹80</strong></li>
-                            </ul>
+                    <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-2">
+                        <div class="flex justify-between items-center text-emerald-400 font-bold">
+                            <span>Lunch</span>
+                            <i class="fa-solid fa-bowl-rice"></i>
                         </div>
+                        <ul class="text-slate-300 space-y-1">
+                            <li>• Rice & Sambar</li>
+                            <li>• Special Veg Biryani</li>
+                            <li>• Curd Rice</li>
+                            <li>• Full Veg Meals</li>
+                        </ul>
                     </div>
 
-                    <!-- SNACKS -->
-                    <div class="bg-slate-950 rounded-2xl border border-slate-800 overflow-hidden space-y-3">
-                        <img src="https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=400&q=80" alt="Samosa" class="w-full h-36 object-cover">
-                        <div class="p-4 space-y-2">
-                            <div class="flex justify-between items-center text-indigo-400 font-bold border-b border-slate-800 pb-2">
-                                <span>Evening Snacks</span>
-                                <i class="fa-solid fa-cookie-bite"></i>
-                            </div>
-                            <ul class="text-slate-300 space-y-2">
-                                <li class="flex justify-between"><span>Samosa & Chutney</span> <strong class="text-emerald-400">₹20</strong></li>
-                                <li class="flex justify-between"><span>Hot Tea / Coffee</span> <strong class="text-emerald-400">₹15</strong></li>
-                                <li class="flex justify-between"><span>Veg Puff</span> <strong class="text-emerald-400">₹25</strong></li>
-                                <li class="flex justify-between"><span>Biscuits & Tea</span> <strong class="text-emerald-400">₹20</strong></li>
-                            </ul>
+                    <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-2">
+                        <div class="flex justify-between items-center text-indigo-400 font-bold">
+                            <span>Snacks</span>
+                            <i class="fa-solid fa-cookie-bite"></i>
                         </div>
+                        <ul class="text-slate-300 space-y-1">
+                            <li>• Samosa & Chutney</li>
+                            <li>• Hot Tea / Coffee</li>
+                            <li>• Veg Puff</li>
+                            <li>• Biscuits & Tea</li>
+                        </ul>
                     </div>
 
-                    <!-- DINNER -->
-                    <div class="bg-slate-950 rounded-2xl border border-slate-800 overflow-hidden space-y-3">
-                        <img src="https://images.unsplash.com/photo-1585937421612-70a008356fbe?auto=format&fit=crop&w=400&q=80" alt="Chapathi" class="w-full h-36 object-cover">
-                        <div class="p-4 space-y-2">
-                            <div class="flex justify-between items-center text-rose-400 font-bold border-b border-slate-800 pb-2">
-                                <span>Dinner Menu</span>
-                                <i class="fa-solid fa-moon"></i>
-                            </div>
-                            <ul class="text-slate-300 space-y-2">
-                                <li class="flex justify-between"><span>Chapathi with Curry</span> <strong class="text-emerald-400">₹50</strong></li>
-                                <li class="flex justify-between"><span>Veg Fried Rice</span> <strong class="text-emerald-400">₹70</strong></li>
-                                <li class="flex justify-between"><span>Malabar Parota</span> <strong class="text-emerald-400">₹60</strong></li>
-                                <li class="flex justify-between"><span>Roti & Paneer</span> <strong class="text-emerald-400">₹80</strong></li>
-                            </ul>
+                    <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-2">
+                        <div class="flex justify-between items-center text-rose-400 font-bold">
+                            <span>Dinner</span>
+                            <i class="fa-solid fa-moon"></i>
                         </div>
+                        <ul class="text-slate-300 space-y-1">
+                            <li>• Chapathi with Curry</li>
+                            <li>• Veg Fried Rice</li>
+                            <li>• Malabar Parota</li>
+                            <li>• Roti & Butter Paneer</li>
+                        </ul>
                     </div>
-
                 </div>
             </section>
 
             <!-- HOW 3D QUEUE WORKS EXPLANATION SECTION -->
             <section id="how-it-works" class="bg-slate-900 p-6 rounded-3xl border border-slate-800 space-y-4">
                 <h3 class="font-bold text-white text-base flex items-center">
-                    <i class="fa-solid fa-circle-question text-emerald-400 mr-2"></i> How 3D FIFO Queue & SMS Alerts Work
+                    <i class="fa-solid fa-circle-question text-emerald-400 mr-2"></i> How 3D FIFO Queue Simulation Works
                 </h3>
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
                     <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-2">
-                        <div class="text-emerald-400 font-bold">1. Enqueue & Mobile Entry</div>
+                        <div class="text-emerald-400 font-bold">1. Enqueue (Spawn)</div>
                         <p class="text-slate-400 leading-relaxed">
-                            Form fill chesi mobile number enter chesthe 3D line lo token add avthundhi.
+                            Form fill chesi Submit kottagane **Supabase Database** lo entry save ayi 3D space lo unique Avatar spawn avthundhi.
                         </p>
                     </div>
 
                     <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-2">
                         <div class="text-emerald-400 font-bold">2. Z-Axis Positioning</div>
                         <p class="text-slate-400 leading-relaxed">
-                            Prathi Avatar Z-Coordinate location calculate cheskoni Line lo linear ga నిలబడుతుంది.
+                            Prathi Avatar Z-Coordinate location calculate cheskoni Line lo linear ga నిలబడుతుంది ($Z = -5.5 + pos \times 2.2$).
                         </p>
                     </div>
 
                     <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-2">
-                        <div class="text-emerald-400 font-bold">3. Food Ready SMS Alert</div>
+                        <div class="text-emerald-400 font-bold">3. Dequeue (Serving)</div>
                         <p class="text-slate-400 leading-relaxed">
-                            Token Head position ki raagane, **"Food Order Ready"** SMS trigger phone number ki poyinattu notification vasthundhi.
+                            "Serve Head" button click cheste Supabase Status 'SERVED' ga update ayi Queue Front Avatar remove aipothundhi.
                         </p>
                     </div>
                 </div>
@@ -333,37 +286,21 @@
         </main>
     </div>
 
-    <!-- THREE.JS 3D ENGINE & SYSTEM LOGIC -->
+    <!-- THREE.JS & SUPABASE INTEGRATION -->
     <script>
+        // SUPABASE CREDENTIALS
+        const SUPABASE_URL = 'https://tdfbydsqeotrilvblvgk.supabase.co';
+        const SUPABASE_KEY = 'sb_publishable_f-grvcqEkeL5s0Ws0g5tIw_567yDlcY';
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
         let scene, camera, renderer, controls;
         let queue3D = [];
-        let tokenCount = 101;
 
-        const foodPricesMap = {
-            "Breakfast": [
-                { name: "Hot Idly with Chutney", price: "₹30" },
-                { name: "Puri with Curry", price: "₹40" },
-                { name: "Masala Dosa", price: "₹50" },
-                { name: "Vada & Sambar", price: "₹35" }
-            ],
-            "Lunch": [
-                { name: "Rice & Sambar", price: "₹60" },
-                { name: "Special Veg Biryani", price: "₹90" },
-                { name: "Curd Rice", price: "₹40" },
-                { name: "Full Veg Meals", price: "₹80" }
-            ],
-            "Snacks": [
-                { name: "Samosa & Chutney", price: "₹20" },
-                { name: "Hot Tea / Coffee", price: "₹15" },
-                { name: "Veg Puff", price: "₹25" },
-                { name: "Biscuits & Tea", price: "₹20" }
-            ],
-            "Dinner": [
-                { name: "Chapathi with Curry", price: "₹50" },
-                { name: "Veg Fried Rice", price: "₹70" },
-                { name: "Malabar Parota", price: "₹60" },
-                { name: "Roti & Paneer", price: "₹80" }
-            ]
+        const foodOptionsMap = {
+            "Breakfast": ["Hot Idly with Chutney", "Puri with Curry", "Masala Dosa", "Vada & Sambar"],
+            "Lunch": ["Rice & Sambar", "Special Veg Biryani", "Curd Rice", "Full Veg Meals"],
+            "Snacks": ["Samosa & Chutney", "Hot Tea / Coffee", "Veg Puff", "Biscuits & Tea"],
+            "Dinner": ["Chapathi with Curry", "Veg Fried Rice", "Malabar Parota", "Roti & Butter Paneer"]
         };
 
         const avatarColors = [0x10b981, 0x3b82f6, 0xf59e0b, 0x8b5cf6, 0xec4899];
@@ -380,10 +317,10 @@
             const foodSelect = document.getElementById('food-item');
             foodSelect.innerHTML = '';
             
-            foodPricesMap[category].forEach(item => {
+            foodOptionsMap[category].forEach(item => {
                 const opt = document.createElement('option');
-                opt.value = `${item.name} (${item.price})`;
-                opt.innerText = `${item.name} — ${item.price}`;
+                opt.value = item;
+                opt.innerText = item;
                 foodSelect.appendChild(opt);
             });
         }
@@ -429,7 +366,7 @@
             grid.position.y = 0.01;
             scene.add(grid);
 
-            // Canteen Counter Desk
+            // Canteen Counter
             const counterGeo = new THREE.BoxGeometry(6, 2, 2.5);
             const counterMat = new THREE.MeshStandardMaterial({ color: 0x10b981 });
             const counter = new THREE.Mesh(counterGeo, counterMat);
@@ -438,7 +375,7 @@
             scene.add(counter);
         }
 
-        function create3DAvatar(name, token, index) {
+        function create3DAvatar(index) {
             const group = new THREE.Group();
 
             const color = avatarColors[index % avatarColors.length];
@@ -470,91 +407,84 @@
             return { mesh: group, targetZ: targetZ };
         }
 
-        function triggerSmsAlert(phone, token, food) {
-            const modal = document.getElementById('sms-modal');
-            document.getElementById('sms-phone').innerText = `📱 +91 ${phone}`;
-            document.getElementById('sms-msg').innerText = `Token ${token} (${food}) is READY at Mess Counter #1!`;
-            
-            modal.classList.remove('translate-y-[-150%]');
-            setTimeout(() => {
-                closeSmsModal();
-            }, 5000);
+        async function fetchTokensFromSupabase() {
+            // Clear current 3D avatars
+            queue3D.forEach(item => scene.remove(item.mesh));
+            queue3D = [];
+
+            const { data, error } = await supabase
+                .from('mess_tokens')
+                .select('*')
+                .eq('status', 'WAITING')
+                .order('id', { ascending: true });
+
+            if (error) {
+                console.error("Error fetching tokens:", error);
+                return;
+            }
+
+            data.forEach((row, idx) => {
+                const avatarObj = create3DAvatar(idx);
+                queue3D.push({
+                    id: row.id,
+                    mesh: avatarObj.mesh,
+                    name: row.student_name,
+                    roll: row.roll_number,
+                    food: row.food_item,
+                    token: row.token,
+                    time: new Date(row.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                });
+            });
+
+            renderQueueTable();
         }
 
-        function closeSmsModal() {
-            document.getElementById('sms-modal').classList.add('translate-y-[-150%]');
-        }
-
-        function handleEnqueue3D(e) {
+        async function handleEnqueue3D(e) {
             e.preventDefault();
             const name = document.getElementById('stu-name').value;
             const roll = document.getElementById('stu-id').value;
-            const phone = document.getElementById('stu-phone').value;
-            const foodSelected = document.getElementById('food-item').value;
+            const food = document.getElementById('food-item').value;
+            const token = "T-" + Math.floor(1000 + Math.random() * 9000);
 
-            const token = "T-" + tokenCount++;
-            const avatarObj = create3DAvatar(name, token, queue3D.length);
+            // Insert to Supabase Database
+            const { error } = await supabase
+                .from('mess_tokens')
+                .insert([{
+                    token: token,
+                    student_name: name,
+                    roll_number: roll,
+                    food_item: food,
+                    status: 'WAITING'
+                }]);
 
-            const isHead = queue3D.length === 0;
-
-            queue3D.push({
-                ...avatarObj,
-                name: name,
-                roll: roll,
-                phone: phone,
-                food: foodSelected,
-                token: token
-            });
-
-            if (isHead) {
-                triggerSmsAlert(phone, token, foodSelected);
+            if (error) {
+                alert("Error saving token: " + error.message);
+                return;
             }
 
             document.getElementById('stu-name').value = '';
             document.getElementById('stu-id').value = '';
-            document.getElementById('stu-phone').value = '';
 
-            renderQueueTable();
+            await fetchTokensFromSupabase();
         }
 
-        function handleDequeue3D() {
+        async function handleDequeue3D() {
             if (queue3D.length === 0) return;
 
-            const served = queue3D.shift();
-            scene.remove(served.mesh);
+            const servedItem = queue3D[0];
 
-            queue3D.forEach((item, idx) => {
-                const newZ = -5.5 + (idx * 2.2);
-                item.targetZ = newZ;
-                item.mesh.position.z = newZ;
-            });
+            // Update status in Supabase Database
+            const { error } = await supabase
+                .from('mess_tokens')
+                .update({ status: 'SERVED' })
+                .eq('id', servedItem.id);
 
-            if (queue3D.length > 0) {
-                const newHead = queue3D[0];
-                triggerSmsAlert(newHead.phone, newHead.token, newHead.food);
+            if (error) {
+                console.error("Error updating status:", error);
+                return;
             }
 
-            renderQueueTable();
-        }
-
-        function loadDemo3D() {
-            const demo = [
-                { name: "Sai Prasanna", roll: "25B21A4601", phone: "9876543210", food: "Special Veg Biryani (₹90)" },
-                { name: "Chakra Paul", roll: "25B21A4602", phone: "9123456789", food: "Rice & Sambar (₹60)" },
-                { name: "Tejas", roll: "25B21A4603", phone: "9988776655", food: "Curd Rice (₹40)" }
-            ];
-
-            demo.forEach((d, idx) => {
-                const token = "T-" + tokenCount++;
-                const avatarObj = create3DAvatar(d.name, token, queue3D.length);
-                queue3D.push({ ...avatarObj, ...d, token: token });
-            });
-
-            if (queue3D.length > 0) {
-                triggerSmsAlert(queue3D[0].phone, queue3D[0].token, queue3D[0].food);
-            }
-
-            renderQueueTable();
+            await fetchTokensFromSupabase();
         }
 
         function renderQueueTable() {
@@ -562,7 +492,7 @@
             tbody.innerHTML = '';
 
             if (queue3D.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" class="py-4 text-center text-slate-600">Queue is currently empty.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="6" class="py-4 text-center text-slate-600">Queue is currently empty in Database.</td></tr>`;
             } else {
                 queue3D.forEach((item, idx) => {
                     const isHead = idx === 0;
@@ -571,12 +501,12 @@
                     tr.innerHTML = `
                         <td class="py-2.5 font-bold">${item.token}</td>
                         <td class="py-2.5">${item.name}</td>
-                        <td class="py-2.5 text-slate-400">${item.phone}</td>
-                        <td class="py-2.5">${item.food.split('(')[0]}</td>
-                        <td class="py-2.5 text-emerald-400">${item.food.includes('(') ? item.food.split('(')[1].replace(')', '') : '₹50'}</td>
+                        <td class="py-2.5 text-slate-400">${item.roll}</td>
+                        <td class="py-2.5">${item.food}</td>
+                        <td class="py-2.5 text-slate-400">${item.time}</td>
                         <td class="py-2.5 text-right">
                             <span class="px-2 py-0.5 rounded text-[10px] ${isHead ? 'bg-emerald-500 text-slate-950 font-black' : 'bg-slate-800 text-slate-400'}">
-                                ${isHead ? 'SERVING (SMS SENT)' : 'WAITING'}
+                                ${isHead ? 'SERVING' : 'WAITING'}
                             </span>
                         </td>
                     `;
@@ -584,7 +514,7 @@
                 });
             }
 
-            document.getElementById('queue-count-text').innerText = `${queue3D.length} Active Tokens in Queue`;
+            document.getElementById('queue-count-text').innerText = `${queue3D.length} Active Tokens in Database Queue`;
         }
 
         function animate() {
@@ -597,7 +527,7 @@
             initClock();
             updateFoodItemsOptions();
             init3D();
-            loadDemo3D();
+            fetchTokensFromSupabase();
         };
     </script>
 </body>
