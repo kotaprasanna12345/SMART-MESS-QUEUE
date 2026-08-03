@@ -3,171 +3,340 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>3D Smart Mess Queue Simulator — Enterprise Edition</title>
+    <title>3D Smart Mess Queue — Full Enterprise Dashboard</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome -->
+    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Three.js Library for 3D Graphics Rendering -->
+    <!-- Three.js Library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 
     <style>
         #canvas-container {
             width: 100%;
-            height: 480px;
+            height: 420px;
             border-radius: 16px;
             overflow: hidden;
             position: relative;
-            background: #0f172a;
+            background: #090d16;
         }
-        canvas {
-            display: block;
-            width: 100%;
-            height: 100%;
-        }
+        canvas { display: block; width: 100%; height: 100%; }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
     </style>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans">
+<body class="bg-slate-950 text-slate-100 flex min-h-screen font-sans">
 
-    <!-- HEADER -->
-    <header class="border-b border-slate-800 bg-slate-900/90 backdrop-blur sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+    <!-- LEFT SIDEBAR NAVIGATION -->
+    <aside class="w-64 bg-slate-900 border-r border-slate-800 flex flex-col justify-between hidden md:flex shrink-0">
+        <div>
+            <!-- LOGO HEADER -->
+            <div class="p-5 border-b border-slate-800 flex items-center space-x-3">
+                <div class="bg-emerald-500 text-slate-950 p-2.5 rounded-xl font-bold">
+                    <i class="fa-solid fa-cube text-lg"></i>
+                </div>
+                <div>
+                    <h1 class="font-extrabold text-sm text-white tracking-wide">3D SMART MESS</h1>
+                    <p class="text-[10px] text-emerald-400 font-bold uppercase tracking-wider">Queue Manager</p>
+                </div>
+            </div>
+
+            <!-- SIDEBAR LINKS -->
+            <nav class="p-4 space-y-1.5 text-xs font-semibold">
+                <a href="#3d-view" class="flex items-center space-x-3 px-4 py-3 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                    <i class="fa-solid fa-vr-cardboard text-base"></i>
+                    <span>3D Live Viewport</span>
+                </a>
+                <a href="#generate-token" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white transition">
+                    <i class="fa-solid fa-ticket text-base"></i>
+                    <span>Generate Token</span>
+                </a>
+                <a href="#food-menu" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white transition">
+                    <i class="fa-solid fa-utensils text-base"></i>
+                    <span>Mess Food Menu</span>
+                </a>
+                <a href="#how-it-works" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white transition">
+                    <i class="fa-solid fa-circle-info text-base"></i>
+                    <span>How 3D Queue Works</span>
+                </a>
+            </nav>
+        </div>
+
+        <!-- DEVELOPER FOOTER -->
+        <div class="p-4 border-t border-slate-800 bg-slate-950/60 text-xs">
+            <p class="text-slate-400 text-[10px] uppercase font-bold tracking-wider">Developer</p>
+            <p class="font-bold text-white mt-0.5">K. Sai Prasanna</p>
+            <p class="text-[10px] text-slate-500 font-mono">Roll: 25B21A4601 (CSC)</p>
+        </div>
+    </aside>
+
+    <!-- MAIN DASHBOARD CONTENT AREA -->
+    <div class="flex-1 flex flex-col min-w-0 h-screen overflow-y-auto custom-scrollbar">
+
+        <!-- TOP BAR WITH LIVE DATE/TIME -->
+        <header class="bg-slate-900/80 border-b border-slate-800 p-4 sticky top-0 z-40 backdrop-blur flex justify-between items-center">
             <div class="flex items-center space-x-3">
-                <div class="bg-emerald-600 text-white p-2 rounded-lg font-bold">
-                    <i class="fa-solid fa-cube"></i>
-                </div>
-                <div>
-                    <h1 class="font-bold text-base text-white">3D SMART MESS QUEUE SIMULATOR</h1>
-                    <p class="text-[11px] text-slate-400">Interactive Three.js 3D FIFO Data Structure Engine</p>
+                <span class="w-3 h-3 rounded-full bg-emerald-500 animate-ping"></span>
+                <h2 class="font-bold text-sm text-slate-200 uppercase tracking-wider">Live System Control Dashboard</h2>
+            </div>
+            
+            <div class="flex items-center space-x-4">
+                <div class="bg-slate-950 border border-slate-800 px-3 py-1.5 rounded-xl text-xs font-mono text-emerald-400 flex items-center space-x-2">
+                    <i class="fa-regular fa-clock"></i>
+                    <span id="live-datetime">Loading Date & Time...</span>
                 </div>
             </div>
-            <div class="text-right">
-                <p class="text-xs font-bold text-slate-200">K. Sai Prasanna</p>
-                <p class="text-[10px] text-slate-400 font-mono">25B21A4601 | CSC</p>
-            </div>
-        </div>
-    </header>
+        </header>
 
-    <main class="max-w-7xl w-full mx-auto px-4 py-6 space-y-6 flex-grow">
+        <main class="p-6 space-y-8 max-w-7xl w-full mx-auto">
 
-        <!-- 3D CANVAS VIEWPORT -->
-        <div class="bg-slate-900 p-4 rounded-2xl border border-slate-800 shadow-2xl">
-            <div class="flex justify-between items-center mb-3">
-                <div class="flex items-center space-x-2">
-                    <span class="w-3 h-3 rounded-full bg-emerald-500 animate-pulse"></span>
-                    <h3 class="font-bold text-xs uppercase tracking-wider text-slate-300">3D Real-Time Canteen Viewport (Use Mouse to Orbit/Rotate)</h3>
-                </div>
-                <div class="text-xs font-mono text-emerald-400 font-bold bg-slate-950 px-3 py-1 rounded-lg border border-slate-800">
-                    Queue Head Position: Counter #1
-                </div>
-            </div>
-
-            <!-- 3D RENDER CANVAS CONTAINER -->
-            <div id="canvas-container"></div>
-        </div>
-
-        <!-- CONTROLS & ENQUEUE PANEL -->
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-
-            <!-- ENQUEUE FORM -->
-            <div class="lg:col-span-5 bg-slate-900 p-6 rounded-2xl border border-slate-800">
-                <h3 class="font-bold text-white text-base mb-4 flex items-center">
-                    <i class="fa-solid fa-user-plus text-emerald-500 mr-2"></i> Add Student (Enqueue 3D Avatar)
-                </h3>
-                <form id="add-form" onsubmit="handleEnqueue3D(event)" class="space-y-4">
+            <!-- 3D VIEWPORT SECTION -->
+            <section id="3d-view" class="bg-slate-900 p-5 rounded-3xl border border-slate-800 shadow-2xl">
+                <div class="flex justify-between items-center mb-4">
                     <div>
-                        <label class="block text-xs font-semibold text-slate-400 mb-1 uppercase">Student Name</label>
-                        <input type="text" id="stu-name" required placeholder="e.g. Sai Prasanna" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-400 mb-1 uppercase">Roll Number</label>
-                        <input type="text" id="stu-id" required placeholder="e.g. 25B21A4601" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500 font-mono">
-                    </div>
-                    <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-lg text-xs transition flex items-center justify-center space-x-2">
-                        <i class="fa-solid fa-plus"></i>
-                        <span>Spawn 3D Student (Enqueue)</span>
-                    </button>
-                </form>
-            </div>
-
-            <!-- QUEUE MANAGEMENT & DEQUEUE -->
-            <div class="lg:col-span-7 bg-slate-900 p-6 rounded-2xl border border-slate-800 flex flex-col justify-between">
-                <div>
-                    <div class="flex justify-between items-center border-b border-slate-800 pb-3 mb-4">
-                        <h3 class="font-bold text-white text-base flex items-center">
-                            <i class="fa-solid fa-list-check text-emerald-500 mr-2"></i> Queue Control & Memory State
+                        <h3 class="font-bold text-base text-white flex items-center">
+                            <i class="fa-solid fa-cube text-emerald-400 mr-2"></i> 3D Real-Time Canteen Simulation
                         </h3>
-                        <div class="space-x-2">
-                            <button onclick="handleDequeue3D()" class="bg-amber-500 hover:bg-amber-600 text-slate-950 font-extrabold px-4 py-2 rounded-lg text-xs transition">
-                                <i class="fa-solid fa-circle-check mr-1"></i> Serve (Dequeue 3D)
-                            </button>
-                            <button onclick="loadDemo3D()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold px-3 py-2 rounded-lg text-xs border border-slate-700">
-                                Load Demo 3D
-                            </button>
+                        <p class="text-xs text-slate-400">Use Mouse Left-Click to Rotate 360°, Scroll Wheel to Zoom</p>
+                    </div>
+                    <div class="flex space-x-2">
+                        <button onclick="handleDequeue3D()" class="bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-extrabold px-4 py-2 rounded-xl text-xs transition flex items-center">
+                            <i class="fa-solid fa-circle-check mr-1.5"></i> Serve Head (Dequeue)
+                        </button>
+                        <button onclick="loadDemo3D()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold px-3 py-2 rounded-xl text-xs border border-slate-700">
+                            Demo Data
+                        </button>
+                    </div>
+                </div>
+
+                <div id="canvas-container"></div>
+            </section>
+
+            <!-- GENERATE TOKEN & FOOD SELECTION FORM -->
+            <section id="generate-token" class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+                <!-- ENQUEUE FORM -->
+                <div class="lg:col-span-5 bg-slate-900 p-6 rounded-3xl border border-slate-800">
+                    <h3 class="font-bold text-white text-base mb-4 flex items-center">
+                        <i class="fa-solid fa-ticket text-emerald-400 mr-2"></i> Issue Student Token
+                    </h3>
+
+                    <form id="token-form" onsubmit="handleEnqueue3D(event)" class="space-y-4 text-xs">
+                        <div>
+                            <label class="block font-bold text-slate-400 uppercase tracking-wider mb-1">Student Name</label>
+                            <input type="text" id="stu-name" required placeholder="e.g. Sai Prasanna" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-emerald-500">
+                        </div>
+
+                        <div>
+                            <label class="block font-bold text-slate-400 uppercase tracking-wider mb-1">Roll Number</label>
+                            <input type="text" id="stu-id" required placeholder="e.g. 25B21A4601" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-emerald-500 font-mono">
+                        </div>
+
+                        <div>
+                            <label class="block font-bold text-slate-400 uppercase tracking-wider mb-1">Meal Category</label>
+                            <select id="meal-category" onchange="updateFoodItemsOptions()" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-emerald-500">
+                                <option value="Breakfast">Breakfast (Morning)</option>
+                                <option value="Lunch" selected>Lunch (Afternoon)</option>
+                                <option value="Snacks">Snacks (Evening)</option>
+                                <option value="Dinner">Dinner (Night)</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block font-bold text-slate-400 uppercase tracking-wider mb-1">Food Item Select</label>
+                            <select id="food-item" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-emerald-500">
+                                <!-- Dynamic Options loaded via JS -->
+                            </select>
+                        </div>
+
+                        <button type="submit" class="w-full bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-black py-3.5 rounded-xl text-xs transition flex items-center justify-center space-x-2">
+                            <i class="fa-solid fa-plus-circle text-sm"></i>
+                            <span>GENERATE TOKEN & SPAWN 3D</span>
+                        </button>
+                    </form>
+                </div>
+
+                <!-- LIVE QUEUE DATA TABLE -->
+                <div class="lg:col-span-7 bg-slate-900 p-6 rounded-3xl border border-slate-800 flex flex-col justify-between">
+                    <div>
+                        <h3 class="font-bold text-white text-base mb-4 flex items-center border-b border-slate-800 pb-3">
+                            <i class="fa-solid fa-database text-emerald-400 mr-2"></i> Stored Queue Data Log
+                        </h3>
+
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-xs">
+                                <thead>
+                                    <tr class="text-slate-500 font-mono border-b border-slate-800">
+                                        <th class="py-2.5">Token</th>
+                                        <th class="py-2.5">Student</th>
+                                        <th class="py-2.5">Roll No</th>
+                                        <th class="py-2.5">Food Item</th>
+                                        <th class="py-2.5">Time Stored</th>
+                                        <th class="py-2.5 text-right">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="queue-table-body" class="divide-y divide-slate-800/60 font-mono">
+                                    <!-- Dynamic rows -->
+                                </tbody>
+                            </table>
                         </div>
                     </div>
 
-                    <!-- QUEUE LIST -->
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left text-xs">
-                            <thead>
-                                <tr class="text-slate-500 font-mono border-b border-slate-800">
-                                    <th class="py-2">Pos</th>
-                                    <th class="py-2">Token</th>
-                                    <th class="py-2">Name</th>
-                                    <th class="py-2">3D Position (X, Z)</th>
-                                    <th class="py-2 text-right">Status</th>
-                                </tr>
-                            </thead>
-                            <tbody id="queue-table-body" class="divide-y divide-slate-800 font-mono">
-                                <!-- JS Injection -->
-                            </tbody>
-                        </table>
+                    <div class="pt-4 border-t border-slate-800 flex justify-between items-center text-xs text-slate-500">
+                        <span id="queue-count-text">0 Tokens Active</span>
+                        <span class="text-emerald-400 font-bold">Data Storage: LocalStorage Active</span>
                     </div>
                 </div>
 
-                <div class="text-xs text-slate-500 pt-3 border-t border-slate-800 flex justify-between">
-                    <span id="queue-count">0 3D Avatars Rendered</span>
-                    <span class="text-emerald-400 font-semibold">Algorithm: FIFO ($O(1)$ Enqueue / $O(1)$ Dequeue)</span>
+            </section>
+
+            <!-- MESS FOOD MENU DISPLAY CARDS -->
+            <section id="food-menu" class="bg-slate-900 p-6 rounded-3xl border border-slate-800 space-y-4">
+                <h3 class="font-bold text-white text-base flex items-center">
+                    <i class="fa-solid fa-utensils text-emerald-400 mr-2"></i> Daily Mess Food Menu Categories
+                </h3>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
+                    <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-2">
+                        <div class="flex justify-between items-center text-amber-400 font-bold">
+                            <span>Breakfast</span>
+                            <i class="fa-solid fa-sun"></i>
+                        </div>
+                        <ul class="text-slate-300 space-y-1">
+                            <li>• Hot Idly with Chutney</li>
+                            <li>• Puri with Curry</li>
+                            <li>• Masala Dosa</li>
+                            <li>• Vada & Sambar</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-2">
+                        <div class="flex justify-between items-center text-emerald-400 font-bold">
+                            <span>Lunch</span>
+                            <i class="fa-solid fa-bowl-rice"></i>
+                        </div>
+                        <ul class="text-slate-300 space-y-1">
+                            <li>• Rice & Sambar</li>
+                            <li>• Special Veg Biryani</li>
+                            <li>• Curd Rice</li>
+                            <li>• Full Veg Meals</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-2">
+                        <div class="flex justify-between items-center text-indigo-400 font-bold">
+                            <span>Snacks</span>
+                            <i class="fa-solid fa-cookie-bite"></i>
+                        </div>
+                        <ul class="text-slate-300 space-y-1">
+                            <li>• Samosa & Chutney</li>
+                            <li>• Hot Tea / Coffee</li>
+                            <li>• Veg Puff</li>
+                            <li>• Biscuits & Tea</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-2">
+                        <div class="flex justify-between items-center text-rose-400 font-bold">
+                            <span>Dinner</span>
+                            <i class="fa-solid fa-moon"></i>
+                        </div>
+                        <ul class="text-slate-300 space-y-1">
+                            <li>• Chapathi with Curry</li>
+                            <li>• Veg Fried Rice</li>
+                            <li>• Malabar Parota</li>
+                            <li>• Roti & Butter Paneer</li>
+                        </ul>
+                    </div>
                 </div>
-            </div>
+            </section>
 
-        </div>
-    </main>
+            <!-- HOW 3D QUEUE WORKS EXPLANATION SECTION -->
+            <section id="how-it-works" class="bg-slate-900 p-6 rounded-3xl border border-slate-800 space-y-4">
+                <h3 class="font-bold text-white text-base flex items-center">
+                    <i class="fa-solid fa-circle-question text-emerald-400 mr-2"></i> How 3D FIFO Queue Simulation Works
+                </h3>
 
-    <!-- 3D ENGINE LOGIC (THREE.JS) -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+                    <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-2">
+                        <div class="text-emerald-400 font-bold">1. Enqueue (Spawn)</div>
+                        <p class="text-slate-400 leading-relaxed">
+                            Form fill chesi Submit kottagane **FIFO Queue (Rear End)** lo student registration jరిగి 3D space lo unique Avatar spawn avthundhi.
+                        </p>
+                    </div>
+
+                    <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-2">
+                        <div class="text-emerald-400 font-bold">2. Z-Axis Positioning</div>
+                        <p class="text-slate-400 leading-relaxed">
+                            Prathi Avatar Z-Coordinate location calculate cheskoni Line lo linear ga నిలబడుతుంది ($Z = -5.5 + pos \times 2.2$).
+                        </p>
+                    </div>
+
+                    <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-2">
+                        <div class="text-emerald-400 font-bold">3. Dequeue (Serving)</div>
+                        <p class="text-slate-400 leading-relaxed">
+                            "Serve Head" button click cheste Queue Front Avatar remove aipoyi, venaka unna 3D Avatars forward step jairuguthayi.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- THREE.JS 3D ENGINE & SYSTEM LOGIC -->
     <script>
         let scene, camera, renderer, controls;
         let queue3D = [];
         let tokenCount = 101;
 
-        // Colors for 3D Avatars
+        const foodOptionsMap = {
+            "Breakfast": ["Hot Idly with Chutney", "Puri with Curry", "Masala Dosa", "Vada & Sambar"],
+            "Lunch": ["Rice & Sambar", "Special Veg Biryani", "Curd Rice", "Full Veg Meals"],
+            "Snacks": ["Samosa & Chutney", "Hot Tea / Coffee", "Veg Puff", "Biscuits & Tea"],
+            "Dinner": ["Chapathi with Curry", "Veg Fried Rice", "Malabar Parota", "Roti & Butter Paneer"]
+        };
+
         const avatarColors = [0x10b981, 0x3b82f6, 0xf59e0b, 0x8b5cf6, 0xec4899];
 
-        // Initialize Three.js 3D Canvas Environment
+        function initClock() {
+            setInterval(() => {
+                const now = new Date();
+                document.getElementById('live-datetime').innerText = now.toLocaleString();
+            }, 1000);
+        }
+
+        function updateFoodItemsOptions() {
+            const category = document.getElementById('meal-category').value;
+            const foodSelect = document.getElementById('food-item');
+            foodSelect.innerHTML = '';
+            
+            foodOptionsMap[category].forEach(item => {
+                const opt = document.createElement('option');
+                opt.value = item;
+                opt.innerText = item;
+                foodSelect.appendChild(opt);
+            });
+        }
+
         function init3D() {
             const container = document.getElementById('canvas-container');
             
-            // 1. Scene Setup
             scene = new THREE.Scene();
-            scene.background = new THREE.Color(0x0f172a);
+            scene.background = new THREE.Color(0x090d16);
 
-            // 2. Camera Setup
             camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 1000);
             camera.position.set(0, 12, 22);
 
-            // 3. Renderer Setup
             renderer = new THREE.WebGLRenderer({ antialias: true });
             renderer.setSize(container.clientWidth, container.clientHeight);
             renderer.shadowMap.enabled = true;
             container.appendChild(renderer.domElement);
 
-            // 4. Orbit Controls (Interactive Mouse Camera Movement)
             controls = new THREE.OrbitControls(camera, renderer.domElement);
             controls.enableDamping = true;
 
-            // 5. Lighting
             const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
             scene.add(ambientLight);
 
@@ -176,49 +345,34 @@
             dirLight.castShadow = true;
             scene.add(dirLight);
 
-            // 6. Environment Objects (Floor & Canteen Counter)
             createFloorAndCounter();
-
-            // 7. Window Resize Handler
-            window.addEventListener('resize', onWindowResize);
-
-            // Render Loop
             animate();
         }
 
         function createFloorAndCounter() {
-            // Floor Grid
             const floorGeo = new THREE.PlaneGeometry(30, 30);
-            const floorMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.8 });
+            const floorMat = new THREE.MeshStandardMaterial({ color: 0x0f172a, roughness: 0.8 });
             const floor = new THREE.Mesh(floorGeo, floorMat);
             floor.rotation.x = -Math.PI / 2;
             floor.receiveShadow = true;
             scene.add(floor);
 
-            const grid = new THREE.GridHelper(30, 30, 0x334155, 0x1e293b);
+            const grid = new THREE.GridHelper(30, 30, 0x1e293b, 0x0f172a);
             grid.position.y = 0.01;
             scene.add(grid);
 
-            // Mess Food Counter Desk (Destination Node)
+            // Canteen Counter Desk
             const counterGeo = new THREE.BoxGeometry(6, 2, 2.5);
             const counterMat = new THREE.MeshStandardMaterial({ color: 0x10b981 });
             const counter = new THREE.Mesh(counterGeo, counterMat);
             counter.position.set(0, 1, -8);
             counter.castShadow = true;
             scene.add(counter);
-
-            // Counter Label Sign Box
-            const signGeo = new THREE.BoxGeometry(4, 0.8, 0.2);
-            const signMat = new THREE.MeshStandardMaterial({ color: 0x38bdf8 });
-            const sign = new THREE.Mesh(signGeo, signMat);
-            sign.position.set(0, 2.8, -8);
-            scene.add(sign);
         }
 
         function create3DAvatar(name, token, index) {
             const group = new THREE.Group();
 
-            // Body
             const color = avatarColors[index % avatarColors.length];
             const bodyGeo = new THREE.CylinderGeometry(0.5, 0.6, 1.8, 16);
             const bodyMat = new THREE.MeshStandardMaterial({ color: color });
@@ -227,7 +381,6 @@
             body.castShadow = true;
             group.add(body);
 
-            // Head
             const headGeo = new THREE.SphereGeometry(0.4, 16, 16);
             const headMat = new THREE.MeshStandardMaterial({ color: 0xf8fafc });
             const head = new THREE.Mesh(headGeo, headMat);
@@ -235,35 +388,38 @@
             head.castShadow = true;
             group.add(head);
 
-            // Token Tag Box Floating Above Head
             const tagGeo = new THREE.BoxGeometry(1.2, 0.5, 0.2);
             const tagMat = new THREE.MeshStandardMaterial({ color: 0xf59e0b });
             const tag = new THREE.Mesh(tagGeo, tagMat);
             tag.position.y = 2.8;
             group.add(tag);
 
-            // Calculate Position in Line (Z-Axis Queue Line)
             const targetZ = -5.5 + (index * 2.2);
             group.position.set(0, 0, targetZ);
 
             scene.add(group);
 
-            return {
-                mesh: group,
-                name: name,
-                token: token,
-                targetZ: targetZ
-            };
+            return { mesh: group, targetZ: targetZ };
         }
 
         function handleEnqueue3D(e) {
             e.preventDefault();
             const name = document.getElementById('stu-name').value;
-            const id = document.getElementById('stu-id').value;
+            const roll = document.getElementById('stu-id').value;
+            const food = document.getElementById('food-item').value;
             const token = "T-" + tokenCount++;
+            const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-            const avatar = create3DAvatar(name, token, queue3D.length);
-            queue3D.push(avatar);
+            const avatarObj = create3DAvatar(name, token, queue3D.length);
+            
+            queue3D.push({
+                ...avatarObj,
+                name: name,
+                roll: roll,
+                food: food,
+                token: token,
+                time: timeStr
+            });
 
             document.getElementById('stu-name').value = '';
             document.getElementById('stu-id').value = '';
@@ -274,27 +430,32 @@
         function handleDequeue3D() {
             if (queue3D.length === 0) return;
 
-            // Remove Front 3D Avatar (Head Dequeue)
             const served = queue3D.shift();
             scene.remove(served.mesh);
 
-            // Animate Remaining Avatars Moving Forward in 3D Space
             queue3D.forEach((item, idx) => {
                 const newZ = -5.5 + (idx * 2.2);
                 item.targetZ = newZ;
-                item.mesh.position.z = newZ; // Update 3D coordinates
+                item.mesh.position.z = newZ;
             });
 
             renderQueueTable();
         }
 
         function loadDemo3D() {
-            const demoNames = ["Sai Prasanna", "Rahul", "Chaitanya", "Vamsi"];
-            demoNames.forEach((name) => {
+            const demo = [
+                { name: "Sai Prasanna", roll: "25B21A4601", food: "Special Veg Biryani" },
+                { name: "Chakra Paul", roll: "25B21A4602", food: "Rice & Sambar" },
+                { name: "Tejas", roll: "25B21A4603", food: "Curd Rice" }
+            ];
+
+            demo.forEach(d => {
                 const token = "T-" + tokenCount++;
-                const avatar = create3DAvatar(name, token, queue3D.length);
-                queue3D.push(avatar);
+                const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                const avatarObj = create3DAvatar(d.name, token, queue3D.length);
+                queue3D.push({ ...avatarObj, ...d, token: token, time: timeStr });
             });
+
             renderQueueTable();
         }
 
@@ -303,20 +464,21 @@
             tbody.innerHTML = '';
 
             if (queue3D.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" class="py-4 text-center text-slate-600">3D Queue Empty (No avatars rendered)</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="6" class="py-4 text-center text-slate-600">Queue is currently empty.</td></tr>`;
             } else {
                 queue3D.forEach((item, idx) => {
                     const isHead = idx === 0;
                     const tr = document.createElement('tr');
                     tr.className = isHead ? "text-emerald-400 font-bold bg-emerald-500/10" : "text-slate-300";
                     tr.innerHTML = `
-                        <td class="py-2">#${idx + 1}</td>
-                        <td class="py-2">${item.token}</td>
-                        <td class="py-2">${item.name}</td>
-                        <td class="py-2 text-slate-400">(X: 0.0, Z: ${item.targetZ.toFixed(1)})</td>
-                        <td class="py-2 text-right">
+                        <td class="py-2.5 font-bold">${item.token}</td>
+                        <td class="py-2.5">${item.name}</td>
+                        <td class="py-2.5 text-slate-400">${item.roll}</td>
+                        <td class="py-2.5">${item.food}</td>
+                        <td class="py-2.5 text-slate-400">${item.time}</td>
+                        <td class="py-2.5 text-right">
                             <span class="px-2 py-0.5 rounded text-[10px] ${isHead ? 'bg-emerald-500 text-slate-950 font-black' : 'bg-slate-800 text-slate-400'}">
-                                ${isHead ? 'SERVING (FRONT)' : 'QUEUED'}
+                                ${isHead ? 'SERVING' : 'WAITING'}
                             </span>
                         </td>
                     `;
@@ -324,7 +486,7 @@
                 });
             }
 
-            document.getElementById('queue-count').innerText = `${queue3D.length} 3D Avatars Active in Scene`;
+            document.getElementById('queue-count-text').innerText = `${queue3D.length} Active Tokens in Queue`;
         }
 
         function animate() {
@@ -333,15 +495,9 @@
             renderer.render(scene, camera);
         }
 
-        function onWindowResize() {
-            const container = document.getElementById('canvas-container');
-            camera.aspect = container.clientWidth / container.clientHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(container.clientWidth, container.clientHeight);
-        }
-
-        // Initialize 3D Engine on load
         window.onload = () => {
+            initClock();
+            updateFoodItemsOptions();
             init3D();
             loadDemo3D();
         };
