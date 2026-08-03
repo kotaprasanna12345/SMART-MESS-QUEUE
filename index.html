@@ -11,8 +11,6 @@
     <!-- Three.js Library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
-    <!-- Supabase JS Client -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <style>
         #canvas-container {
@@ -121,20 +119,27 @@
                         <i class="fa-solid fa-ticket text-emerald-400 mr-2"></i> Issue Student Token
                     </h3>
 
-                    <form id="token-form" onsubmit="handleEnqueue(event)" class="space-y-4 text-xs">
+                    <form id="token-form" onsubmit="handleEnqueue(event)" class="space-y-3.5 text-xs">
                         <div>
                             <label class="block font-bold text-slate-400 uppercase tracking-wider mb-1">Student Name</label>
-                            <input type="text" id="stu-name" required placeholder="e.g. Sai Prasanna" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-emerald-500">
+                            <input type="text" id="stu-name" required placeholder="e.g. K. Sai Prasanna" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-emerald-500">
                         </div>
 
-                        <div>
-                            <label class="block font-bold text-slate-400 uppercase tracking-wider mb-1">Roll Number</label>
-                            <input type="text" id="stu-id" required placeholder="e.g. 25B21A4601" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-emerald-500 font-mono">
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block font-bold text-slate-400 uppercase tracking-wider mb-1">Roll Number</label>
+                                <input type="text" id="stu-id" required placeholder="25B21A4601" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-emerald-500 font-mono">
+                            </div>
+
+                            <div>
+                                <label class="block font-bold text-slate-400 uppercase tracking-wider mb-1">Phone Number</label>
+                                <input type="tel" id="stu-phone" required placeholder="9876543210" pattern="[0-9]{10}" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-emerald-500 font-mono">
+                            </div>
                         </div>
 
                         <div>
                             <label class="block font-bold text-slate-400 uppercase tracking-wider mb-1">Meal Category</label>
-                            <select id="meal-category" onchange="updateFoodItemsOptions()" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-emerald-500">
+                            <select id="meal-category" onchange="updateFoodItemsOptions()" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-emerald-500">
                                 <option value="Breakfast">Breakfast (Morning)</option>
                                 <option value="Lunch" selected>Lunch (Afternoon)</option>
                                 <option value="Snacks">Snacks (Evening)</option>
@@ -144,12 +149,12 @@
 
                         <div>
                             <label class="block font-bold text-slate-400 uppercase tracking-wider mb-1">Food Item Select</label>
-                            <select id="food-item" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-emerald-500">
+                            <select id="food-item" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-emerald-500">
                                 <!-- Dynamic Options -->
                             </select>
                         </div>
 
-                        <button type="submit" class="w-full bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-black py-3.5 rounded-xl text-xs transition flex items-center justify-center space-x-2">
+                        <button type="submit" class="w-full bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-black py-3 rounded-xl text-xs transition flex items-center justify-center space-x-2 mt-2">
                             <i class="fa-solid fa-plus-circle text-sm"></i>
                             <span>GENERATE TOKEN & SAVE DATABASE</span>
                         </button>
@@ -162,14 +167,14 @@
                         <i class="fa-solid fa-database text-emerald-400 mr-2"></i> Active Queue Data Log
                     </h3>
 
-                    <div class="overflow-x-auto min-h-[260px]">
+                    <div class="overflow-x-auto min-h-[290px]">
                         <table class="w-full text-left text-xs">
                             <thead>
                                 <tr class="text-slate-500 font-mono border-b border-slate-800">
                                     <th class="py-2.5">Token</th>
                                     <th class="py-2.5">Student</th>
-                                    <th class="py-2.5">Roll No</th>
-                                    <th class="py-2.5">Food Item</th>
+                                    <th class="py-2.5">Roll / Phone</th>
+                                    <th class="py-2.5">Food & Price</th>
                                     <th class="py-2.5 text-right">Status</th>
                                 </tr>
                             </thead>
@@ -189,64 +194,138 @@
 
             </section>
 
-            <!-- MESS FOOD MENU CARDS -->
-            <section id="food-menu" class="bg-slate-900 p-6 rounded-3xl border border-slate-800 space-y-4">
+            <!-- MESS FOOD MENU CARDS WITH IMAGES & PRICES -->
+            <section id="food-menu" class="bg-slate-900 p-6 rounded-3xl border border-slate-800 space-y-5">
                 <h3 class="font-bold text-white text-base flex items-center">
-                    <i class="fa-solid fa-utensils text-emerald-400 mr-2"></i> Daily Mess Food Menu Categories
+                    <i class="fa-solid fa-utensils text-emerald-400 mr-2"></i> Daily Mess Food Menu & Pricing
                 </h3>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
-                    <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-2">
-                        <div class="flex justify-between items-center text-amber-400 font-bold">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 text-xs">
+                    
+                    <!-- BREAKFAST -->
+                    <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-3">
+                        <div class="flex justify-between items-center text-amber-400 font-bold border-b border-slate-800 pb-2">
                             <span>Breakfast</span>
                             <i class="fa-solid fa-sun"></i>
                         </div>
-                        <ul class="text-slate-300 space-y-1">
-                            <li>• Hot Idly with Chutney</li>
-                            <li>• Puri with Curry</li>
-                            <li>• Masala Dosa</li>
-                            <li>• Vada & Sambar</li>
-                        </ul>
+                        <div class="space-y-2.5">
+                            <div class="flex items-center space-x-3">
+                                <img src="https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=100&auto=format&fit=crop&q=60" class="w-10 h-10 rounded-lg object-cover border border-slate-800 shrink-0" alt="Idly">
+                                <div class="flex-1 flex justify-between items-center">
+                                    <span class="text-slate-200">Hot Idly with Chutney</span>
+                                    <span class="text-emerald-400 font-bold font-mono">₹30</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-3">
+                                <img src="https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?w=100&auto=format&fit=crop&q=60" class="w-10 h-10 rounded-lg object-cover border border-slate-800 shrink-0" alt="Puri">
+                                <div class="flex-1 flex justify-between items-center">
+                                    <span class="text-slate-200">Puri with Curry</span>
+                                    <span class="text-emerald-400 font-bold font-mono">₹40</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-3">
+                                <img src="https://images.unsplash.com/photo-1668236543090-82eba5ee5976?w=100&auto=format&fit=crop&q=60" class="w-10 h-10 rounded-lg object-cover border border-slate-800 shrink-0" alt="Dosa">
+                                <div class="flex-1 flex justify-between items-center">
+                                    <span class="text-slate-200">Masala Dosa</span>
+                                    <span class="text-emerald-400 font-bold font-mono">₹50</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-2">
-                        <div class="flex justify-between items-center text-emerald-400 font-bold">
+                    <!-- LUNCH -->
+                    <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-3">
+                        <div class="flex justify-between items-center text-emerald-400 font-bold border-b border-slate-800 pb-2">
                             <span>Lunch</span>
                             <i class="fa-solid fa-bowl-rice"></i>
                         </div>
-                        <ul class="text-slate-300 space-y-1">
-                            <li>• Rice & Sambar</li>
-                            <li>• Special Veg Biryani</li>
-                            <li>• Curd Rice</li>
-                            <li>• Full Veg Meals</li>
-                        </ul>
+                        <div class="space-y-2.5">
+                            <div class="flex items-center space-x-3">
+                                <img src="https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=100&auto=format&fit=crop&q=60" class="w-10 h-10 rounded-lg object-cover border border-slate-800 shrink-0" alt="Biryani">
+                                <div class="flex-1 flex justify-between items-center">
+                                    <span class="text-slate-200">Special Veg Biryani</span>
+                                    <span class="text-emerald-400 font-bold font-mono">₹90</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-3">
+                                <img src="https://images.unsplash.com/photo-1604382354936-07c5d9983bd3?w=100&auto=format&fit=crop&q=60" class="w-10 h-10 rounded-lg object-cover border border-slate-800 shrink-0" alt="Full Meals">
+                                <div class="flex-1 flex justify-between items-center">
+                                    <span class="text-slate-200">Full Veg Meals</span>
+                                    <span class="text-emerald-400 font-bold font-mono">₹80</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-3">
+                                <img src="https://images.unsplash.com/photo-1596797038530-2c107229654b?w=100&auto=format&fit=crop&q=60" class="w-10 h-10 rounded-lg object-cover border border-slate-800 shrink-0" alt="Curd Rice">
+                                <div class="flex-1 flex justify-between items-center">
+                                    <span class="text-slate-200">Curd Rice</span>
+                                    <span class="text-emerald-400 font-bold font-mono">₹40</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-2">
-                        <div class="flex justify-between items-center text-indigo-400 font-bold">
+                    <!-- SNACKS -->
+                    <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-3">
+                        <div class="flex justify-between items-center text-indigo-400 font-bold border-b border-slate-800 pb-2">
                             <span>Snacks</span>
                             <i class="fa-solid fa-cookie-bite"></i>
                         </div>
-                        <ul class="text-slate-300 space-y-1">
-                            <li>• Samosa & Chutney</li>
-                            <li>• Hot Tea / Coffee</li>
-                            <li>• Veg Puff</li>
-                            <li>• Biscuits & Tea</li>
-                        </ul>
+                        <div class="space-y-2.5">
+                            <div class="flex items-center space-x-3">
+                                <img src="https://images.unsplash.com/photo-1601050690597-df0568f70950?w=100&auto=format&fit=crop&q=60" class="w-10 h-10 rounded-lg object-cover border border-slate-800 shrink-0" alt="Samosa">
+                                <div class="flex-1 flex justify-between items-center">
+                                    <span class="text-slate-200">Samosa & Chutney</span>
+                                    <span class="text-emerald-400 font-bold font-mono">₹25</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-3">
+                                <img src="https://images.unsplash.com/photo-1571934811356-5cc061b6821f?w=100&auto=format&fit=crop&q=60" class="w-10 h-10 rounded-lg object-cover border border-slate-800 shrink-0" alt="Tea">
+                                <div class="flex-1 flex justify-between items-center">
+                                    <span class="text-slate-200">Hot Tea / Coffee</span>
+                                    <span class="text-emerald-400 font-bold font-mono">₹15</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-3">
+                                <img src="https://images.unsplash.com/photo-1626132647523-66f5bf380027?w=100&auto=format&fit=crop&q=60" class="w-10 h-10 rounded-lg object-cover border border-slate-800 shrink-0" alt="Veg Puff">
+                                <div class="flex-1 flex justify-between items-center">
+                                    <span class="text-slate-200">Veg Puff</span>
+                                    <span class="text-emerald-400 font-bold font-mono">₹20</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-2">
-                        <div class="flex justify-between items-center text-rose-400 font-bold">
+                    <!-- DINNER -->
+                    <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-3">
+                        <div class="flex justify-between items-center text-rose-400 font-bold border-b border-slate-800 pb-2">
                             <span>Dinner</span>
                             <i class="fa-solid fa-moon"></i>
                         </div>
-                        <ul class="text-slate-300 space-y-1">
-                            <li>• Chapathi with Curry</li>
-                            <li>• Veg Fried Rice</li>
-                            <li>• Malabar Parota</li>
-                            <li>• Roti & Butter Paneer</li>
-                        </ul>
+                        <div class="space-y-2.5">
+                            <div class="flex items-center space-x-3">
+                                <img src="https://images.unsplash.com/photo-1626074353765-517a681e40be?w=100&auto=format&fit=crop&q=60" class="w-10 h-10 rounded-lg object-cover border border-slate-800 shrink-0" alt="Fried Rice">
+                                <div class="flex-1 flex justify-between items-center">
+                                    <span class="text-slate-200">Veg Fried Rice</span>
+                                    <span class="text-emerald-400 font-bold font-mono">₹70</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-3">
+                                <img src="https://images.unsplash.com/photo-1601050690597-df0568f70950?w=100&auto=format&fit=crop&q=60" class="w-10 h-10 rounded-lg object-cover border border-slate-800 shrink-0" alt="Parota">
+                                <div class="flex-1 flex justify-between items-center">
+                                    <span class="text-slate-200">Malabar Parota</span>
+                                    <span class="text-emerald-400 font-bold font-mono">₹50</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-3">
+                                <img src="https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=100&auto=format&fit=crop&q=60" class="w-10 h-10 rounded-lg object-cover border border-slate-800 shrink-0" alt="Paneer">
+                                <div class="flex-1 flex justify-between items-center">
+                                    <span class="text-slate-200">Roti & Butter Paneer</span>
+                                    <span class="text-emerald-400 font-bold font-mono">₹85</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
+
                 </div>
             </section>
 
@@ -289,11 +368,27 @@
         let queueList = [];
         let tokenSeq = 101;
 
-        const foodOptionsMap = {
-            "Breakfast": ["Hot Idly with Chutney", "Puri with Curry", "Masala Dosa", "Vada & Sambar"],
-            "Lunch": ["Rice & Sambar", "Special Veg Biryani", "Curd Rice", "Full Veg Meals"],
-            "Snacks": ["Samosa & Chutney", "Hot Tea / Coffee", "Veg Puff", "Biscuits & Tea"],
-            "Dinner": ["Chapathi with Curry", "Veg Fried Rice", "Malabar Parota", "Roti & Butter Paneer"]
+        const foodItemsDetails = {
+            "Breakfast": [
+                { name: "Hot Idly with Chutney", price: "₹30" },
+                { name: "Puri with Curry", price: "₹40" },
+                { name: "Masala Dosa", price: "₹50" }
+            ],
+            "Lunch": [
+                { name: "Special Veg Biryani", price: "₹90" },
+                { name: "Full Veg Meals", price: "₹80" },
+                { name: "Curd Rice", price: "₹40" }
+            ],
+            "Snacks": [
+                { name: "Samosa & Chutney", price: "₹25" },
+                { name: "Hot Tea / Coffee", price: "₹15" },
+                { name: "Veg Puff", price: "₹20" }
+            ],
+            "Dinner": [
+                { name: "Veg Fried Rice", price: "₹70" },
+                { name: "Malabar Parota", price: "₹50" },
+                { name: "Roti & Butter Paneer", price: "₹85" }
+            ]
         };
 
         const avatarColors = [0x10b981, 0x3b82f6, 0xf59e0b, 0x8b5cf6, 0xec4899];
@@ -309,10 +404,10 @@
             const foodSelect = document.getElementById('food-item');
             foodSelect.innerHTML = '';
             
-            foodOptionsMap[category].forEach(item => {
+            foodItemsDetails[category].forEach(item => {
                 const opt = document.createElement('option');
-                opt.value = item;
-                opt.innerText = item;
+                opt.value = `${item.name} (${item.price})`;
+                opt.innerText = `${item.name} - ${item.price}`;
                 foodSelect.appendChild(opt);
             });
         }
@@ -390,6 +485,7 @@
             e.preventDefault();
             const name = document.getElementById('stu-name').value;
             const roll = document.getElementById('stu-id').value;
+            const phone = document.getElementById('stu-phone').value;
             const food = document.getElementById('food-item').value;
             const token = "T-" + tokenSeq++;
 
@@ -400,11 +496,13 @@
                 token: token,
                 name: name,
                 roll: roll,
+                phone: phone,
                 food: food
             });
 
             document.getElementById('stu-name').value = '';
             document.getElementById('stu-id').value = '';
+            document.getElementById('stu-phone').value = '';
 
             renderTable();
         }
@@ -436,7 +534,10 @@
                     tr.innerHTML = `
                         <td class="py-2.5 font-bold">${item.token}</td>
                         <td class="py-2.5">${item.name}</td>
-                        <td class="py-2.5 text-slate-400">${item.roll}</td>
+                        <td class="py-2.5 text-slate-400">
+                            <div>${item.roll}</div>
+                            <div class="text-[10px] text-slate-500">${item.phone}</div>
+                        </td>
                         <td class="py-2.5">${item.food}</td>
                         <td class="py-2.5 text-right">
                             <span class="px-2 py-0.5 rounded text-[10px] ${isHead ? 'bg-emerald-500 text-slate-950 font-black' : 'bg-slate-800 text-slate-400'}">
