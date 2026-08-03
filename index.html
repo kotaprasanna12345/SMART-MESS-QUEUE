@@ -68,8 +68,8 @@
                     <h3 class="font-bold text-xs text-emerald-400 uppercase tracking-wider">🍳 3D Mess Kitchen Counter & Serving Simulation</h3>
                     <button onclick="switchTab('kitchen')" class="text-[10px] text-emerald-400 hover:underline cursor-pointer font-bold">Expand 3D View →</button>
                 </div>
-                <div id="canvas-container-mini" class="w-full h-56 bg-slate-950 rounded-xl relative overflow-hidden flex items-center justify-center border border-slate-800/80">
-                    <span class="text-slate-400 text-xs font-semibold animate-pulse">Loading 3D Engine...</span>
+                <div id="canvas-container-mini" class="w-full h-64 bg-slate-950 rounded-xl relative overflow-hidden flex items-center justify-center border border-slate-800/80">
+                    <span class="text-slate-400 text-xs font-semibold animate-pulse">Loading 3D Kitchen Environment...</span>
                 </div>
             </div>
 
@@ -112,7 +112,7 @@
                                     <option value="Samosa & Tea ☕ - ₹30">Samosa & Tea ☕ (₹30)</option>
                                 </optgroup>
                                 <optgroup label="🌙 Dinner">
-                                    <option value="Chapati & Dal/Curry 🫓 - ₹60">Chapati & Dal/Curry 🫓 (₹60)</option>
+                                    <option value="Chapati & Curry 🫓 - ₹60">Chapati & Curry 🫓 (₹60)</option>
                                     <option value="Egg Fried Rice 🍳 - ₹100">Egg Fried Rice 🍳 (₹100)</option>
                                 </optgroup>
                             </select>
@@ -147,40 +147,40 @@
                 </div>
             </div>
 
-            <!-- Food Menu Cards Section with All Categories -->
+            <!-- Food Menu Highlights Section -->
             <div class="bg-slate-900 border border-slate-800 p-5 rounded-2xl shadow-lg space-y-4">
                 <h3 class="font-bold text-sm text-emerald-400 flex items-center gap-2">
-                    <span>🍲</span> Complete Mess Menu (Breakfast, Lunch, Snacks, Dinner)
+                    <span>🍲</span> Mess Food Catalog Highlights
                 </h3>
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                    <div class="bg-slate-950 border border-slate-800 rounded-xl overflow-hidden p-3 shadow-md">
+                    <div class="bg-slate-950 border border-slate-800 rounded-xl p-3.5 shadow-md">
                         <span class="text-[10px] bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded font-bold">Breakfast</span>
-                        <h4 class="font-bold text-xs text-white mt-2">Idli Sambar / Puri Bhaji</h4>
-                        <p class="text-[10px] text-slate-400 mt-0.5">Fresh morning tiffins with chutney.</p>
+                        <h4 class="font-bold text-xs text-white mt-2">Idli, Dosa & Puri</h4>
+                        <p class="text-[10px] text-slate-400 mt-0.5">Fresh morning tiffins with sambar & chutney.</p>
                         <div class="flex justify-between items-center mt-3">
-                            <span class="text-emerald-400 font-black text-xs">₹40 - ₹45</span>
+                            <span class="text-emerald-400 font-black text-xs">₹40 - ₹50</span>
                         </div>
                     </div>
-                    <div class="bg-slate-950 border border-slate-800 rounded-xl overflow-hidden p-3 shadow-md">
+                    <div class="bg-slate-950 border border-slate-800 rounded-xl p-3.5 shadow-md">
                         <span class="text-[10px] bg-blue-500/10 text-blue-400 px-2 py-0.5 rounded font-bold">Lunch</span>
-                        <h4 class="font-bold text-xs text-white mt-2">Special Thali & Biryani</h4>
-                        <p class="text-[10px] text-slate-400 mt-0.5">Full meals, curries & chicken biryani.</p>
+                        <h4 class="font-bold text-xs text-white mt-2">Special Meals & Biryani</h4>
+                        <p class="text-[10px] text-slate-400 mt-0.5">Full thali meals & Hyderabadi chicken biryani.</p>
                         <div class="flex justify-between items-center mt-3">
                             <span class="text-emerald-400 font-black text-xs">₹120 - ₹150</span>
                         </div>
                     </div>
-                    <div class="bg-slate-950 border border-slate-800 rounded-xl overflow-hidden p-3 shadow-md">
-                        <span class="text-[10px] bg-amber-500/10 text-amber-400 px-2 py-0.5 rounded font-bold">Evening Snacks</span>
-                        <h4 class="font-bold text-xs text-white mt-2">Punugulu & Samosa Tea</h4>
-                        <p class="text-[10px] text-slate-400 mt-0.5">Hot evening snacks with ginger tea.</p>
+                    <div class="bg-slate-950 border border-slate-800 rounded-xl p-3.5 shadow-md">
+                        <span class="text-[10px] bg-amber-500/10 text-amber-400 px-2 py-0.5 rounded font-bold">Snacks</span>
+                        <h4 class="font-bold text-xs text-white mt-2">Punugulu & Samosa</h4>
+                        <p class="text-[10px] text-slate-400 mt-0.5">Crispy hot evening snacks with hot tea.</p>
                         <div class="flex justify-between items-center mt-3">
                             <span class="text-emerald-400 font-black text-xs">₹30 - ₹35</span>
                         </div>
                     </div>
-                    <div class="bg-slate-950 border border-slate-800 rounded-xl overflow-hidden p-3 shadow-md">
+                    <div class="bg-slate-950 border border-slate-800 rounded-xl p-3.5 shadow-md">
                         <span class="text-[10px] bg-purple-500/10 text-purple-400 px-2 py-0.5 rounded font-bold">Dinner</span>
-                        <h4 class="font-bold text-xs text-white mt-2">Chapati & Egg Fried Rice</h4>
-                        <p class="text-[10px] text-slate-400 mt-0.5">Soft chapatis with dal & egg rice.</p>
+                        <h4 class="font-bold text-xs text-white mt-2">Chapati & Egg Rice</h4>
+                        <p class="text-[10px] text-slate-400 mt-0.5">Soft chapatis with curry & spicy egg rice.</p>
                         <div class="flex justify-between items-center mt-3">
                             <span class="text-emerald-400 font-black text-xs">₹60 - ₹100</span>
                         </div>
@@ -194,13 +194,13 @@
             <div class="bg-slate-900 border border-slate-800 p-5 rounded-2xl shadow-lg space-y-4">
                 <div class="flex justify-between items-center">
                     <div>
-                        <h3 class="font-bold text-sm text-emerald-400">🍳 3D Mess Counter & Kitchen Simulation</h3>
-                        <p class="text-xs text-slate-400">Live 3D WebGL rendering of mess cooking pots and serving counter.</p>
+                        <h3 class="font-bold text-sm text-emerald-400">🍳 Interactive 3D Mess Kitchen & Counter Simulation</h3>
+                        <p class="text-xs text-slate-400">Real-time WebGL rendering of active pots, food counters, and queue trays.</p>
                     </div>
-                    <span class="text-xs bg-emerald-500/10 text-emerald-400 px-3 py-1 rounded-lg border border-emerald-500/20">Simulation Running</span>
+                    <span class="text-xs bg-emerald-500/10 text-emerald-400 px-3 py-1 rounded-lg border border-emerald-500/20">Active Engine</span>
                 </div>
-                <div id="canvas-container-full" class="w-full h-[450px] bg-slate-950 rounded-2xl relative overflow-hidden flex items-center justify-center border border-slate-800">
-                    <span class="text-slate-400 text-xs font-semibold animate-pulse">Rendering 3D Kitchen...</span>
+                <div id="canvas-container-full" class="w-full h-[500px] bg-slate-950 rounded-2xl relative overflow-hidden flex items-center justify-center border border-slate-800">
+                    <span class="text-slate-400 text-xs font-semibold animate-pulse">Rendering 3D Kitchen Environment...</span>
                 </div>
             </div>
         </div>
@@ -215,55 +215,61 @@
                     <div class="bg-slate-950 border border-slate-800 rounded-xl p-4">
                         <span class="text-[10px] bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded font-bold">Breakfast</span>
                         <h4 class="font-bold text-xs text-white mt-2">Idli Sambar</h4>
-                        <p class="text-[10px] text-slate-400 mt-0.5">3 soft idlis with hot sambar and coconut chutney.</p>
+                        <p class="text-[10px] text-slate-400 mt-0.5">Soft idlis served with hot sambar and chutney.</p>
                         <span class="text-emerald-400 font-black text-xs mt-2 inline-block">₹40</span>
                     </div>
                     <div class="bg-slate-950 border border-slate-800 rounded-xl p-4">
                         <span class="text-[10px] bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded font-bold">Breakfast</span>
                         <h4 class="font-bold text-xs text-white mt-2">Masala Dosa</h4>
-                        <p class="text-[10px] text-slate-400 mt-0.5>Crispy dosa stuffed with potato masala.</p>
+                        <p class="text-[10px] text-slate-400 mt-0.5">Crispy golden dosa with potato masala.</p>
                         <span class="text-emerald-400 font-black text-xs mt-2 inline-block">₹50</span>
                     </div>
                     <div class="bg-slate-950 border border-slate-800 rounded-xl p-4">
                         <span class="text-[10px] bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded font-bold">Breakfast</span>
                         <h4 class="font-bold text-xs text-white mt-2">Puri Bhaji</h4>
-                        <p class="text-[10px] text-slate-400 mt-0.5">2 fluffy puris with potato curry.</p>
+                        <p class="text-[10px] text-slate-400 mt-0.5">Fluffy hot puris with potato curry.</p>
                         <span class="text-emerald-400 font-black text-xs mt-2 inline-block">₹45</span>
                     </div>
                     <div class="bg-slate-950 border border-slate-800 rounded-xl p-4">
                         <span class="text-[10px] bg-blue-500/10 text-blue-400 px-2 py-0.5 rounded font-bold">Lunch</span>
                         <h4 class="font-bold text-xs text-white mt-2">Special Thali Meals</h4>
-                        <p class="text-[10px] text-slate-400 mt-0.5">Rice, dal, sambar, 2 curries, papad & sweet.</p>
+                        <p class="text-[10px] text-slate-400 mt-0.5">Full meals with rice, dal, curries & sweet.</p>
                         <span class="text-emerald-400 font-black text-xs mt-2 inline-block">₹120</span>
                     </div>
                     <div class="bg-slate-950 border border-slate-800 rounded-xl p-4">
                         <span class="text-[10px] bg-blue-500/10 text-blue-400 px-2 py-0.5 rounded font-bold">Lunch</span>
                         <h4 class="font-bold text-xs text-white mt-2">Chicken Biryani</h4>
-                        <p class="text-[10px] text-slate-400 mt-0.5">Spicy dum biryani with chicken pieces & raita.</p>
+                        <p class="text-[10px] text-slate-400 mt-0.5">Spicy Hyderabadi chicken biryani with raita.</p>
                         <span class="text-emerald-400 font-black text-xs mt-2 inline-block">₹150</span>
+                    </div>
+                    <div class="bg-slate-950 border border-slate-800 rounded-xl p-4">
+                        <span class="text-[10px] bg-blue-500/10 text-blue-400 px-2 py-0.5 rounded font-bold">Lunch</span>
+                        <h4 class="font-bold text-xs text-white mt-2">Veg Fried Rice</h4>
+                        <p class="text-[10px] text-slate-400 mt-0.5">Stir-fried rice with farm vegetables.</p>
+                        <span class="text-emerald-400 font-black text-xs mt-2 inline-block">₹90</span>
                     </div>
                     <div class="bg-slate-950 border border-slate-800 rounded-xl p-4">
                         <span class="text-[10px] bg-amber-500/10 text-amber-400 px-2 py-0.5 rounded font-bold">Snacks</span>
                         <h4 class="font-bold text-xs text-white mt-2">Punugulu & Chutney</h4>
-                        <p class="text-[10px] text-slate-400 mt-0.5">Crispy evening street-style punugulu.</p>
+                        <p class="text-[10px] text-slate-400 mt-0.5">Crispy evening fritters with spicy chutney.</p>
                         <span class="text-emerald-400 font-black text-xs mt-2 inline-block">₹35</span>
                     </div>
                     <div class="bg-slate-950 border border-slate-800 rounded-xl p-4">
                         <span class="text-[10px] bg-amber-500/10 text-amber-400 px-2 py-0.5 rounded font-bold">Snacks</span>
                         <h4 class="font-bold text-xs text-white mt-2">Samosa & Tea</h4>
-                        <p class="text-[10px] text-slate-400 mt-0.5">Hot samosa with fresh milk tea.</p>
+                        <p class="text-[10px] text-slate-400 mt-0.5">Hot crispy samosa with fresh milk tea.</p>
                         <span class="text-emerald-400 font-black text-xs mt-2 inline-block">₹30</span>
                     </div>
                     <div class="bg-slate-950 border border-slate-800 rounded-xl p-4">
                         <span class="text-[10px] bg-purple-500/10 text-purple-400 px-2 py-0.5 rounded font-bold">Dinner</span>
-                        <h4 class="font-bold text-xs text-white mt-2">Chapati & Dal/Curry</h4>
-                        <p class="text-[10px] text-slate-400 mt-0.5">3 soft chapatis with rich vegetable curry.</p>
+                        <h4 class="font-bold text-xs text-white mt-2">Chapati & Curry</h4>
+                        <p class="text-[10px] text-slate-400 mt-0.5">Soft chapatis served with vegetable curry.</p>
                         <span class="text-emerald-400 font-black text-xs mt-2 inline-block">₹60</span>
                     </div>
                     <div class="bg-slate-950 border border-slate-800 rounded-xl p-4">
                         <span class="text-[10px] bg-purple-500/10 text-purple-400 px-2 py-0.5 rounded font-bold">Dinner</span>
                         <h4 class="font-bold text-xs text-white mt-2">Egg Fried Rice</h4>
-                        <p class="text-[10px] text-slate-400 mt-0.5">Tossed rice with scrambled eggs and spices.</p>
+                        <p class="text-[10px] text-slate-400 mt-0.5">Tossed rice with scrambled eggs and pepper.</p>
                         <span class="text-emerald-400 font-black text-xs mt-2 inline-block">₹100</span>
                     </div>
                 </div>
@@ -367,62 +373,62 @@
             containerEl.innerHTML = '';
             
             const width = containerEl.clientWidth || 400;
-            const height = containerEl.clientHeight || 250;
+            const height = containerEl.clientHeight || 300;
 
             const scene = new THREE.Scene();
             scene.background = new THREE.Color(0x020617);
 
             const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
-            camera.position.set(0, 4, 7);
+            camera.position.set(0, 3.5, 6.5);
             camera.lookAt(0, 0, 0);
 
             const renderer = new THREE.WebGLRenderer({ antialias: true });
             renderer.setSize(width, height);
             containerEl.appendChild(renderer.domElement);
 
-            const ambientLight = new THREE.AmbientLight(0xffffff, 1.1);
+            const ambientLight = new THREE.AmbientLight(0xffffff, 1.2);
             scene.add(ambientLight);
             
-            const pointLight = new THREE.PointLight(0x10b981, 6, 50);
+            const pointLight = new THREE.PointLight(0x10b981, 7, 50);
             pointLight.position.set(0, 5, 3);
             scene.add(pointLight);
 
-            // Counter Table
-            const tableGeo = new THREE.BoxGeometry(5.5, 0.35, 2.5);
+            // Large Counter Table
+            const tableGeo = new THREE.BoxGeometry(5.2, 0.4, 2.6);
             const tableMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.2 });
             const table = new THREE.Mesh(tableGeo, tableMat);
             table.position.y = -0.4;
             scene.add(table);
 
-            // Cooking Pots
-            const potGeo = new THREE.CylinderGeometry(0.38, 0.28, 0.5, 32);
-            const potMat = new THREE.MeshStandardMaterial({ color: 0x64748b, metalness: 0.9, roughness: 0.1 });
+            // Cooking Pots (Breakfast / Lunch)
+            const potGeo = new THREE.CylinderGeometry(0.35, 0.25, 0.5, 32);
+            const potMat = new THREE.MeshStandardMaterial({ color: 0x64748b, metalness: 0.8, roughness: 0.2 });
             
             const pot1 = new THREE.Mesh(potGeo, potMat);
-            pot1.position.set(-1.6, 0.05, 0);
+            pot1.position.set(-1.5, 0.05, 0);
             scene.add(pot1);
 
             const pot2 = new THREE.Mesh(potGeo, potMat);
             pot2.position.set(-0.7, 0.05, 0);
             scene.add(pot2);
 
-            // Serving Tray & Plate
-            const plateGeo = new THREE.CylinderGeometry(0.55, 0.55, 0.06, 32);
+            // Serving Plate
+            const plateGeo = new THREE.CylinderGeometry(0.5, 0.5, 0.06, 32);
             const plateMat = new THREE.MeshStandardMaterial({ color: 0xf8fafc });
             const plate = new THREE.Mesh(plateGeo, plateMat);
-            plate.position.set(0.6, -0.2, 0);
+            plate.position.set(0.5, -0.18, 0);
             scene.add(plate);
 
-            // Food Item
-            const foodGeo = new THREE.SphereGeometry(0.24, 16, 16);
-            const foodMat = new THREE.MeshStandardMaterial({ color: 0xf59e0b, emissive: 0xd97706, emissiveIntensity: 0.4 });
+            // Food item on plate
+            const foodGeo = new THREE.SphereGeometry(0.22, 16, 16);
+            const foodMat = new THREE.MeshStandardMaterial({ color: 0xf59e0b, emissive: 0xd97706, emissiveIntensity: 0.5 });
             const food = new THREE.Mesh(foodGeo, foodMat);
-            food.position.set(0.6, -0.05, 0);
+            food.position.set(0.5, -0.04, 0);
             scene.add(food);
 
-            // Queue LED Board
-            const signGeo = new THREE.BoxGeometry(1.4, 0.35, 0.1);
-            const signMat = new THREE.MeshStandardMaterial({ color: 0x10b981 });
+            // LED Queue Status Board
+            const signGeo = new THREE.BoxGeometry(1.5, 0.4, 0.1);
+            const signMat = new THREE.MeshStandardMaterial({ color: 0x10b981, emissive: 0x059669, emissiveIntensity: 0.4 });
             const sign = new THREE.Mesh(signGeo, signMat);
             sign.position.set(1.6, 0.5, 0);
             scene.add(sign);
@@ -431,7 +437,7 @@
                 requestAnimationFrame(animate);
                 pot1.rotation.y += 0.015;
                 pot2.rotation.y -= 0.015;
-                food.rotation.y += 0.025;
+                food.rotation.y += 0.02;
                 renderer.render(scene, camera);
             }
             animate();
