@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>3D Smart Mess Queue — Supabase Live</title>
+    <title>3D Smart Mess Queue — Live Dashboard</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome Icons -->
@@ -17,7 +17,7 @@
     <style>
         #canvas-container {
             width: 100%;
-            height: 420px;
+            height: 380px;
             border-radius: 16px;
             overflow: hidden;
             position: relative;
@@ -76,11 +76,11 @@
     <!-- MAIN DASHBOARD CONTENT AREA -->
     <div class="flex-1 flex flex-col min-w-0 h-screen overflow-y-auto custom-scrollbar">
 
-        <!-- TOP BAR WITH LIVE DATE/TIME -->
+        <!-- TOP BAR -->
         <header class="bg-slate-900/80 border-b border-slate-800 p-4 sticky top-0 z-40 backdrop-blur flex justify-between items-center">
             <div class="flex items-center space-x-3">
                 <span class="w-3 h-3 rounded-full bg-emerald-500 animate-ping"></span>
-                <h2 class="font-bold text-sm text-slate-200 uppercase tracking-wider">Live System Control Dashboard</h2>
+                <h2 class="font-bold text-sm text-slate-200 uppercase tracking-wider">LIVE SYSTEM CONTROL DASHBOARD</h2>
             </div>
             
             <div class="flex items-center space-x-4">
@@ -100,10 +100,10 @@
                         <h3 class="font-bold text-base text-white flex items-center">
                             <i class="fa-solid fa-cube text-emerald-400 mr-2"></i> 3D Real-Time Canteen Simulation
                         </h3>
-                        <p class="text-xs text-slate-400">Use Mouse Left-Click to Rotate 360°, Scroll Wheel to Zoom</p>
+                        <p class="text-xs text-slate-400">Drag mouse to rotate 360°, scroll to zoom in/out</p>
                     </div>
-                    <div class="flex space-x-2">
-                        <button onclick="handleDequeue3D()" class="bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-extrabold px-4 py-2 rounded-xl text-xs transition flex items-center">
+                    <div>
+                        <button onclick="handleDequeue()" class="bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-extrabold px-4 py-2 rounded-xl text-xs transition flex items-center">
                             <i class="fa-solid fa-circle-check mr-1.5"></i> Serve Head (Dequeue)
                         </button>
                     </div>
@@ -112,8 +112,8 @@
                 <div id="canvas-container"></div>
             </section>
 
-            <!-- GENERATE TOKEN & FOOD SELECTION FORM -->
-            <section id="generate-token" class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            <!-- GENERATE TOKEN & LIVE QUEUE TABLE -->
+            <section id="generate-token" class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
 
                 <!-- ENQUEUE FORM -->
                 <div class="lg:col-span-5 bg-slate-900 p-6 rounded-3xl border border-slate-800">
@@ -121,7 +121,7 @@
                         <i class="fa-solid fa-ticket text-emerald-400 mr-2"></i> Issue Student Token
                     </h3>
 
-                    <form id="token-form" onsubmit="handleEnqueue3D(event)" class="space-y-4 text-xs">
+                    <form id="token-form" onsubmit="handleEnqueue(event)" class="space-y-4 text-xs">
                         <div>
                             <label class="block font-bold text-slate-400 uppercase tracking-wider mb-1">Student Name</label>
                             <input type="text" id="stu-name" required placeholder="e.g. Sai Prasanna" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-emerald-500">
@@ -149,7 +149,7 @@
                             </select>
                         </div>
 
-                        <button type="submit" id="submit-btn" class="w-full bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-black py-3.5 rounded-xl text-xs transition flex items-center justify-center space-x-2">
+                        <button type="submit" class="w-full bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-black py-3.5 rounded-xl text-xs transition flex items-center justify-center space-x-2">
                             <i class="fa-solid fa-plus-circle text-sm"></i>
                             <span>GENERATE TOKEN & SAVE DATABASE</span>
                         </button>
@@ -157,42 +157,39 @@
                 </div>
 
                 <!-- LIVE QUEUE DATA TABLE -->
-                <div class="lg:col-span-7 bg-slate-900 p-6 rounded-3xl border border-slate-800 flex flex-col justify-between">
-                    <div>
-                        <h3 class="font-bold text-white text-base mb-4 flex items-center border-b border-slate-800 pb-3">
-                            <i class="fa-solid fa-database text-emerald-400 mr-2"></i> Supabase Live Database Log
-                        </h3>
+                <div class="lg:col-span-7 bg-slate-900 p-6 rounded-3xl border border-slate-800">
+                    <h3 class="font-bold text-white text-base mb-4 flex items-center border-b border-slate-800 pb-3">
+                        <i class="fa-solid fa-database text-emerald-400 mr-2"></i> Active Queue Data Log
+                    </h3>
 
-                        <div class="overflow-x-auto">
-                            <table class="w-full text-left text-xs">
-                                <thead>
-                                    <tr class="text-slate-500 font-mono border-b border-slate-800">
-                                        <th class="py-2.5">Token</th>
-                                        <th class="py-2.5">Student</th>
-                                        <th class="py-2.5">Roll No</th>
-                                        <th class="py-2.5">Food Item</th>
-                                        <th class="py-2.5">Time Stored</th>
-                                        <th class="py-2.5 text-right">Status</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="queue-table-body" class="divide-y divide-slate-800/60 font-mono">
-                                    <!-- Dynamic rows from Supabase -->
-                                </tbody>
-                            </table>
-                        </div>
+                    <div class="overflow-x-auto min-h-[260px]">
+                        <table class="w-full text-left text-xs">
+                            <thead>
+                                <tr class="text-slate-500 font-mono border-b border-slate-800">
+                                    <th class="py-2.5">Token</th>
+                                    <th class="py-2.5">Student</th>
+                                    <th class="py-2.5">Roll No</th>
+                                    <th class="py-2.5">Food Item</th>
+                                    <th class="py-2.5 text-right">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="queue-table-body" class="divide-y divide-slate-800/60 font-mono">
+                                <!-- Dynamic rows -->
+                            </tbody>
+                        </table>
                     </div>
 
-                    <div class="pt-4 border-t border-slate-800 flex justify-between items-center text-xs text-slate-500">
+                    <div class="pt-4 border-t border-slate-800 flex justify-between items-center text-xs text-slate-500 mt-4">
                         <span id="queue-count-text">0 Tokens Active</span>
                         <span class="text-emerald-400 font-bold flex items-center">
-                            <i class="fa-solid fa-bolt mr-1"></i> Supabase Database Connected
+                            <i class="fa-solid fa-bolt mr-1"></i> System Active
                         </span>
                     </div>
                 </div>
 
             </section>
 
-            <!-- MESS FOOD MENU DISPLAY CARDS -->
+            <!-- MESS FOOD MENU CARDS -->
             <section id="food-menu" class="bg-slate-900 p-6 rounded-3xl border border-slate-800 space-y-4">
                 <h3 class="font-bold text-white text-base flex items-center">
                     <i class="fa-solid fa-utensils text-emerald-400 mr-2"></i> Daily Mess Food Menu Categories
@@ -253,7 +250,7 @@
                 </div>
             </section>
 
-            <!-- HOW 3D QUEUE WORKS EXPLANATION SECTION -->
+            <!-- HOW IT WORKS -->
             <section id="how-it-works" class="bg-slate-900 p-6 rounded-3xl border border-slate-800 space-y-4">
                 <h3 class="font-bold text-white text-base flex items-center">
                     <i class="fa-solid fa-circle-question text-emerald-400 mr-2"></i> How 3D FIFO Queue Simulation Works
@@ -263,21 +260,21 @@
                     <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-2">
                         <div class="text-emerald-400 font-bold">1. Enqueue (Spawn)</div>
                         <p class="text-slate-400 leading-relaxed">
-                            Form fill chesi Submit kottagane **Supabase Database** lo entry save ayi 3D space lo unique Avatar spawn avthundhi.
+                            Form fill chesi Submit kottagane Queue entry create ayi 3D space lo student avatar spawn avthundhi.
                         </p>
                     </div>
 
                     <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-2">
                         <div class="text-emerald-400 font-bold">2. Z-Axis Positioning</div>
                         <p class="text-slate-400 leading-relaxed">
-                            Prathi Avatar Z-Coordinate location calculate cheskoni Line lo linear ga నిలబడుతుంది ($Z = -5.5 + pos \times 2.2$).
+                            Prathi Avatar Z-Coordinate location calculate cheskoni Line lo linear ga nilabaduthundi.
                         </p>
                     </div>
 
                     <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-2">
                         <div class="text-emerald-400 font-bold">3. Dequeue (Serving)</div>
                         <p class="text-slate-400 leading-relaxed">
-                            "Serve Head" button click cheste Supabase Status 'SERVED' ga update ayi Queue Front Avatar remove aipothundhi.
+                            "Serve Head" button click cheste status SERVED ga maruthundhi and Front Avatar remove aipothundhi.
                         </p>
                     </div>
                 </div>
@@ -286,15 +283,11 @@
         </main>
     </div>
 
-    <!-- THREE.JS & SUPABASE INTEGRATION -->
+    <!-- THREE.JS & SCRIPT LOGIC -->
     <script>
-        // SUPABASE CREDENTIALS
-        const SUPABASE_URL = 'https://tdfbydsqeotrilvblvgk.supabase.co';
-        const SUPABASE_KEY = 'sb_publishable_f-grvcqEkeL5s0Ws0g5tIw_567yDlcY';
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
         let scene, camera, renderer, controls;
-        let queue3D = [];
+        let queueList = [];
+        let tokenSeq = 101;
 
         const foodOptionsMap = {
             "Breakfast": ["Hot Idly with Chutney", "Puri with Curry", "Masala Dosa", "Vada & Sambar"],
@@ -307,8 +300,7 @@
 
         function initClock() {
             setInterval(() => {
-                const now = new Date();
-                document.getElementById('live-datetime').innerText = now.toLocaleString();
+                document.getElementById('live-datetime').innerText = new Date().toLocaleString();
             }, 1000);
         }
 
@@ -336,18 +328,16 @@
 
             renderer = new THREE.WebGLRenderer({ antialias: true });
             renderer.setSize(container.clientWidth, container.clientHeight);
-            renderer.shadowMap.enabled = true;
             container.appendChild(renderer.domElement);
 
             controls = new THREE.OrbitControls(camera, renderer.domElement);
             controls.enableDamping = true;
 
-            const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
             scene.add(ambientLight);
 
             const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
             dirLight.position.set(10, 20, 10);
-            dirLight.castShadow = true;
             scene.add(dirLight);
 
             createFloorAndCounter();
@@ -356,26 +346,24 @@
 
         function createFloorAndCounter() {
             const floorGeo = new THREE.PlaneGeometry(30, 30);
-            const floorMat = new THREE.MeshStandardMaterial({ color: 0x0f172a, roughness: 0.8 });
+            const floorMat = new THREE.MeshStandardMaterial({ color: 0x0f172a });
             const floor = new THREE.Mesh(floorGeo, floorMat);
             floor.rotation.x = -Math.PI / 2;
-            floor.receiveShadow = true;
             scene.add(floor);
 
             const grid = new THREE.GridHelper(30, 30, 0x1e293b, 0x0f172a);
             grid.position.y = 0.01;
             scene.add(grid);
 
-            // Canteen Counter
+            // Counter
             const counterGeo = new THREE.BoxGeometry(6, 2, 2.5);
             const counterMat = new THREE.MeshStandardMaterial({ color: 0x10b981 });
             const counter = new THREE.Mesh(counterGeo, counterMat);
             counter.position.set(0, 1, -8);
-            counter.castShadow = true;
             scene.add(counter);
         }
 
-        function create3DAvatar(index) {
+        function createAvatarMesh(index) {
             const group = new THREE.Group();
 
             const color = avatarColors[index % avatarColors.length];
@@ -383,118 +371,65 @@
             const bodyMat = new THREE.MeshStandardMaterial({ color: color });
             const body = new THREE.Mesh(bodyGeo, bodyMat);
             body.position.y = 0.9;
-            body.castShadow = true;
             group.add(body);
 
             const headGeo = new THREE.SphereGeometry(0.4, 16, 16);
             const headMat = new THREE.MeshStandardMaterial({ color: 0xf8fafc });
             const head = new THREE.Mesh(headGeo, headMat);
             head.position.y = 2.1;
-            head.castShadow = true;
             group.add(head);
-
-            const tagGeo = new THREE.BoxGeometry(1.2, 0.5, 0.2);
-            const tagMat = new THREE.MeshStandardMaterial({ color: 0xf59e0b });
-            const tag = new THREE.Mesh(tagGeo, tagMat);
-            tag.position.y = 2.8;
-            group.add(tag);
 
             const targetZ = -5.5 + (index * 2.2);
             group.position.set(0, 0, targetZ);
 
             scene.add(group);
-
-            return { mesh: group, targetZ: targetZ };
+            return group;
         }
 
-        async function fetchTokensFromSupabase() {
-            // Clear current 3D avatars
-            queue3D.forEach(item => scene.remove(item.mesh));
-            queue3D = [];
-
-            const { data, error } = await supabase
-                .from('mess_tokens')
-                .select('*')
-                .eq('status', 'WAITING')
-                .order('id', { ascending: true });
-
-            if (error) {
-                console.error("Error fetching tokens:", error);
-                return;
-            }
-
-            data.forEach((row, idx) => {
-                const avatarObj = create3DAvatar(idx);
-                queue3D.push({
-                    id: row.id,
-                    mesh: avatarObj.mesh,
-                    name: row.student_name,
-                    roll: row.roll_number,
-                    food: row.food_item,
-                    token: row.token,
-                    time: new Date(row.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-                });
-            });
-
-            renderQueueTable();
-        }
-
-        async function handleEnqueue3D(e) {
+        function handleEnqueue(e) {
             e.preventDefault();
             const name = document.getElementById('stu-name').value;
             const roll = document.getElementById('stu-id').value;
             const food = document.getElementById('food-item').value;
-            const token = "T-" + Math.floor(1000 + Math.random() * 9000);
+            const token = "T-" + tokenSeq++;
 
-            // Insert to Supabase Database
-            const { error } = await supabase
-                .from('mess_tokens')
-                .insert([{
-                    token: token,
-                    student_name: name,
-                    roll_number: roll,
-                    food_item: food,
-                    status: 'WAITING'
-                }]);
+            const mesh = createAvatarMesh(queueList.length);
 
-            if (error) {
-                alert("Error saving token: " + error.message);
-                return;
-            }
+            queueList.push({
+                mesh: mesh,
+                token: token,
+                name: name,
+                roll: roll,
+                food: food
+            });
 
             document.getElementById('stu-name').value = '';
             document.getElementById('stu-id').value = '';
 
-            await fetchTokensFromSupabase();
+            renderTable();
         }
 
-        async function handleDequeue3D() {
-            if (queue3D.length === 0) return;
+        function handleDequeue() {
+            if (queueList.length === 0) return;
 
-            const servedItem = queue3D[0];
+            const served = queueList.shift();
+            scene.remove(served.mesh);
 
-            // Update status in Supabase Database
-            const { error } = await supabase
-                .from('mess_tokens')
-                .update({ status: 'SERVED' })
-                .eq('id', servedItem.id);
+            queueList.forEach((item, idx) => {
+                item.mesh.position.z = -5.5 + (idx * 2.2);
+            });
 
-            if (error) {
-                console.error("Error updating status:", error);
-                return;
-            }
-
-            await fetchTokensFromSupabase();
+            renderTable();
         }
 
-        function renderQueueTable() {
+        function renderTable() {
             const tbody = document.getElementById('queue-table-body');
             tbody.innerHTML = '';
 
-            if (queue3D.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" class="py-4 text-center text-slate-600">Queue is currently empty in Database.</td></tr>`;
+            if (queueList.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="py-4 text-center text-slate-600">Queue is currently empty. Generate a token to test!</td></tr>`;
             } else {
-                queue3D.forEach((item, idx) => {
+                queueList.forEach((item, idx) => {
                     const isHead = idx === 0;
                     const tr = document.createElement('tr');
                     tr.className = isHead ? "text-emerald-400 font-bold bg-emerald-500/10" : "text-slate-300";
@@ -503,10 +438,9 @@
                         <td class="py-2.5">${item.name}</td>
                         <td class="py-2.5 text-slate-400">${item.roll}</td>
                         <td class="py-2.5">${item.food}</td>
-                        <td class="py-2.5 text-slate-400">${item.time}</td>
                         <td class="py-2.5 text-right">
                             <span class="px-2 py-0.5 rounded text-[10px] ${isHead ? 'bg-emerald-500 text-slate-950 font-black' : 'bg-slate-800 text-slate-400'}">
-                                ${isHead ? 'SERVING' : 'WAITING'}
+                                ${isHead ? 'SERVING NOW' : 'WAITING'}
                             </span>
                         </td>
                     `;
@@ -514,20 +448,20 @@
                 });
             }
 
-            document.getElementById('queue-count-text').innerText = `${queue3D.length} Active Tokens in Database Queue`;
+            document.getElementById('queue-count-text').innerText = `${queueList.length} Active Tokens`;
         }
 
         function animate() {
             requestAnimationFrame(animate);
-            controls.update();
-            renderer.render(scene, camera);
+            if (controls) controls.update();
+            if (renderer && scene && camera) renderer.render(scene, camera);
         }
 
         window.onload = () => {
             initClock();
             updateFoodItemsOptions();
             init3D();
-            fetchTokensFromSupabase();
+            renderTable();
         };
     </script>
 </body>
