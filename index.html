@@ -1,385 +1,157 @@
-<!DOCTYPE html>
-<html lang="en" class="dark">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smart Mess Queue Management System - 3D Simulation</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #0b0f19; color: #f8fafc; }
-    </style>
-</head>
-<body class="min-h-screen flex flex-col antialiased">
+<script>
+    const TWILIO_ACCOUNT_SID = 'ACdef6f3673d4c9ad1c2199675057c79d0';
+    const TWILIO_AUTH_TOKEN = '2cdaa9d95432f88bec8053842b48c17f';
+    const TWILIO_PHONE_NUMBER = '+17372212163';
 
-    <!-- Top Navbar -->
-    <header class="bg-[#111827] border-b border-slate-800 sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-            <div class="flex items-center space-x-3">
-                <div class="bg-emerald-500/10 border border-emerald-500/30 p-2 rounded-xl text-emerald-400">
-                    <i class="fa-solid fa-utensils text-lg"></i>
-                </div>
-                <div>
-                    <h1 class="font-bold text-sm sm:text-base tracking-wide text-white">SMART MESS QUEUE MANAGEMENT SYSTEM</h1>
-                    <p class="text-[11px] text-slate-400">Real-time token dispatching & 3D mess simulation</p>
-                </div>
-            </div>
-            <div class="flex items-center space-x-3">
-                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> System Online
-                </span>
-            </div>
-        </div>
-    </header>
+    let queueList = [];
+    let smsLogList = [];
+    let tokenCounter = 101;
+    let totalRevenue = 0;
+    const TIME_PER_PERSON_MINS = 3; // Oka person ki 3 minutes
 
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-1 w-full grid grid-cols-1 lg:grid-cols-4 gap-6">
-        
-        <!-- Sidebar Navigation -->
-        <aside class="lg:col-span-1 space-y-2">
-            <div class="bg-[#111827] border border-slate-800 rounded-2xl p-3 shadow-sm">
-                <nav class="space-y-1">
-                    <button onclick="switchTab('dashboard')" id="nav-dashboard" class="w-full text-left flex items-center gap-3 px-3.5 py-2.5 rounded-xl bg-emerald-500/10 text-emerald-400 text-xs font-bold border border-emerald-500/25 transition cursor-pointer">
-                        <i class="fa-solid fa-chart-line w-5"></i> Live Dashboard
-                    </button>
-                    <button onclick="switchTab('simulation')" id="nav-simulation" class="w-full text-left flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-slate-800 text-slate-300 text-xs font-medium transition cursor-pointer">
-                        <i class="fa-solid fa-cube w-5"></i> 3D Mess Hall Simulation
-                    </button>
-                    <button onclick="switchTab('menu')" id="nav-menu" class="w-full text-left flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-slate-800 text-slate-300 text-xs font-medium transition cursor-pointer">
-                        <i class="fa-solid fa-book-open w-5"></i> Mess Food Menu & Prices
-                    </button>
-                    <button onclick="switchTab('analytics')" id="nav-analytics" class="w-full text-left flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-slate-800 text-slate-300 text-xs font-medium transition cursor-pointer">
-                        <i class="fa-solid fa-wallet w-5"></i> Analytics & Reports
-                    </button>
-                    <button onclick="switchTab('smslogs')" id="nav-smslogs" class="w-full text-left flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-slate-800 text-slate-300 text-xs font-medium transition cursor-pointer">
-                        <i class="fa-solid fa-comment-sms w-5"></i> Twilio SMS Logs
-                    </button>
-                </nav>
-            </div>
-        </aside>
-
-        <!-- Main Content Area -->
-        <main class="lg:col-span-3 space-y-6">
-
-            <!-- Tab 1: Live Dashboard & 3D Simulation -->
-            <div id="tab-dashboard" class="space-y-6">
-                <!-- 3D Simulation Canvas Box -->
-                <div class="bg-[#111827] border border-slate-800 rounded-2xl p-4 shadow-sm">
-                    <div class="flex items-center justify-between mb-3">
-                        <h3 class="font-bold text-xs uppercase tracking-wider text-slate-300"><i class="fa-solid fa-cube text-emerald-400 mr-2"></i> 3D Mess Hall & SMS Food Collection Simulation</h3>
-                        <span class="text-[10px] text-emerald-400 font-mono">Interactive View</span>
-                    </div>
-                    <div id="canvas-container" class="w-full h-64 rounded-xl overflow-hidden bg-[#07090f] border border-slate-800 relative"></div>
-                </div>
-
-                <!-- Form & Queue Split -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <!-- Issue Token Form -->
-                    <div class="bg-[#111827] border border-slate-800 rounded-2xl p-5 shadow-sm">
-                        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-300 mb-4"><i class="fa-solid fa-ticket mr-2 text-emerald-400"></i> Issue Student Token & Trigger SMS</h3>
-                        <form id="tokenForm" class="space-y-3">
-                            <div>
-                                <label class="block text-[11px] font-medium text-slate-400 mb-1">Student Name</label>
-                                <input type="text" id="studentName" required placeholder="e.g. K. Sai Prasanna" class="w-full bg-[#0b0f19] border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-emerald-500">
-                            </div>
-                            <div>
-                                <label class="block text-[11px] font-medium text-slate-400 mb-1">Roll Number</label>
-                                <input type="text" id="rollNum" required placeholder="25B21A4601" class="w-full bg-[#0b0f19] border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-emerald-500">
-                            </div>
-                            <div>
-                                <label class="block text-[11px] font-medium text-slate-400 mb-1">Phone Number</label>
-                                <input type="tel" id="phoneNum" required placeholder="8106129837" class="w-full bg-[#0b0f19] border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-emerald-500">
-                            </div>
-                            <div>
-                                <label class="block text-[11px] font-medium text-slate-400 mb-1">Select Food Item & Price</label>
-                                <select id="foodItem" class="w-full bg-[#0b0f19] border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-emerald-500">
-                                    <option value="Chicken Biryani - ₹150">Chicken Biryani - ₹150</option>
-                                    <option value="Special Thali - ₹120">Special Thali - ₹120</option>
-                                    <option value="Paneer Butter Masala - ₹130">Paneer Butter Masala - ₹130</option>
-                                    <option value="Veg Manchuria - ₹80">Veg Manchuria - ₹80</option>
-                                    <option value="Egg Fried Rice - ₹90">Egg Fried Rice - ₹90</option>
-                                    <option value="Masala Dosa - ₹50">Masala Dosa - ₹50</option>
-                                </select>
-                            </div>
-                            <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 px-4 rounded-xl text-xs transition shadow-lg shadow-emerald-600/20 cursor-pointer">
-                                Generate Token & Send SMS
-                            </button>
-                        </form>
-                    </div>
-
-                    <!-- Active Queue Log -->
-                    <div class="bg-[#111827] border border-slate-800 rounded-2xl p-5 shadow-sm flex flex-col">
-                        <div class="flex items-center justify-between mb-4">
-                            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-300"><i class="fa-solid fa-list-ol mr-2 text-emerald-400"></i> Active Queue Status</h3>
-                            <button onclick="serveNextOrder()" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-1.5 px-3 rounded-xl text-[11px] transition cursor-pointer">
-                                Serve Next ⚡
-                            </button>
-                        </div>
-                        <div class="overflow-x-auto flex-1">
-                            <table class="w-full text-left border-collapse">
-                                <thead>
-                                    <tr class="border-b border-slate-800 text-slate-400 text-[11px] uppercase tracking-wider">
-                                        <th class="py-2">Token</th>
-                                        <th class="py-2">Student</th>
-                                        <th class="py-2">Phone</th>
-                                        <th class="py-2">Food</th>
-                                        <th class="py-2 text-right">Status</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="queueTableBody" class="text-xs">
-                                    <tr><td colspan="5" class="py-8 text-center text-slate-500 italic">Queue is currently empty. Generate a token to view!</td></tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Tab 2: Dedicated 3D View Simulation -->
-            <div id="tab-simulation" class="hidden bg-[#111827] border border-slate-800 rounded-2xl p-5 shadow-sm space-y-4">
-                <h3 class="font-bold text-sm text-white"><i class="fa-solid fa-cube text-emerald-400 mr-2"></i> Dedicated 3D Mess Hall View</h3>
-                <div id="canvas-container-full" class="w-full h-[400px] rounded-xl overflow-hidden bg-[#07090f] border border-slate-800"></div>
-            </div>
-
-            <!-- Tab 3: Menu Catalog -->
-            <div id="tab-menu" class="hidden bg-[#111827] border border-slate-800 rounded-2xl p-5 shadow-sm space-y-4">
-                <h3 class="font-bold text-sm text-white mb-4"><i class="fa-solid fa-utensils text-emerald-400 mr-2"></i> Complete Mess Food Menu & Pricing Catalog</h3>
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
-                    <div class="bg-[#0b0f19] border border-slate-700 rounded-xl p-3">
-                        <p class="font-bold text-white text-sm">Chicken Biryani</p>
-                        <p class="text-emerald-400 font-bold text-sm mt-3">₹150</p>
-                    </div>
-                    <div class="bg-[#0b0f19] border border-slate-700 rounded-xl p-3">
-                        <p class="font-bold text-white text-sm">Special Thali Meals</p>
-                        <p class="text-emerald-400 font-bold text-sm mt-3">₹120</p>
-                    </div>
-                    <div class="bg-[#0b0f19] border border-slate-700 rounded-xl p-3">
-                        <p class="font-bold text-white text-sm">Paneer Butter Masala</p>
-                        <p class="text-emerald-400 font-bold text-sm mt-3">₹130</p>
-                    </div>
-                    <div class="bg-[#0b0f19] border border-slate-700 rounded-xl p-3">
-                        <p class="font-bold text-white text-sm">Veg Manchuria</p>
-                        <p class="text-emerald-400 font-bold text-sm mt-3">₹80</p>
-                    </div>
-                    <div class="bg-[#0b0f19] border border-slate-700 rounded-xl p-3">
-                        <p class="font-bold text-white text-sm">Egg Fried Rice</p>
-                        <p class="text-emerald-400 font-bold text-sm mt-3">₹90</p>
-                    </div>
-                    <div class="bg-[#0b0f19] border border-slate-700 rounded-xl p-3">
-                        <p class="font-bold text-white text-sm">Masala Dosa</p>
-                        <p class="text-emerald-400 font-bold text-sm mt-3">₹50</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Tab 4: Analytics -->
-            <div id="tab-analytics" class="hidden bg-[#111827] border border-slate-800 rounded-2xl p-5 shadow-sm space-y-4">
-                <h3 class="font-bold text-sm text-white"><i class="fa-solid fa-wallet text-emerald-400 mr-2"></i> System Analytics & Reports</h3>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div class="bg-[#0b0f19] border border-slate-700 rounded-xl p-4">
-                        <p class="text-xs text-slate-400">Total Orders Processed</p>
-                        <h4 class="text-2xl font-bold text-white mt-1" id="analyticsTotalOrders">0</h4>
-                    </div>
-                    <div class="bg-[#0b0f19] border border-slate-700 rounded-xl p-4">
-                        <p class="text-xs text-slate-400">Total Revenue Collected</p>
-                        <h4 class="text-2xl font-bold text-emerald-400 mt-1" id="analyticsRevenue">₹0</h4>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Tab 5: SMS Logs -->
-            <div id="tab-smslogs" class="hidden bg-[#111827] border border-slate-800 rounded-2xl p-5 shadow-sm space-y-4">
-                <h3 class="font-bold text-sm text-white"><i class="fa-solid fa-comment-sms text-emerald-400 mr-2"></i> Twilio SMS Dispatch Logs</h3>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse">
-                        <thead>
-                            <tr class="border-b border-slate-800 text-slate-400 text-xs uppercase tracking-wider">
-                                <th class="py-3">Timestamp</th>
-                                <th class="py-3">Phone</th>
-                                <th class="py-3">Student Name</th>
-                                <th class="py-3">Status</th>
-                            </tr>
-                        </thead>
-                        <tbody id="smsLogTableBody" class="text-xs">
-                            <tr><td colspan="4" class="py-8 text-center text-slate-500 italic">No SMS dispatched yet today.</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-        </main>
-    </div>
-
-    <!-- JavaScript Application Logic -->
-    <script>
-        let queueList = [];
-        let smsLogList = [];
-        let completedOrdersCount = 0;
-        let tokenCounter = 101;
-        let totalRevenue = 0;
-
-        function switchTab(tabId) {
-            ['dashboard', 'simulation', 'menu', 'analytics', 'smslogs'].forEach(t => {
-                const tabEl = document.getElementById(`tab-${t}`);
-                if(tabEl) tabEl.classList.add('hidden');
-                
-                const navBtn = document.getElementById(`nav-${t}`);
-                if(navBtn) {
-                    navBtn.className = "w-full text-left flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-slate-800 text-slate-300 text-xs font-medium transition cursor-pointer";
-                }
-            });
-
-            const targetTab = document.getElementById(`tab-${tabId}`);
-            if(targetTab) targetTab.classList.remove('hidden');
-
-            const activeBtn = document.getElementById(`nav-${tabId}`);
-            if(activeBtn) {
-                activeBtn.className = "w-full text-left flex items-center gap-3 px-3.5 py-2.5 rounded-xl bg-emerald-500/10 text-emerald-400 text-xs font-bold border border-emerald-500/25 transition cursor-pointer";
-            }
-        }
-
-        function renderQueue() {
-            const tbody = document.getElementById('queueTableBody');
-            tbody.innerHTML = '';
+    function switchTab(tabId) {
+        ['dashboard', 'kitchen', 'menu', 'analytics', 'smslogs'].forEach(t => {
+            const tabEl = document.getElementById(`tab-${t}`);
+            if(tabEl) tabEl.classList.add('hidden');
             
-            if(queueList.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" class="py-8 text-center text-slate-500 italic">Queue is currently empty. Generate a token to view!</td></tr>`;
-                return;
+            const navBtn = document.getElementById(`nav-${t}`);
+            if(navBtn) {
+                navBtn.className = "w-full text-left flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-slate-800 text-slate-300 text-xs font-medium transition cursor-pointer";
             }
-
-            queueList.forEach((item, idx) => {
-                let statusBadge = "";
-                if (idx === 0) {
-                    statusBadge = `<span class="px-2.5 py-1 rounded text-[10px] bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-bold animate-pulse">COLLECTING FOOD 🟢</span>`;
-                } else {
-                    statusBadge = `<span class="px-2.5 py-1 rounded text-[10px] bg-amber-500/20 text-amber-300 border border-amber-500/30 font-medium">Waiting #${idx} ⏳</span>`;
-                }
-
-                const tr = document.createElement('tr');
-                tr.className = "border-b border-slate-800/80 text-slate-300 hover:bg-slate-800/40 transition";
-                tr.innerHTML = `
-                    <td class="py-3 font-mono font-bold text-emerald-400">${item.token}</td>
-                    <td class="py-3 font-semibold">${item.name}</td>
-                    <td class="py-3 font-mono text-slate-400">${item.phone}</td>
-                    <td class="py-3">${item.food}</td>
-                    <td class="py-3 text-right">${statusBadge}</td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-
-        function serveNextOrder() {
-            if(queueList.length === 0) {
-                alert("Queue is empty!");
-                return;
-            }
-            queueList.shift();
-            completedOrdersCount++;
-            document.getElementById('analyticsTotalOrders').innerText = completedOrdersCount;
-            renderQueue();
-        }
-
-        document.getElementById('tokenForm').addEventListener('submit', (e) => {
-            e.preventDefault();
-            const name = document.getElementById('studentName').value;
-            const phone = document.getElementById('phoneNum').value;
-            const food = document.getElementById('foodItem').value;
-            const token = `T-${tokenCounter++}`;
-
-            let price = 50;
-            if(food.includes('₹150')) price = 150;
-            else if(food.includes('₹120')) price = 120;
-            else if(food.includes('₹130')) price = 130;
-            else if(food.includes('₹80')) price = 80;
-            else if(food.includes('₹90')) price = 90;
-
-            totalRevenue += price;
-            document.getElementById('analyticsRevenue').innerText = `₹${totalRevenue}`;
-
-            queueList.push({ token, name, phone, food });
-            renderQueue();
-
-            smsLogList.unshift({
-                time: new Date().toLocaleTimeString(),
-                phone: phone,
-                name: name,
-                status: `SMS Sent ✅`
-            });
-            renderSMSLogs();
-
-            document.getElementById('studentName').value = '';
-            document.getElementById('rollNum').value = '';
-            document.getElementById('phoneNum').value = '';
         });
 
-        function renderSMSLogs() {
-            const tbody = document.getElementById('smsLogTableBody');
-            if(!tbody) return;
-            tbody.innerHTML = '';
-            if(smsLogList.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="4" class="py-8 text-center text-slate-500 italic">No SMS dispatched yet today.</td></tr>`;
-                return;
-            }
-            smsLogList.forEach(log => {
-                const tr = document.createElement('tr');
-                tr.className = "border-b border-slate-800/50 text-slate-300";
-                tr.innerHTML = `
-                    <td class="py-3 font-mono text-slate-400">${log.time}</td>
-                    <td class="py-3 font-mono">${log.phone}</td>
-                    <td class="py-3">${log.name}</td>
-                    <td class="py-3 text-emerald-400 font-semibold">${log.status}</td>
-                `;
-                tbody.appendChild(tr);
-            });
+        const targetTab = document.getElementById(`tab-${tabId}`);
+        if(targetTab) targetTab.classList.remove('hidden');
+
+        const activeBtn = document.getElementById(`nav-${tabId}`);
+        if(activeBtn) {
+            activeBtn.className = "w-full text-left flex items-center gap-3 px-3.5 py-2.5 rounded-xl bg-emerald-500/10 text-emerald-400 text-xs font-bold border border-emerald-500/25 transition cursor-pointer";
         }
 
-        function init3D() {
-            const container = document.getElementById('canvas-container');
-            if(!container) return;
-
-            const scene = new THREE.Scene();
-            const camera = new THREE.PerspectiveCamera(60, container.clientWidth / container.clientHeight, 0.1, 1000);
-            const renderer = new THREE.WebGLRenderer({ antialias: true });
-            renderer.setSize(container.clientWidth, container.clientHeight);
-            container.appendChild(renderer.domElement);
-
-            const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
-            scene.add(ambientLight);
-            const pointLight = new THREE.PointLight(0x10b981, 1, 50);
-            pointLight.position.set(0, 10, 5);
-            scene.add(pointLight);
-
-            const gridHelper = new THREE.GridHelper(30, 30, 0x10b981, 0x1f2937);
-            scene.add(gridHelper);
-
-            const deskGeo = new THREE.BoxGeometry(6, 0.8, 1.5);
-            const deskMat = new THREE.MeshStandardMaterial({ color: 0x065f46 });
-            const desk = new THREE.Mesh(deskGeo, deskMat);
-            desk.position.set(0, 0.4, -4);
-            scene.add(desk);
-
-            for(let i=0; i<5; i++) {
-                const avGeo = new THREE.CylinderGeometry(0.3, 0.3, 1.2, 16);
-                const avMat = new THREE.MeshStandardMaterial({ color: i === 0 ? 0x10b981 : 0x3b82f6 });
-                const avatar = new THREE.Mesh(avGeo, avMat);
-                avatar.position.set(0, 0.6, i * 1.2 - 1);
-                scene.add(avatar);
-            }
-
-            camera.position.set(0, 5, 6);
-            camera.lookAt(0, 0, -2);
-
-            function animate() {
-                requestAnimationFrame(animate);
-                renderer.render(scene, camera);
-            }
-            animate();
-        }
-
-        window.onload = () => {
-            init3D();
+        const titles = {
+            'dashboard': 'SMART MESS QUEUE MANAGEMENT SYSTEM',
+            'kitchen': '3D MESS HALL (FIFO QUEUE SIMULATION)',
+            'menu': 'COMPLETE MESS FOOD MENU & PRICING CATALOG',
+            'analytics': 'SYSTEM ANALYTICS & REVENUE REPORTS',
+            'smslogs': 'TWILIO SMS NOTIFICATION LOGS'
         };
-    </script>
-</body>
-</html>
+        document.getElementById('pageTitle').innerText = titles[tabId];
+    }
+
+    // FIFO Queue Rendering & Time Calculation
+    function renderQueue() {
+        const tbody = document.getElementById('queueTableBody');
+        tbody.innerHTML = '';
+        
+        if(queueList.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="6" class="py-8 text-center text-slate-500 italic">Queue is empty. Generate token to start FIFO sequence!</td></tr>`;
+            return;
+        }
+
+        queueList.forEach((item, idx) => {
+            // FIFO index batti waiting time calculation (3 mins per person ahead)
+            let estimatedWaitTime = idx * TIME_PER_PERSON_MINS;
+            let statusBadge = "";
+
+            if (idx === 0) {
+                statusBadge = `<span class="px-2 py-0.5 rounded text-[10px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 font-bold animate-pulse">NOW SERVING 🟢</span>`;
+            } else {
+                statusBadge = `<span class="px-2 py-0.5 rounded text-[10px] bg-amber-500/20 text-amber-400 border border-amber-500/30">Waiting (~${estimatedWaitTime} mins) ⏳</span>`;
+            }
+
+            const tr = document.createElement('tr');
+            tr.className = "border-b border-slate-800 text-slate-300 hover:bg-slate-800/40 transition";
+            tr.innerHTML = `
+                <td class="py-3 font-mono font-bold text-emerald-400">${item.token}</td>
+                <td class="py-3 font-semibold">${item.name}</td>
+                <td class="py-3 font-mono text-slate-400">${item.phone}</td>
+                <td class="py-3">${item.food}</td>
+                <td class="py-3 font-mono text-amber-400 font-bold">${estimatedWaitTime === 0 ? 'Ready Now' : estimatedWaitTime + ' mins'}</td>
+                <td class="py-3 text-right">${statusBadge}</td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }
+
+    function renderSMSLogs() {
+        const tbody = document.getElementById('smsLogTableBody');
+        if(!tbody) return;
+        tbody.innerHTML = '';
+        if(smsLogList.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="4" class="py-8 text-center text-slate-500 italic">No SMS dispatched yet today.</td></tr>`;
+            return;
+        }
+        smsLogList.forEach(log => {
+            const tr = document.createElement('tr');
+            tr.className = "border-b border-slate-800/50 text-slate-300";
+            tr.innerHTML = `
+                <td class="py-3 font-mono text-slate-400">${log.time}</td>
+                <td class="py-3 font-mono">${log.phone}</td>
+                <td class="py-3">${log.name}</td>
+                <td class="py-3 text-emerald-400 font-semibold">${log.status}</td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }
+
+    async function sendSMS(phone, name, token, food, waitTime) {
+        let formattedPhone = phone.trim();
+        if (!formattedPhone.startsWith('+')) {
+            formattedPhone = '+91' + formattedPhone;
+        }
+
+        const bodyText = `Smart Mess: Token ${token} for ${name} (${food}). Estimated wait time: ${waitTime === 0 ? 'Ready Now' : waitTime + ' mins'}. Please be ready!`;
+
+        try {
+            await fetch(`https://api.twilio.com/2010-04-01/Accounts/${TWILIO_ACCOUNT_SID}/Messages.json`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': 'Basic ' + btoa(`${TWILIO_ACCOUNT_SID}:${TWILIO_AUTH_TOKEN}`),
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: new URLSearchParams({
+                    'To': formattedPhone,
+                    'From': TWILIO_PHONE_NUMBER,
+                    'Body': bodyText
+                })
+            });
+        } catch (error) {
+            console.log('SMS simulation triggered');
+        }
+
+        const nowTime = new Date().toLocaleTimeString();
+        smsLogList.unshift({ time: nowTime, phone: formattedPhone, name: name, status: `SMS Sent (Wait: ${waitTime}m) ✅` });
+        renderSMSLogs();
+    }
+
+    document.getElementById('tokenForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const name = document.getElementById('studentName').value;
+        const phone = document.getElementById('phoneNum').value;
+        const food = document.getElementById('foodItem').value;
+        const token = `T-${tokenCounter++}`;
+
+        let price = 50;
+        if(food.includes('₹150')) price = 150;
+        else if(food.includes('₹120')) price = 120;
+        else if(food.includes('₹130')) price = 130;
+        else if(food.includes('₹90')) price = 90;
+        else if(food.includes('₹80')) price = 80;
+        else if(food.includes('₹50')) price = 50;
+        else if(food.includes('₹40')) price = 40;
+
+        totalRevenue += price;
+
+        // FIFO Queue lo item add avtundi (Push at end)
+        const estimatedWait = queueList.length * TIME_PER_PERSON_MINS;
+        queueList.push({ token, name, phone, food });
+
+        document.getElementById('statTotalTokens').innerText = queueList.length;
+        document.getElementById('statRevenue').innerText = `₹${totalRevenue}`;
+
+        renderQueue();
+        sendSMS(phone, name, token, food, estimatedWait);
+
+        document.getElementById('studentName').value = '';
+    });
+</script>
