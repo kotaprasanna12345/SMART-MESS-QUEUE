@@ -14,14 +14,14 @@
     <!-- Left Sidebar Navigation -->
     <div class="w-64 bg-slate-900 border-r border-slate-800 flex flex-col justify-between p-4 shadow-2xl shrink-0">
         <div>
-            <div class="flex items-center gap-3 mb-8">
+            <div class="flex items-center gap-3 mb-6">
                 <div class="bg-emerald-500 p-2.5 rounded-xl text-slate-950 font-black text-lg">🍳</div>
                 <div>
                     <h1 class="font-bold text-sm tracking-wide text-white">SMART MESS</h1>
                     <p class="text-[10px] text-emerald-400 font-semibold">KITCHEN & QUEUE</p>
                 </div>
             </div>
-            <nav class="space-y-2">
+            <nav class="space-y-1.5">
                 <button onclick="switchTab('dashboard')" id="nav-dashboard" class="w-full text-left flex items-center gap-3 px-3.5 py-2.5 rounded-xl bg-emerald-500/10 text-emerald-400 text-xs font-bold border border-emerald-500/20 transition cursor-pointer">
                     ⚡ Live Dashboard
                 </button>
@@ -39,7 +39,7 @@
                 </button>
             </nav>
         </div>
-        <div class="text-xs text-slate-400 border-t border-slate-800 pt-4 bg-slate-950/40 p-3 rounded-xl">
+        <div class="text-xs text-slate-400 border-t border-slate-800 pt-3 bg-slate-950/40 p-3 rounded-xl">
             <p class="font-bold text-emerald-400">K. Sai Prasanna</p>
             <p class="text-[11px] text-slate-500">Roll: 25B21A4601</p>
         </div>
@@ -317,7 +317,6 @@
         let tokenCounter = 101;
         let totalRevenue = 0;
 
-        // Tab Switching Functionality
         function switchTab(tabId) {
             ['dashboard', 'kitchen', 'menu', 'analytics', 'smslogs'].forEach(t => {
                 const tabEl = document.getElementById(`tab-${t}`);
@@ -351,7 +350,6 @@
             }
         }
 
-        // Advanced 3D Mess Kitchen Scene Renderer (Colorful Counter & Pots)
         function setupKitchenScene(containerEl) {
             containerEl.innerHTML = '';
             const scene = new THREE.Scene();
@@ -365,54 +363,46 @@
             renderer.setSize(containerEl.clientWidth, containerEl.clientHeight);
             containerEl.appendChild(renderer.domElement);
 
-            // Lights
             const ambientLight = new THREE.AmbientLight(0xffffff, 0.9);
             scene.add(ambientLight);
             const pointLight = new THREE.PointLight(0x10b981, 4, 50);
             pointLight.position.set(0, 6, 3);
             scene.add(pointLight);
 
-            // Mess Counter Table Top
             const tableGeo = new THREE.BoxGeometry(5.5, 0.35, 2.8);
             const tableMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.2 });
             const table = new THREE.Mesh(tableGeo, tableMat);
             table.position.y = -0.5;
             scene.add(table);
 
-            // Cooking Pot 1 (Biryani Pot)
             const potGeo = new THREE.CylinderGeometry(0.45, 0.35, 0.6, 32);
             const potMat = new THREE.MeshStandardMaterial({ color: 0x64748b, metalness: 0.9, roughness: 0.1 });
             const pot1 = new THREE.Mesh(potGeo, potMat);
             pot1.position.set(-1.8, 0.1, 0);
             scene.add(pot1);
 
-            // Cooking Pot 2 (Curry Pot)
             const pot2 = new THREE.Mesh(potGeo, potMat);
             pot2.position.set(-0.8, 0.1, 0);
             scene.add(pot2);
 
-            // Food Plate 1 (Thali)
             const plateGeo = new THREE.CylinderGeometry(0.7, 0.7, 0.08, 32);
             const plateMat = new THREE.MeshStandardMaterial({ color: 0xf8fafc });
             const plate1 = new THREE.Mesh(plateGeo, plateMat);
             plate1.position.set(0.5, -0.25, 0);
             scene.add(plate1);
 
-            // Food Item on Plate (Glowing sphere / item representation)
             const foodGeo = new THREE.SphereGeometry(0.3, 16, 16);
             const foodMat = new THREE.MeshStandardMaterial({ color: 0xf59e0b, emissive: 0xd97706, emissiveIntensity: 0.3 });
             const food = new THREE.Mesh(foodGeo, foodMat);
             food.position.set(0.5, -0.1, 0);
             scene.add(food);
 
-            // Serving Counter Display Board
             const signGeo = new THREE.BoxGeometry(1.6, 0.4, 0.1);
             const signMat = new THREE.MeshStandardMaterial({ color: 0x10b981 });
             const sign = new THREE.Mesh(signGeo, signMat);
             sign.position.set(1.6, 0.6, 0);
             scene.add(sign);
 
-            // Animation Loop
             function animateKitchen() {
                 requestAnimationFrame(animateKitchen);
                 pot1.rotation.y += 0.01;
@@ -423,7 +413,6 @@
             animateKitchen();
         }
 
-        // Initialize Mini 3D View on Dashboard
         const miniContainer = document.getElementById('canvas-container-mini');
         if(miniContainer) setupKitchenScene(miniContainer);
 
@@ -434,7 +423,6 @@
             }
         }
 
-        // Token Generation & SMS Simulation Trigger
         async function sendSMS(phone, name, token, food) {
             let formattedPhone = phone.trim();
             if (!formattedPhone.startsWith('+')) {
@@ -466,7 +454,6 @@
                 alert(`📱 TOKEN ISSUED SUCCESSFULLY for ${name} (${token})!`);
             }
 
-            // Log SMS
             const nowTime = new Date().toLocaleTimeString();
             smsLogList.unshift({ time: nowTime, phone: formattedPhone, name: name, status: 'Sent Successfully ✅' });
             renderSMSLogs();
@@ -525,7 +512,6 @@
             const food = document.getElementById('foodItem').value;
             const token = `T-${tokenCounter++}`;
 
-            // Calculate revenue from price string
             if(food.includes('₹150')) totalRevenue += 150;
             else if(food.includes('₹120')) totalRevenue += 120;
             else if(food.includes('₹90')) totalRevenue += 90;
