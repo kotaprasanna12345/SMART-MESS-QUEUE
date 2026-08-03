@@ -67,7 +67,7 @@
             <!-- 3D Viewport Box Preview -->
             <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-lg">
                 <div class="flex justify-between items-center mb-3">
-                    <h3 class="font-bold text-xs text-emerald-400 uppercase tracking-wider">🔮 3D MESS HALL & SERVING PERSON SIMULATION</h3>
+                    <h3 class="font-bold text-xs text-emerald-400 uppercase tracking-wider">🔮 3D MESS HALL & SMS FOOD COLLECTION SIMULATION</h3>
                     <button onclick="switchTab('kitchen')" class="text-[10px] text-emerald-400 hover:underline cursor-pointer font-bold">Expand 3D View →</button>
                 </div>
                 <div id="canvas-container-mini" class="w-full h-80 bg-slate-950 rounded-xl relative overflow-hidden flex items-center justify-center border border-slate-800/80">
@@ -101,7 +101,12 @@
                             <select id="foodItem" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-emerald-500 transition">
                                 <option value="Chicken Biryani 🍗 - ₹150">Chicken Biryani 🍗 (₹150)</option>
                                 <option value="Special Thali Meals 🍛 - ₹120">Special Thali Meals 🍛 (₹120)</option>
-                                <option value="Idli Sambar 🥞 - ₹40">Idli Sambar 🥞 (₹40)</option>
+                                <option value="Paneer Butter Masala 🫕 - ₹130">Paneer Butter Masala 🫕 (₹130)</option>
+                                <option value="Masala Dosa 🥞 - ₹50">Masala Dosa 🥞 (₹50)</option>
+                                <option value="Egg Fried Rice 🍳 - ₹90">Egg Fried Rice 🍳 (₹90)</option>
+                                <option value="Veg Manchuria 🍲 - ₹80">Veg Manchuria 🍲 (₹80)</option>
+                                <option value="Lemon Rice 🍋 - ₹40">Lemon Rice 🍋 (₹40)</option>
+                                <option value="Idli Sambar 🥣 - ₹40">Idli Sambar 🥣 (₹40)</option>
                             </select>
                         </div>
                         <button type="submit" class="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black py-3 rounded-xl text-xs tracking-wide transition shadow-lg shadow-emerald-500/20 cursor-pointer">
@@ -140,8 +145,8 @@
             <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-lg space-y-4">
                 <div class="flex justify-between items-center">
                     <div>
-                        <h3 class="font-bold text-sm text-emerald-400">🔮 3D MESS HALL & SERVING PERSON SIMULATION</h3>
-                        <p class="text-xs text-slate-400">Mess counter with a dedicated server person distributing food to the student queue.</p>
+                        <h3 class="font-bold text-sm text-emerald-400">🔮 3D MESS HALL & SMS FOOD COLLECTION ANIMATION</h3>
+                        <p class="text-xs text-slate-400">Once SMS token is dispatched, student walks up to the counter to collect food.</p>
                     </div>
                     <span class="text-xs bg-emerald-500/10 text-emerald-400 px-3 py-1 rounded-lg border border-emerald-500/20">Active 3D View</span>
                 </div>
@@ -151,64 +156,154 @@
             </div>
         </div>
 
-        <!-- TAB 3: MENU WITH FOOD IMAGES -->
+        <!-- TAB 3: EXTENSIVE MENU WITH FOOD PHOTOS -->
         <div id="tab-menu" class="space-y-6 hidden">
             <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-lg space-y-5">
                 <h3 class="font-bold text-sm text-emerald-400 flex items-center gap-2">
                     <span>🍲</span> Complete Mess Food Menu & Pricing Catalog
                 </h3>
                 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-5">
                     <!-- Chicken Biryani -->
                     <div class="bg-slate-950 border border-slate-800 rounded-2xl overflow-hidden shadow-lg flex flex-col justify-between hover:border-emerald-500/40 transition">
-                        <div class="h-44 w-full overflow-hidden relative">
+                        <div class="h-36 w-full overflow-hidden relative">
                             <img src="https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=600&auto=format&fit=crop&q=80" alt="Chicken Biryani" class="w-full h-full object-cover hover:scale-105 transition duration-500">
-                            <span class="absolute top-3 left-3 text-[10px] bg-blue-500/90 text-white px-2.5 py-1 rounded-full font-bold shadow-md">Lunch</span>
+                            <span class="absolute top-2 left-2 text-[9px] bg-blue-500/90 text-white px-2 py-0.5 rounded-full font-bold shadow-md">Lunch</span>
                         </div>
-                        <div class="p-5 flex flex-col justify-between flex-1">
+                        <div class="p-4 flex flex-col justify-between flex-1">
                             <div>
-                                <h4 class="font-bold text-base text-white">Chicken Biryani 🍗</h4>
-                                <p class="text-xs text-slate-400 mt-1">Spicy Hyderabadi chicken biryani served with spicy gravy and raita.</p>
+                                <h4 class="font-bold text-sm text-white">Chicken Biryani 🍗</h4>
+                                <p class="text-[11px] text-slate-400 mt-1">Spicy Hyderabadi chicken biryani with gravy & raita.</p>
                             </div>
-                            <div class="flex justify-between items-center mt-5 pt-3 border-t border-slate-800/80">
-                                <span class="text-xs text-slate-400 font-medium">Price</span>
-                                <span class="text-emerald-400 font-black text-lg">₹150</span>
+                            <div class="flex justify-between items-center mt-4 pt-2 border-t border-slate-800/80">
+                                <span class="text-[11px] text-slate-400">Price</span>
+                                <span class="text-emerald-400 font-black text-base">₹150</span>
                             </div>
                         </div>
                     </div>
 
                     <!-- Special Thali Meals -->
                     <div class="bg-slate-950 border border-slate-800 rounded-2xl overflow-hidden shadow-lg flex flex-col justify-between hover:border-emerald-500/40 transition">
-                        <div class="h-44 w-full overflow-hidden relative">
+                        <div class="h-36 w-full overflow-hidden relative">
                             <img src="https://images.unsplash.com/photo-1610192244261-3f33de3f55e4?w=600&auto=format&fit=crop&q=80" alt="Special Thali Meals" class="w-full h-full object-cover hover:scale-105 transition duration-500">
-                            <span class="absolute top-3 left-3 text-[10px] bg-emerald-500/90 text-white px-2.5 py-1 rounded-full font-bold shadow-md">Lunch</span>
+                            <span class="absolute top-2 left-2 text-[9px] bg-emerald-500/90 text-white px-2 py-0.5 rounded-full font-bold shadow-md">Lunch</span>
                         </div>
-                        <div class="p-5 flex flex-col justify-between flex-1">
+                        <div class="p-4 flex flex-col justify-between flex-1">
                             <div>
-                                <h4 class="font-bold text-base text-white">Special Thali Meals 🍛</h4>
-                                <p class="text-xs text-slate-400 mt-1">Full South Indian thali meal with rice, dal, curries, papad, curd & sweet.</p>
+                                <h4 class="font-bold text-sm text-white">Special Thali Meals 🍛</h4>
+                                <p class="text-[11px] text-slate-400 mt-1">Full South Indian meal with rice, dal, curries & sweet.</p>
                             </div>
-                            <div class="flex justify-between items-center mt-5 pt-3 border-t border-slate-800/80">
-                                <span class="text-xs text-slate-400 font-medium">Price</span>
-                                <span class="text-emerald-400 font-black text-lg">₹120</span>
+                            <div class="flex justify-between items-center mt-4 pt-2 border-t border-slate-800/80">
+                                <span class="text-[11px] text-slate-400">Price</span>
+                                <span class="text-emerald-400 font-black text-base">₹120</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Paneer Butter Masala -->
+                    <div class="bg-slate-950 border border-slate-800 rounded-2xl overflow-hidden shadow-lg flex flex-col justify-between hover:border-emerald-500/40 transition">
+                        <div class="h-36 w-full overflow-hidden relative">
+                            <img src="https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=600&auto=format&fit=crop&q=80" alt="Paneer Butter Masala" class="w-full h-full object-cover hover:scale-105 transition duration-500">
+                            <span class="absolute top-2 left-2 text-[9px] bg-purple-500/90 text-white px-2 py-0.5 rounded-full font-bold shadow-md">Dinner</span>
+                        </div>
+                        <div class="p-4 flex flex-col justify-between flex-1">
+                            <div>
+                                <h4 class="font-bold text-sm text-white">Paneer Butter Masala 🫕</h4>
+                                <p class="text-[11px] text-slate-400 mt-1">Rich creamy tomato gravy with soft paneer cubes.</p>
+                            </div>
+                            <div class="flex justify-between items-center mt-4 pt-2 border-t border-slate-800/80">
+                                <span class="text-[11px] text-slate-400">Price</span>
+                                <span class="text-emerald-400 font-black text-base">₹130</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Masala Dosa -->
+                    <div class="bg-slate-950 border border-slate-800 rounded-2xl overflow-hidden shadow-lg flex flex-col justify-between hover:border-emerald-500/40 transition">
+                        <div class="h-36 w-full overflow-hidden relative">
+                            <img src="https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=600&auto=format&fit=crop&q=80" alt="Masala Dosa" class="w-full h-full object-cover hover:scale-105 transition duration-500">
+                            <span class="absolute top-2 left-2 text-[9px] bg-amber-500/90 text-white px-2 py-0.5 rounded-full font-bold shadow-md">Breakfast</span>
+                        </div>
+                        <div class="p-4 flex flex-col justify-between flex-1">
+                            <div>
+                                <h4 class="font-bold text-sm text-white">Masala Dosa 🥞</h4>
+                                <p class="text-[11px] text-slate-400 mt-1">Crispy crepe stuffed with spiced potato mash & chutney.</p>
+                            </div>
+                            <div class="flex justify-between items-center mt-4 pt-2 border-t border-slate-800/80">
+                                <span class="text-[11px] text-slate-400">Price</span>
+                                <span class="text-emerald-400 font-black text-base">₹50</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Egg Fried Rice -->
+                    <div class="bg-slate-950 border border-slate-800 rounded-2xl overflow-hidden shadow-lg flex flex-col justify-between hover:border-emerald-500/40 transition">
+                        <div class="h-36 w-full overflow-hidden relative">
+                            <img src="https://images.unsplash.com/photo-1603133872878-684f208fb84b?w=600&auto=format&fit=crop&q=80" alt="Egg Fried Rice" class="w-full h-full object-cover hover:scale-105 transition duration-500">
+                            <span class="absolute top-2 left-2 text-[9px] bg-blue-500/90 text-white px-2 py-0.5 rounded-full font-bold shadow-md">Lunch</span>
+                        </div>
+                        <div class="p-4 flex flex-col justify-between flex-1">
+                            <div>
+                                <h4 class="font-bold text-sm text-white">Egg Fried Rice 🍳</h4>
+                                <p class="text-[11px] text-slate-400 mt-1">Tossed basmati rice with scrambled eggs and spring onions.</p>
+                            </div>
+                            <div class="flex justify-between items-center mt-4 pt-2 border-t border-slate-800/80">
+                                <span class="text-[11px] text-slate-400">Price</span>
+                                <span class="text-emerald-400 font-black text-base">₹90</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Veg Manchuria -->
+                    <div class="bg-slate-950 border border-slate-800 rounded-2xl overflow-hidden shadow-lg flex flex-col justify-between hover:border-emerald-500/40 transition">
+                        <div class="h-36 w-full overflow-hidden relative">
+                            <img src="https://images.unsplash.com/photo-1526318896980-cf78c08b2474?w=600&auto=format&fit=crop&q=80" alt="Veg Manchuria" class="w-full h-full object-cover hover:scale-105 transition duration-500">
+                            <span class="absolute top-2 left-2 text-[9px] bg-purple-500/90 text-white px-2 py-0.5 rounded-full font-bold shadow-md">Snacks</span>
+                        </div>
+                        <div class="p-4 flex flex-col justify-between flex-1">
+                            <div>
+                                <h4 class="font-bold text-sm text-white">Veg Manchuria 🍲</h4>
+                                <p class="text-[11px] text-slate-400 mt-1">Crispy vegetable dumplings in tangy soy-garlic sauce.</p>
+                            </div>
+                            <div class="flex justify-between items-center mt-4 pt-2 border-t border-slate-800/80">
+                                <span class="text-[11px] text-slate-400">Price</span>
+                                <span class="text-emerald-400 font-black text-base">₹80</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Lemon Rice -->
+                    <div class="bg-slate-950 border border-slate-800 rounded-2xl overflow-hidden shadow-lg flex flex-col justify-between hover:border-emerald-500/40 transition">
+                        <div class="h-36 w-full overflow-hidden relative">
+                            <img src="https://images.unsplash.com/photo-1516714435131-44d6b64dc6a2?w=600&auto=format&fit=crop&q=80" alt="Lemon Rice" class="w-full h-full object-cover hover:scale-105 transition duration-500">
+                            <span class="absolute top-2 left-2 text-[9px] bg-amber-500/90 text-white px-2 py-0.5 rounded-full font-bold shadow-md">Breakfast</span>
+                        </div>
+                        <div class="p-4 flex flex-col justify-between flex-1">
+                            <div>
+                                <h4 class="font-bold text-sm text-white">Lemon Rice 🍋</h4>
+                                <p class="text-[11px] text-slate-400 mt-1">Tempered rice flavoured with fresh lemon juice & peanuts.</p>
+                            </div>
+                            <div class="flex justify-between items-center mt-4 pt-2 border-t border-slate-800/80">
+                                <span class="text-[11px] text-slate-400">Price</span>
+                                <span class="text-emerald-400 font-black text-base">₹40</span>
                             </div>
                         </div>
                     </div>
 
                     <!-- Idli Sambar -->
                     <div class="bg-slate-950 border border-slate-800 rounded-2xl overflow-hidden shadow-lg flex flex-col justify-between hover:border-emerald-500/40 transition">
-                        <div class="h-44 w-full overflow-hidden relative">
-                            <img src="https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=600&auto=format&fit=crop&q=80" alt="Idli Sambar" class="w-full h-full object-cover hover:scale-105 transition duration-500">
-                            <span class="absolute top-3 left-3 text-[10px] bg-amber-500/90 text-white px-2.5 py-1 rounded-full font-bold shadow-md">Breakfast</span>
+                        <div class="h-36 w-full overflow-hidden relative">
+                            <img src="https://images.unsplash.com/photo-1514944298352-f4d73211e61d?w=600&auto=format&fit=crop&q=80" alt="Idli Sambar" class="w-full h-full object-cover hover:scale-105 transition duration-500">
+                            <span class="absolute top-2 left-2 text-[9px] bg-amber-500/90 text-white px-2 py-0.5 rounded-full font-bold shadow-md">Breakfast</span>
                         </div>
-                        <div class="p-5 flex flex-col justify-between flex-1">
+                        <div class="p-4 flex flex-col justify-between flex-1">
                             <div>
-                                <h4 class="font-bold text-base text-white">Idli Sambar 🥞</h4>
-                                <p class="text-xs text-slate-400 mt-1">Soft steamed rice cakes served hot with vegetable sambar and coconut chutney.</p>
+                                <h4 class="font-bold text-sm text-white">Idli Sambar 🥣</h4>
+                                <p class="text-[11px] text-slate-400 mt-1">Soft steamed rice cakes served with hot sambar.</p>
                             </div>
-                            <div class="flex justify-between items-center mt-5 pt-3 border-t border-slate-800/80">
-                                <span class="text-xs text-slate-400 font-medium">Price</span>
-                                <span class="text-emerald-400 font-black text-lg">₹40</span>
+                            <div class="flex justify-between items-center mt-4 pt-2 border-t border-slate-800/80">
+                                <span class="text-[11px] text-slate-400">Price</span>
+                                <span class="text-emerald-400 font-black text-base">₹40</span>
                             </div>
                         </div>
                     </div>
@@ -265,7 +360,7 @@
 
     </div>
 
-    <!-- Script Logic -->
+    <!-- Script Logic with Single Person SMS Animation -->
     <script>
         const TWILIO_ACCOUNT_SID = 'ACdef6f3673d4c9ad1c2199675057c79d0';
         const TWILIO_AUTH_TOKEN = '2cdaa9d95432f88bec8053842b48c17f';
@@ -275,6 +370,8 @@
         let smsLogList = [];
         let tokenCounter = 101;
         let totalRevenue = 0;
+        let studentMeshRef = null;
+        let isFoodReady = false;
 
         function switchTab(tabId) {
             ['dashboard', 'kitchen', 'menu', 'analytics', 'smslogs'].forEach(t => {
@@ -297,7 +394,7 @@
 
             const titles = {
                 'dashboard': 'SMART MESS QUEUE MANAGEMENT SYSTEM',
-                'kitchen': '3D MESS HALL & SERVING PERSON SIMULATION',
+                'kitchen': '3D MESS HALL & SMS FOOD COLLECTION ANIMATION',
                 'menu': 'COMPLETE MESS FOOD MENU & PRICING CATALOG',
                 'analytics': 'SYSTEM ANALYTICS & REVENUE REPORTS',
                 'smslogs': 'TWILIO SMS NOTIFICATION LOGS'
@@ -309,8 +406,8 @@
             }
         }
 
-        // 3D SCENE WITH COUNTER, FOOD, STUDENT QUEUE & SERVING PERSON BEHIND COUNTER
-        function createMessSceneWithServer(container) {
+        // 3D SCENE WITH COUNTER, SERVER, AND SINGLE STUDENT WALKING UP ON SMS TRIGGER
+        function createMessSceneSMSAnimation(container) {
             container.innerHTML = '';
             
             const width = container.clientWidth || 500;
@@ -356,7 +453,7 @@
             sign.position.set(0, 0.75, -1.0);
             scene.add(sign);
 
-            // Pots & Bowls on Counter Table
+            // Pots on Counter Table
             for(let i = -1.2; i <= 0; i += 0.6) {
                 const potGeo = new THREE.CylinderGeometry(0.22, 0.2, 0.35, 16);
                 const potMat = new THREE.MeshStandardMaterial({ color: 0x064e3b, roughness: 0.2 });
@@ -365,7 +462,7 @@
                 scene.add(pot);
             }
 
-            // Plate with Rice/Food
+            // Plate with Food
             const plateGeo = new THREE.CylinderGeometry(0.35, 0.35, 0.05, 32);
             const plateMat = new THREE.MeshStandardMaterial({ color: 0xffffff });
             const plate = new THREE.Mesh(plateGeo, plateMat);
@@ -379,16 +476,13 @@
             food.position.set(1.2, 0.48, -1.0);
             scene.add(food);
 
-            // --- FOOD SERVING PERSON (Standing Behind Counter) ---
+            // --- SERVING PERSON (Behind Counter) ---
             const serverGroup = new THREE.Group();
-            
-            // Server Body (Orange uniform for mess staff)
             const serverBodyGeo = new THREE.CylinderGeometry(0.22, 0.22, 0.75, 16);
             const serverBodyMat = new THREE.MeshStandardMaterial({ color: 0xf97316 });
             const serverBody = new THREE.Mesh(serverBodyGeo, serverBodyMat);
             serverBody.position.y = -0.1;
 
-            // Server Head with Chef Cap
             const serverHeadGeo = new THREE.SphereGeometry(0.16, 16, 16);
             const serverHeadMat = new THREE.MeshStandardMaterial({ color: 0xfde047 });
             const serverHead = new THREE.Mesh(serverHeadGeo, serverHeadMat);
@@ -402,35 +496,41 @@
             serverGroup.add(serverBody);
             serverGroup.add(serverHead);
             serverGroup.add(chefCap);
-            serverGroup.position.set(-0.6, -0.1, -1.8); // Behind counter
+            serverGroup.position.set(-0.6, -0.1, -1.8);
             scene.add(serverGroup);
 
-            // --- STUDENT QUEUE (Standing in line) ---
-            const queueGroup = new THREE.Group();
-            for(let i = 0; i < 4; i++) {
-                const student = new THREE.Group();
-                
-                const bodyGeo = new THREE.CylinderGeometry(0.2, 0.2, 0.7, 16);
-                const bodyMat = new THREE.MeshStandardMaterial({ color: 0x0284c7 });
-                const body = new THREE.Mesh(bodyGeo, bodyMat);
-                body.position.y = -0.15;
+            // --- SINGLE STUDENT (Waits at back, walks to counter when SMS triggered) ---
+            const student = new THREE.Group();
+            const bodyGeo = new THREE.CylinderGeometry(0.2, 0.2, 0.7, 16);
+            const bodyMat = new THREE.MeshStandardMaterial({ color: 0x0284c7 });
+            const body = new THREE.Mesh(bodyGeo, bodyMat);
+            body.position.y = -0.15;
 
-                const headGeo = new THREE.SphereGeometry(0.16, 16, 16);
-                const headMat = new THREE.MeshStandardMaterial({ color: 0xfde047 });
-                const head = new THREE.Mesh(headGeo, headMat);
-                head.position.y = 0.35;
+            const headGeo = new THREE.SphereGeometry(0.16, 16, 16);
+            const headMat = new THREE.MeshStandardMaterial({ color: 0xfde047 });
+            const head = new THREE.Mesh(headGeo, headMat);
+            head.position.y = 0.35;
 
-                student.add(body);
-                student.add(head);
+            student.add(body);
+            student.add(head);
 
-                // Queue positions standing in front of counter
-                student.position.set(1.2 - (i * 0.55), -0.1, 0.6 + (i * 0.7));
-                queueGroup.add(student);
-            }
-            scene.add(queueGroup);
+            // Initial waiting position (z = 3.5)
+            student.position.set(0.5, -0.1, 3.5);
+            scene.add(student);
+            studentMeshRef = student;
 
             function animate() {
                 requestAnimationFrame(animate);
+                
+                // If food is ready (SMS triggered), student walks forward towards counter (z = 0.3)
+                if (isFoodReady && studentMeshRef) {
+                    if (studentMeshRef.position.z > 0.3) {
+                        studentMeshRef.position.z -= 0.03; // walking speed
+                    }
+                } else if (studentMeshRef && !isFoodReady) {
+                    studentMeshRef.position.z = 3.5; // reset back
+                }
+
                 controls.update();
                 renderer.render(scene, camera);
             }
@@ -439,12 +539,12 @@
 
         window.addEventListener('DOMContentLoaded', () => {
             const miniContainer = document.getElementById('canvas-container-mini');
-            if(miniContainer) createMessSceneWithServer(miniContainer);
+            if(miniContainer) createMessSceneSMSAnimation(miniContainer);
         });
 
         function initFullKitchen3D() {
             const fullContainer = document.getElementById('canvas-container-full');
-            if(fullContainer) createMessSceneWithServer(fullContainer);
+            if(fullContainer) createMessSceneSMSAnimation(fullContainer);
         }
 
         async function sendSMS(phone, name, token, food) {
@@ -453,8 +553,11 @@
                 formattedPhone = '+91' + formattedPhone;
             }
 
-            const bodyText = `Smart Mess Token ${token} ready for ${name} (${food}).`;
+            const bodyText = `Smart Mess Token ${token} ready for ${name} (${food}). Please collect from counter!`;
             
+            // Trigger 3D Student Walking to Counter
+            isFoodReady = true;
+
             try {
                 const response = await fetch(`https://api.twilio.com/2010-04-01/Accounts/${TWILIO_ACCOUNT_SID}/Messages.json`, {
                     method: 'POST',
@@ -470,16 +573,16 @@
                 });
 
                 if (response.ok) {
-                    alert(`📱 SUCCESS! Real Twilio SMS sent to ${formattedPhone}`);
+                    alert(`📱 SUCCESS! Twilio SMS sent to ${formattedPhone}. Student walking to counter in 3D view!`);
                 } else {
-                    alert(`📱 TOKEN DISPATCHED!\nStudent: ${name}\nToken: ${token}\nFood: ${food}`);
+                    alert(`📱 SMS DISPATCHED!\nStudent: ${name}\nToken: ${token}\nFood Ready! Watch 3D Simulation.`);
                 }
             } catch (error) {
-                alert(`📱 TOKEN ISSUED SUCCESSFULLY for ${name} (${token})!`);
+                alert(`📱 TOKEN ISSUED & SMS TRIGGERED for ${name}! Student approaching counter in 3D view.`);
             }
 
             const nowTime = new Date().toLocaleTimeString();
-            smsLogList.unshift({ time: nowTime, phone: formattedPhone, name: name, status: 'Sent Successfully ✅' });
+            smsLogList.unshift({ time: nowTime, phone: formattedPhone, name: name, status: 'SMS Sent & Food Ready ✅' });
             renderSMSLogs();
         }
 
@@ -500,7 +603,7 @@
                     <td class="py-3">${item.food}</td>
                     <td class="py-3 text-right">
                         <span class="px-2 py-0.5 rounded text-[10px] ${idx === 0 ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-amber-500/20 text-amber-400'}">
-                            ${idx === 0 ? 'SERVING NOW' : 'WAITING'}
+                            ${idx === 0 ? 'COLLECTING FOOD' : 'WAITING'}
                         </span>
                     </td>
                 `;
@@ -539,6 +642,10 @@
             let price = 50;
             if(food.includes('₹150')) price = 150;
             else if(food.includes('₹120')) price = 120;
+            else if(food.includes('₹130')) price = 130;
+            else if(food.includes('₹90')) price = 90;
+            else if(food.includes('₹80')) price = 80;
+            else if(food.includes('₹50')) price = 50;
             else if(food.includes('₹40')) price = 40;
 
             totalRevenue += price;
