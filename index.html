@@ -3,616 +3,187 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>3D Smart Mess Queue — Live Dashboard</title>
+    <title>3D Smart Mess Queue Manager</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Three.js Library -->
+    <!-- Three.js for 3D Viewport -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
-
-    <style>
-        #canvas-container {
-            width: 100%;
-            height: 380px;
-            border-radius: 16px;
-            overflow: hidden;
-            position: relative;
-            background: #090d16;
-        }
-        canvas { display: block; width: 100%; height: 100%; }
-        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
-    </style>
 </head>
-<body class="bg-slate-950 text-slate-100 flex min-h-screen font-sans">
+<body class="bg-slate-950 text-slate-100 font-sans flex h-screen overflow-hidden">
 
-    <!-- LEFT SIDEBAR NAVIGATION -->
-    <aside class="w-64 bg-slate-900 border-r border-slate-800 flex flex-col justify-between hidden md:flex shrink-0">
+    <!-- Sidebar -->
+    <div class="w-64 bg-slate-900 border-r border-slate-800 flex flex-col justify-between p-4">
         <div>
-            <!-- LOGO HEADER -->
-            <div class="p-5 border-b border-slate-800 flex items-center space-x-3">
-                <div class="bg-emerald-500 text-slate-950 p-2.5 rounded-xl font-bold">
-                    <i class="fa-solid fa-cube text-lg"></i>
-                </div>
+            <div class="flex items-center gap-2 mb-8">
+                <div class="bg-emerald-500 p-2 rounded-lg text-slate-950 font-black">3D</div>
                 <div>
-                    <h1 class="font-extrabold text-sm text-white tracking-wide">3D SMART MESS</h1>
-                    <p class="text-[10px] text-emerald-400 font-bold uppercase tracking-wider">Queue Manager</p>
+                    <h1 class="font-bold text-sm">SMART MESS</h1>
+                    <p class="text-[10px] text-slate-400">QUEUE MANAGER</p>
                 </div>
             </div>
-
-            <!-- SIDEBAR LINKS -->
-            <nav class="p-4 space-y-1.5 text-xs font-semibold">
-                <a href="#3d-view" class="flex items-center space-x-3 px-4 py-3 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                    <i class="fa-solid fa-vr-cardboard text-base"></i>
-                    <span>3D Live Viewport</span>
-                </a>
-                <a href="#generate-token" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white transition">
-                    <i class="fa-solid fa-ticket text-base"></i>
-                    <span>Generate Token</span>
-                </a>
-                <a href="#food-menu" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white transition">
-                    <i class="fa-solid fa-utensils text-base"></i>
-                    <span>Mess Food Menu</span>
-                </a>
-                <a href="#how-it-works" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white transition">
-                    <i class="fa-solid fa-circle-info text-base"></i>
-                    <span>How 3D Queue Works</span>
-                </a>
+            <nav class="space-y-2">
+                <a href="#viewport" class="flex items-center gap-3 px-3 py-2 rounded-lg bg-emerald-500/10 text-emerald-400 text-xs font-semibold">3D Live Viewport</a>
             </nav>
         </div>
-
-        <!-- DEVELOPER FOOTER -->
-        <div class="p-4 border-t border-slate-800 bg-slate-950/60 text-xs">
-            <p class="text-slate-400 text-[10px] uppercase font-bold tracking-wider">Developer</p>
-            <p class="font-bold text-white mt-0.5">K. Sai Prasanna</p>
-            <p class="text-[10px] text-slate-500 font-mono">Roll: 25B21A4601 (CSC)</p>
+        <div class="text-xs text-slate-500 border-t border-slate-800 pt-4">
+            <p class="font-bold text-slate-400">K. Sai Prasanna</p>
+            <p>Roll: 25B21A4601</p>
         </div>
-    </aside>
-
-    <!-- MAIN DASHBOARD CONTENT AREA -->
-    <div class="flex-1 flex flex-col min-w-0 h-screen overflow-y-auto custom-scrollbar">
-
-        <!-- TOP BAR -->
-        <header class="bg-slate-900/80 border-b border-slate-800 p-4 sticky top-0 z-40 backdrop-blur flex justify-between items-center">
-            <div class="flex items-center space-x-3">
-                <span class="w-3 h-3 rounded-full bg-emerald-500 animate-ping"></span>
-                <h2 class="font-bold text-sm text-slate-200 uppercase tracking-wider">LIVE SYSTEM CONTROL DASHBOARD</h2>
-            </div>
-            
-            <div class="flex items-center space-x-4">
-                <div class="bg-slate-950 border border-slate-800 px-3 py-1.5 rounded-xl text-xs font-mono text-emerald-400 flex items-center space-x-2">
-                    <i class="fa-regular fa-clock"></i>
-                    <span id="live-datetime">Loading Date & Time...</span>
-                </div>
-            </div>
-        </header>
-
-        <main class="p-6 space-y-8 max-w-7xl w-full mx-auto">
-
-            <!-- 3D VIEWPORT SECTION -->
-            <section id="3d-view" class="bg-slate-900 p-5 rounded-3xl border border-slate-800 shadow-2xl">
-                <div class="flex justify-between items-center mb-4">
-                    <div>
-                        <h3 class="font-bold text-base text-white flex items-center">
-                            <i class="fa-solid fa-cube text-emerald-400 mr-2"></i> 3D Real-Time Canteen Simulation
-                        </h3>
-                        <p class="text-xs text-slate-400">Drag mouse to rotate 360°, scroll to zoom in/out</p>
-                    </div>
-                    <div>
-                        <button onclick="handleDequeue()" class="bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-extrabold px-4 py-2 rounded-xl text-xs transition flex items-center">
-                            <i class="fa-solid fa-circle-check mr-1.5"></i> Serve Head (Dequeue)
-                        </button>
-                    </div>
-                </div>
-
-                <div id="canvas-container"></div>
-            </section>
-
-            <!-- GENERATE TOKEN & LIVE QUEUE TABLE -->
-            <section id="generate-token" class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-
-                <!-- ENQUEUE FORM -->
-                <div class="lg:col-span-5 bg-slate-900 p-6 rounded-3xl border border-slate-800">
-                    <h3 class="font-bold text-white text-base mb-4 flex items-center">
-                        <i class="fa-solid fa-ticket text-emerald-400 mr-2"></i> Issue Student Token
-                    </h3>
-
-                    <form id="token-form" onsubmit="handleEnqueue(event)" class="space-y-3.5 text-xs">
-                        <div>
-                            <label class="block font-bold text-slate-400 uppercase tracking-wider mb-1">Student Name</label>
-                            <input type="text" id="stu-name" required placeholder="e.g. K. Sai Prasanna" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-emerald-500">
-                        </div>
-
-                        <div class="grid grid-cols-2 gap-3">
-                            <div>
-                                <label class="block font-bold text-slate-400 uppercase tracking-wider mb-1">Roll Number</label>
-                                <input type="text" id="stu-id" required placeholder="25B21A4601" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-emerald-500 font-mono">
-                            </div>
-
-                            <div>
-                                <label class="block font-bold text-slate-400 uppercase tracking-wider mb-1">Phone Number</label>
-                                <input type="tel" id="stu-phone" required placeholder="9876543210" pattern="[0-9]{10}" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-emerald-500 font-mono">
-                            </div>
-                        </div>
-
-                        <div>
-                            <label class="block font-bold text-slate-400 uppercase tracking-wider mb-1">Meal Category</label>
-                            <select id="meal-category" onchange="updateFoodItemsOptions()" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-emerald-500">
-                                <option value="Breakfast">Breakfast (Morning)</option>
-                                <option value="Lunch" selected>Lunch (Afternoon)</option>
-                                <option value="Snacks">Snacks (Evening)</option>
-                                <option value="Dinner">Dinner (Night)</option>
-                            </select>
-                        </div>
-
-                        <div>
-                            <label class="block font-bold text-slate-400 uppercase tracking-wider mb-1">Food Item Select</label>
-                            <select id="food-item" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-emerald-500">
-                                <!-- Dynamic Options -->
-                            </select>
-                        </div>
-
-                        <button type="submit" class="w-full bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-black py-3 rounded-xl text-xs transition flex items-center justify-center space-x-2 mt-2">
-                            <i class="fa-solid fa-plus-circle text-sm"></i>
-                            <span>GENERATE TOKEN & SEND SMS</span>
-                        </button>
-                    </form>
-                </div>
-
-                <!-- LIVE QUEUE DATA TABLE -->
-                <div class="lg:col-span-7 bg-slate-900 p-6 rounded-3xl border border-slate-800">
-                    <h3 class="font-bold text-white text-base mb-4 flex items-center border-b border-slate-800 pb-3">
-                        <i class="fa-solid fa-database text-emerald-400 mr-2"></i> Active Queue Data Log
-                    </h3>
-
-                    <div class="overflow-x-auto min-h-[290px]">
-                        <table class="w-full text-left text-xs">
-                            <thead>
-                                <tr class="text-slate-500 font-mono border-b border-slate-800">
-                                    <th class="py-2.5">Token</th>
-                                    <th class="py-2.5">Student</th>
-                                    <th class="py-2.5">Roll / Phone</th>
-                                    <th class="py-2.5">Food & Price</th>
-                                    <th class="py-2.5 text-right">Status</th>
-                                </tr>
-                            </thead>
-                            <tbody id="queue-table-body" class="divide-y divide-slate-800/60 font-mono">
-                                <!-- Dynamic rows -->
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <div class="pt-4 border-t border-slate-800 flex justify-between items-center text-xs text-slate-500 mt-4">
-                        <span id="queue-count-text">0 Tokens Active</span>
-                        <span class="text-emerald-400 font-bold flex items-center">
-                            <i class="fa-solid fa-bolt mr-1"></i> System Active
-                        </span>
-                    </div>
-                </div>
-
-            </section>
-
-            <!-- MESS FOOD MENU CARDS WITH IMAGES & PRICES -->
-            <section id="food-menu" class="bg-slate-900 p-6 rounded-3xl border border-slate-800 space-y-5">
-                <h3 class="font-bold text-white text-base flex items-center">
-                    <i class="fa-solid fa-utensils text-emerald-400 mr-2"></i> Daily Mess Food Menu & Pricing
-                </h3>
-
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 text-xs">
-                    
-                    <!-- BREAKFAST -->
-                    <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-3">
-                        <div class="flex justify-between items-center text-amber-400 font-bold border-b border-slate-800 pb-2">
-                            <span>Breakfast</span>
-                            <i class="fa-solid fa-sun"></i>
-                        </div>
-                        <div class="space-y-2.5">
-                            <div class="flex items-center space-x-3">
-                                <img src="https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=100&auto=format&fit=crop&q=60" class="w-10 h-10 rounded-lg object-cover border border-slate-800 shrink-0" alt="Idly">
-                                <div class="flex-1 flex justify-between items-center">
-                                    <span class="text-slate-200">Hot Idly with Chutney</span>
-                                    <span class="text-emerald-400 font-bold font-mono">₹30</span>
-                                </div>
-                            </div>
-                            <div class="flex items-center space-x-3">
-                                <img src="https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?w=100&auto=format&fit=crop&q=60" class="w-10 h-10 rounded-lg object-cover border border-slate-800 shrink-0" alt="Puri">
-                                <div class="flex-1 flex justify-between items-center">
-                                    <span class="text-slate-200">Puri with Curry</span>
-                                    <span class="text-emerald-400 font-bold font-mono">₹40</span>
-                                </div>
-                            </div>
-                            <div class="flex items-center space-x-3">
-                                <img src="https://images.unsplash.com/photo-1668236543090-82eba5ee5976?w=100&auto=format&fit=crop&q=60" class="w-10 h-10 rounded-lg object-cover border border-slate-800 shrink-0" alt="Dosa">
-                                <div class="flex-1 flex justify-between items-center">
-                                    <span class="text-slate-200">Masala Dosa</span>
-                                    <span class="text-emerald-400 font-bold font-mono">₹50</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- LUNCH -->
-                    <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-3">
-                        <div class="flex justify-between items-center text-emerald-400 font-bold border-b border-slate-800 pb-2">
-                            <span>Lunch</span>
-                            <i class="fa-solid fa-bowl-rice"></i>
-                        </div>
-                        <div class="space-y-2.5">
-                            <div class="flex items-center space-x-3">
-                                <img src="https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=100&auto=format&fit=crop&q=60" class="w-10 h-10 rounded-lg object-cover border border-slate-800 shrink-0" alt="Biryani">
-                                <div class="flex-1 flex justify-between items-center">
-                                    <span class="text-slate-200">Special Veg Biryani</span>
-                                    <span class="text-emerald-400 font-bold font-mono">₹90</span>
-                                </div>
-                            </div>
-                            <div class="flex items-center space-x-3">
-                                <img src="https://images.unsplash.com/photo-1604382354936-07c5d9983bd3?w=100&auto=format&fit=crop&q=60" class="w-10 h-10 rounded-lg object-cover border border-slate-800 shrink-0" alt="Full Meals">
-                                <div class="flex-1 flex justify-between items-center">
-                                    <span class="text-slate-200">Full Veg Meals</span>
-                                    <span class="text-emerald-400 font-bold font-mono">₹80</span>
-                                </div>
-                            </div>
-                            <div class="flex items-center space-x-3">
-                                <img src="https://images.unsplash.com/photo-1596797038530-2c107229654b?w=100&auto=format&fit=crop&q=60" class="w-10 h-10 rounded-lg object-cover border border-slate-800 shrink-0" alt="Curd Rice">
-                                <div class="flex-1 flex justify-between items-center">
-                                    <span class="text-slate-200">Curd Rice</span>
-                                    <span class="text-emerald-400 font-bold font-mono">₹40</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- SNACKS -->
-                    <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-3">
-                        <div class="flex justify-between items-center text-indigo-400 font-bold border-b border-slate-800 pb-2">
-                            <span>Snacks</span>
-                            <i class="fa-solid fa-cookie-bite"></i>
-                        </div>
-                        <div class="space-y-2.5">
-                            <div class="flex items-center space-x-3">
-                                <img src="https://images.unsplash.com/photo-1601050690597-df0568f70950?w=100&auto=format&fit=crop&q=60" class="w-10 h-10 rounded-lg object-cover border border-slate-800 shrink-0" alt="Samosa">
-                                <div class="flex-1 flex justify-between items-center">
-                                    <span class="text-slate-200">Samosa & Chutney</span>
-                                    <span class="text-emerald-400 font-bold font-mono">₹25</span>
-                                </div>
-                            </div>
-                            <div class="flex items-center space-x-3">
-                                <img src="https://images.unsplash.com/photo-1571934811356-5cc061b6821f?w=100&auto=format&fit=crop&q=60" class="w-10 h-10 rounded-lg object-cover border border-slate-800 shrink-0" alt="Tea">
-                                <div class="flex-1 flex justify-between items-center">
-                                    <span class="text-slate-200">Hot Tea / Coffee</span>
-                                    <span class="text-emerald-400 font-bold font-mono">₹15</span>
-                                </div>
-                            </div>
-                            <div class="flex items-center space-x-3">
-                                <img src="https://images.unsplash.com/photo-1626132647523-66f5bf380027?w=100&auto=format&fit=crop&q=60" class="w-10 h-10 rounded-lg object-cover border border-slate-800 shrink-0" alt="Veg Puff">
-                                <div class="flex-1 flex justify-between items-center">
-                                    <span class="text-slate-200">Veg Puff</span>
-                                    <span class="text-emerald-400 font-bold font-mono">₹20</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- DINNER -->
-                    <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-3">
-                        <div class="flex justify-between items-center text-rose-400 font-bold border-b border-slate-800 pb-2">
-                            <span>Dinner</span>
-                            <i class="fa-solid fa-moon"></i>
-                        </div>
-                        <div class="space-y-2.5">
-                            <div class="flex items-center space-x-3">
-                                <img src="https://images.unsplash.com/photo-1626074353765-517a681e40be?w=100&auto=format&fit=crop&q=60" class="w-10 h-10 rounded-lg object-cover border border-slate-800 shrink-0" alt="Fried Rice">
-                                <div class="flex-1 flex justify-between items-center">
-                                    <span class="text-slate-200">Veg Fried Rice</span>
-                                    <span class="text-emerald-400 font-bold font-mono">₹70</span>
-                                </div>
-                            </div>
-                            <div class="flex items-center space-x-3">
-                                <img src="https://images.unsplash.com/photo-1601050690597-df0568f70950?w=100&auto=format&fit=crop&q=60" class="w-10 h-10 rounded-lg object-cover border border-slate-800 shrink-0" alt="Parota">
-                                <div class="flex-1 flex justify-between items-center">
-                                    <span class="text-slate-200">Malabar Parota</span>
-                                    <span class="text-emerald-400 font-bold font-mono">₹50</span>
-                                </div>
-                            </div>
-                            <div class="flex items-center space-x-3">
-                                <img src="https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=100&auto=format&fit=crop&q=60" class="w-10 h-10 rounded-lg object-cover border border-slate-800 shrink-0" alt="Paneer">
-                                <div class="flex-1 flex justify-between items-center">
-                                    <span class="text-slate-200">Roti & Butter Paneer</span>
-                                    <span class="text-emerald-400 font-bold font-mono">₹85</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </section>
-
-            <!-- HOW IT WORKS -->
-            <section id="how-it-works" class="bg-slate-900 p-6 rounded-3xl border border-slate-800 space-y-4">
-                <h3 class="font-bold text-white text-base flex items-center">
-                    <i class="fa-solid fa-circle-question text-emerald-400 mr-2"></i> How 3D FIFO Queue Simulation Works
-                </h3>
-
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
-                    <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-2">
-                        <div class="text-emerald-400 font-bold">1. Enqueue (Spawn)</div>
-                        <p class="text-slate-400 leading-relaxed">
-                            Form fill chesi Submit kottagane Queue entry create ayi 3D space lo student avatar spawn avthundhi.
-                        </p>
-                    </div>
-
-                    <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-2">
-                        <div class="text-emerald-400 font-bold">2. Z-Axis Positioning</div>
-                        <p class="text-slate-400 leading-relaxed">
-                            Prathi Avatar Z-Coordinate location calculate cheskoni Line lo linear ga nilabaduthundi.
-                        </p>
-                    </div>
-
-                    <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-2">
-                        <div class="text-emerald-400 font-bold">3. Dequeue (Serving)</div>
-                        <p class="text-slate-400 leading-relaxed">
-                            "Serve Head" button click cheste status SERVED ga maruthundhi and Front Avatar remove aipothundhi.
-                        </p>
-                    </div>
-                </div>
-            </section>
-
-        </main>
     </div>
 
-    <!-- THREE.JS & SCRIPT LOGIC -->
+    <!-- Main Content -->
+    <div class="flex-1 flex flex-col overflow-y-auto p-6">
+        <h2 class="text-xl font-bold mb-4">LIVE SYSTEM CONTROL DASHBOARD</h2>
+        
+        <!-- 3D Viewport Box -->
+        <div id="canvas-container" class="w-full h-72 bg-slate-900 border border-slate-800 rounded-xl mb-6 relative overflow-hidden flex items-center justify-center">
+            <span class="text-slate-500 text-sm">Loading 3D Viewport...</span>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- Issue Token Form -->
+            <div class="bg-slate-900 border border-slate-800 p-5 rounded-xl">
+                <h3 class="font-bold text-sm mb-4 text-emerald-400">Issue Student Token</h3>
+                <form id="tokenForm" class="space-y-4">
+                    <div>
+                        <label class="block text-xs text-slate-400 mb-1">STUDENT NAME</label>
+                        <input type="text" id="studentName" required placeholder="e.g. K. Sai Prasanna" class="w-full bg-slate-950 border border-slate-800 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-emerald-500">
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="block text-xs text-slate-400 mb-1">ROLL NUMBER</label>
+                            <input type="text" id="rollNumber" value="25B21A4601" class="w-full bg-slate-950 border border-slate-800 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-emerald-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs text-slate-400 mb-1">PHONE NUMBER</label>
+                            <input type="text" id="phoneNum" value="8106129837" required class="w-full bg-slate-950 border border-slate-800 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-emerald-500">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs text-slate-400 mb-1">FOOD ITEM SELECT</label>
+                        <select id="foodItem" class="w-full bg-slate-950 border border-slate-800 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-emerald-500">
+                            <option value="Special Thali Meals">Special Thali Meals</option>
+                            <option value="Chicken Biryani">Chicken Biryani</option>
+                            <option value="Veg Fried Rice">Veg Fried Rice</option>
+                            <option value="South Indian Meals">South Indian Meals</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold py-2.5 rounded text-sm transition">
+                        GENERATE TOKEN & SEND SMS
+                    </button>
+                </form>
+            </div>
+
+            <!-- Active Queue Log -->
+            <div class="bg-slate-900 border border-slate-800 p-5 rounded-xl flex flex-col">
+                <h3 class="font-bold text-sm mb-4 text-emerald-400">Active Queue Data Log</h3>
+                <div class="flex-1 overflow-x-auto">
+                    <table class="w-full text-left text-xs">
+                        <thead>
+                            <tr class="border-b border-slate-800 text-slate-400">
+                                <th class="pb-2">Token</th>
+                                <th class="pb-2">Student</th>
+                                <th class="pb-2">Phone</th>
+                                <th class="pb-2">Food</th>
+                                <th class="pb-2 text-right">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="queueTableBody">
+                            <tr><td colspan="5" class="py-4 text-center text-slate-500">Queue is currently empty.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script Logic -->
     <script>
-        let scene, camera, renderer, controls;
+        const TWILIO_ACCOUNT_SID = 'ACdef6f3673d4c9ad1c2199675057c79d0';
+        const TWILIO_AUTH_TOKEN = '2cdaa9d95432f88bec8053842b48c17f';
+        const TWILIO_PHONE_NUMBER = '+17372212163';
+
         let queueList = [];
-        let tokenSeq = 101;
+        let tokenCounter = 101;
 
-        // TWILIO CONFIGURATION (Replace with your actual keys)
-        const TWILIO_ACCOUNT_SID = 'YOUR_TWILIO_ACCOUNT_SID';
-        const TWILIO_AUTH_TOKEN = 'YOUR_TWILIO_AUTH_TOKEN';
-        const TWILIO_PHONE_NUMBER = 'YOUR_TWILIO_PHONE_NUMBER';
+        // 3D Viewport Initialization with Three.js
+        const container = document.getElementById('canvas-container');
+        container.innerHTML = ''; // clear loading text
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(container.clientWidth, container.clientHeight);
+        container.appendChild(renderer.domElement);
 
-        const foodItemsDetails = {
-            "Breakfast": [
-                { name: "Hot Idly with Chutney", price: "₹30" },
-                { name: "Puri with Curry", price: "₹40" },
-                { name: "Masala Dosa", price: "₹50" }
-            ],
-            "Lunch": [
-                { name: "Special Veg Biryani", price: "₹90" },
-                { name: "Full Veg Meals", price: "₹80" },
-                { name: "Curd Rice", price: "₹40" }
-            ],
-            "Snacks": [
-                { name: "Samosa & Chutney", price: "₹25" },
-                { name: "Hot Tea / Coffee", price: "₹15" },
-                { name: "Veg Puff", price: "₹20" }
-            ],
-            "Dinner": [
-                { name: "Veg Fried Rice", price: "₹70" },
-                { name: "Malabar Parota", price: "₹50" },
-                { name: "Roti & Butter Paneer", price: "₹85" }
-            ]
-        };
-
-        const avatarColors = [0x10b981, 0x3b82f6, 0xf59e0b, 0x8b5cf6, 0xec4899];
-
-        function initClock() {
-            setInterval(() => {
-                document.getElementById('live-datetime').innerText = new Date().toLocaleString();
-            }, 1000);
-        }
-
-        function updateFoodItemsOptions() {
-            const category = document.getElementById('meal-category').value;
-            const foodSelect = document.getElementById('food-item');
-            foodSelect.innerHTML = '';
-            
-            foodItemsDetails[category].forEach(item => {
-                const opt = document.createElement('option');
-                opt.value = `${item.name} (${item.price})`;
-                opt.innerText = `${item.name} - ${item.price}`;
-                foodSelect.appendChild(opt);
-            });
-        }
-
-        function init3D() {
-            const container = document.getElementById('canvas-container');
-            
-            scene = new THREE.Scene();
-            scene.background = new THREE.Color(0x090d16);
-
-            camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 1000);
-            camera.position.set(0, 12, 22);
-
-            renderer = new THREE.WebGLRenderer({ antialias: true });
-            renderer.setSize(container.clientWidth, container.clientHeight);
-            container.appendChild(renderer.domElement);
-
-            controls = new THREE.OrbitControls(camera, renderer.domElement);
-            controls.enableDamping = true;
-
-            const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
-            scene.add(ambientLight);
-
-            const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
-            dirLight.position.set(10, 20, 10);
-            scene.add(dirLight);
-
-            createFloorAndCounter();
-            animate();
-        }
-
-        function createFloorAndCounter() {
-            const floorGeo = new THREE.PlaneGeometry(30, 30);
-            const floorMat = new THREE.MeshStandardMaterial({ color: 0x0f172a });
-            const floor = new THREE.Mesh(floorGeo, floorMat);
-            floor.rotation.x = -Math.PI / 2;
-            scene.add(floor);
-
-            const grid = new THREE.GridHelper(30, 30, 0x1e293b, 0x0f172a);
-            grid.position.y = 0.01;
-            scene.add(grid);
-
-            // Counter
-            const counterGeo = new THREE.BoxGeometry(6, 2, 2.5);
-            const counterMat = new THREE.MeshStandardMaterial({ color: 0x10b981 });
-            const counter = new THREE.Mesh(counterGeo, counterMat);
-            counter.position.set(0, 1, -8);
-            scene.add(counter);
-        }
-
-        function createAvatarMesh(index) {
-            const group = new THREE.Group();
-
-            const color = avatarColors[index % avatarColors.length];
-            const bodyGeo = new THREE.CylinderGeometry(0.5, 0.6, 1.8, 16);
-            const bodyMat = new THREE.MeshStandardMaterial({ color: color });
-            const body = new THREE.Mesh(bodyGeo, bodyMat);
-            body.position.y = 0.9;
-            group.add(body);
-
-            const headGeo = new THREE.SphereGeometry(0.4, 16, 16);
-            const headMat = new THREE.MeshStandardMaterial({ color: 0xf8fafc });
-            const head = new THREE.Mesh(headGeo, headMat);
-            head.position.y = 2.1;
-            group.add(head);
-
-            const targetZ = -5.5 + (index * 2.2);
-            group.position.set(0, 0, targetZ);
-
-            // Updated Real Twilio SMS Function
-async function sendSMSViaTwilio(phoneNumber, studentName, token, foodItem) {
-    const TWILIO_ACCOUNT_SID = 'ACdef6f3673d4c9ad1c2199675057c79d0';
-    const TWILIO_AUTH_TOKEN = '2cdaa9d95432f88bec8053842b48c17f';
-    const TWILIO_PHONE_NUMBER = '+17372212163';
-
-    // Format phone number
-    let formattedPhone = phoneNumber.trim();
-    if (!formattedPhone.startsWith('+')) {
-        formattedPhone = '+91' + formattedPhone;
-    }
-
-    const messageBody = `Hello ${studentName}, your Food for Token ${token} (${foodItem}) is READY! 🍲 Please collect it from the counter.`;
-
-    try {
-        const response = await fetch(`https://api.twilio.com/2010-04-01/Accounts/${TWILIO_ACCOUNT_SID}/Messages.json`, {
-            method: 'POST',
-            headers: {
-                'Authorization': 'Basic ' + btoa(`${TWILIO_ACCOUNT_SID}:${TWILIO_AUTH_TOKEN}`),
-                'Content-Type': 'application/x-www-form-urlencoded'
-            },
-            body: new URLSearchParams({
-                'To': formattedPhone,
-                'From': TWILIO_PHONE_NUMBER,
-                'Body': messageBody
-            })
-        });
-
-        const data = await response.json();
-        if (response.ok) {
-            alert(`📱 Real SMS Sent to ${formattedPhone}!`);
-        } else {
-            console.error("Twilio Error:", data);
-            alert("SMS Failed: " + (data.message || "Twilio error occurred"));
-        }
-    } catch (error) {
-        console.error("Network Error:", error);
-        alert("Error sending SMS: " + error.message);
-    }
-}
-            } catch (error) {
-                console.error("SMS Error:", error);
-            }
-        }
-
-        function handleEnqueue(e) {
-            e.preventDefault();
-            const name = document.getElementById('stu-name').value;
-            const roll = document.getElementById('stu-id').value;
-            const phone = document.getElementById('stu-phone').value;
-            const food = document.getElementById('food-item').value;
-            const token = "T-" + tokenSeq++;
-
-            const mesh = createAvatarMesh(queueList.length);
-
-            queueList.push({
-                mesh: mesh,
-                token: token,
-                name: name,
-                roll: roll,
-                phone: phone,
-                food: food
-            });
-
-            // Trigger SMS
-            sendSMSViaTwilio(phone, name, token, food);
-
-            document.getElementById('stu-name').value = '';
-            document.getElementById('stu-id').value = '';
-            document.getElementById('stu-phone').value = '';
-
-            renderTable();
-        }
-
-        function handleDequeue() {
-            if (queueList.length === 0) return;
-
-            const served = queueList.shift();
-            scene.remove(served.mesh);
-
-            queueList.forEach((item, idx) => {
-                item.mesh.position.z = -5.5 + (idx * 2.2);
-            });
-
-            renderTable();
-        }
-
-        function renderTable() {
-            const tbody = document.getElementById('queue-table-body');
-            tbody.innerHTML = '';
-
-            if (queueList.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" class="py-4 text-center text-slate-600">Queue is currently empty. Generate a token to test!</td></tr>`;
-            } else {
-                queueList.forEach((item, idx) => {
-                    const isHead = idx === 0;
-                    const tr = document.createElement('tr');
-                    tr.className = isHead ? "text-emerald-400 font-bold bg-emerald-500/10" : "text-slate-300";
-                    tr.innerHTML = `
-                        <td class="py-2.5 font-bold">${item.token}</td>
-                        <td class="py-2.5">${item.name}</td>
-                        <td class="py-2.5 text-slate-400">
-                            <div>${item.roll}</div>
-                            <div class="text-[10px] text-slate-500">${item.phone}</div>
-                        </td>
-                        <td class="py-2.5">${item.food}</td>
-                        <td class="py-2.5 text-right">
-                            <span class="px-2 py-0.5 rounded text-[10px] ${isHead ? 'bg-emerald-500 text-slate-950 font-black' : 'bg-slate-800 text-slate-400'}">
-                                ${isHead ? 'SERVING NOW' : 'WAITING'}
-                            </span>
-                        </td>
-                    `;
-                    tbody.appendChild(tr);
-                });
-            }
-
-            document.getElementById('queue-count-text').innerText = `${queueList.length} Active Tokens`;
-        }
+        const geometry = new THREE.BoxGeometry(1.5, 1.5, 1.5);
+        const material = new THREE.MeshBasicMaterial({ color: 0x10b981, wireframe: true });
+        const cube = new THREE.Mesh(geometry, material);
+        scene.add(cube);
+        camera.position.z = 5;
 
         function animate() {
             requestAnimationFrame(animate);
-            if (controls) controls.update();
-            if (renderer && scene && camera) renderer.render(scene, camera);
+            cube.rotation.x += 0.01;
+            cube.rotation.y += 0.01;
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        // Twilio SMS Function
+        async function sendSMS(phone, name, token, food) {
+            let formattedPhone = phone.trim();
+            if (!formattedPhone.startsWith('+')) formattedPhone = '+91' + formattedPhone;
+
+            const bodyText = `Hello ${name}, Token ${token} for ${food} is READY! Please collect it.`;
+            try {
+                const res = await fetch(`https://api.twilio.com/2010-04-01/Accounts/${TWILIO_ACCOUNT_SID}/Messages.json`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': 'Basic ' + btoa(`${TWILIO_ACCOUNT_SID}:${TWILIO_AUTH_TOKEN}`),
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: new URLSearchParams({ To: formattedPhone, From: TWILIO_PHONE_NUMBER, Body: bodyText })
+                });
+                if(res.ok) alert("📱 Real SMS Sent Successfully!");
+            } catch (err) {
+                console.error(err);
+            }
         }
 
-        window.onload = () => {
-            initClock();
-            updateFoodItemsOptions();
-            init3D();
-            renderTable();
-        };
+        function renderQueue() {
+            const tbody = document.getElementById('queueTableBody');
+            tbody.innerHTML = '';
+            if(queueList.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="py-4 text-center text-slate-500">Queue is currently empty.</td></tr>`;
+                return;
+            }
+            queueList.forEach((item, idx) => {
+                const tr = document.createElement('tr');
+                tr.className = idx === 0 ? "text-emerald-400 font-bold bg-emerald-950/20" : "text-slate-300";
+                tr.innerHTML = `
+                    <td class="py-2">${item.token}</td>
+                    <td class="py-2">${item.name}</td>
+                    <td class="py-2">${item.phone}</td>
+                    <td class="py-2">${item.food}</td>
+                    <td class="py-2 text-right">${idx === 0 ? 'SERVING' : 'WAITING'}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        document.getElementById('tokenForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const name = document.getElementById('studentName').value;
+            const phone = document.getElementById('phoneNum').value;
+            const food = document.getElementById('foodItem').value;
+            const token = `T-${tokenCounter++}`;
+
+            queueList.push({ token, name, phone, food });
+            renderQueue();
+            sendSMS(phone, name, token, food);
+
+            document.getElementById('studentName').value = '';
+        });
     </script>
 </body>
 </html>
