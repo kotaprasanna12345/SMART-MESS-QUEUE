@@ -3,10 +3,9 @@ let queueList = [];
 let tokenSeq = 101;
 
 // TWILIO CONFIGURATION (Mee API Keys ikkada paste cheyandi)
-const TWILIO_ACCOUNT_SID = 'YOUR_TWILIO_ACCOUNT_SID';
-const TWILIO_AUTH_TOKEN = 'YOUR_TWILIO_AUTH_TOKEN';
-const TWILIO_PHONE_NUMBER = 'YOUR_TWILIO_PHONE_NUMBER';
-
+const TWILIO_ACCOUNT_SID = 'ACdef6f3673d4c9ad1c2199675057c79d0';
+const TWILIO_AUTH_TOKEN = 'YOUR_COPIED_AUTH_TOKEN_HERE';
+const TWILIO_PHONE_NUMBER = '+17372212163';
 const foodItemsDetails = {
     "Breakfast": [
         { name: "Hot Idly with Chutney", price: "₹30" },
