@@ -67,11 +67,11 @@
             <!-- 3D Viewport Box Preview -->
             <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-lg">
                 <div class="flex justify-between items-center mb-3">
-                    <h3 class="font-bold text-xs text-emerald-400 uppercase tracking-wider">🔮 3D MESS HALL & SMS FOOD COLLECTION SIMULATION</h3>
+                    <h3 class="font-bold text-xs text-emerald-400 uppercase tracking-wider">🔮 3D MESS HALL (SINGLE STUDENT SMS COLLECTION VIEW)</h3>
                     <button onclick="switchTab('kitchen')" class="text-[10px] text-emerald-400 hover:underline cursor-pointer font-bold">Expand 3D View →</button>
                 </div>
                 <div id="canvas-container-mini" class="w-full h-80 bg-slate-950 rounded-xl relative overflow-hidden flex items-center justify-center border border-slate-800/80">
-                    <span class="text-slate-400 text-xs font-semibold animate-pulse">Loading 3D Mess Hall...</span>
+                    <span class="text-slate-400 text-xs font-semibold animate-pulse">Loading 3D Simulation...</span>
                 </div>
             </div>
 
@@ -110,12 +110,12 @@
                             </select>
                         </div>
                         <button type="submit" class="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black py-3 rounded-xl text-xs tracking-wide transition shadow-lg shadow-emerald-500/20 cursor-pointer">
-                            🚀 GENERATE QUEUE TOKEN & SEND SMS
+                            🚀 GENERATE TOKEN & SEND SMS (WALK TO COUNTER)
                         </button>
                     </form>
                 </div>
 
-                <!-- Active Queue Log -->
+                <!-- Active Status Log -->
                 <div class="bg-slate-900 border border-slate-800 p-5 rounded-2xl shadow-lg flex flex-col">
                     <h3 class="font-bold text-sm mb-4 text-emerald-400 flex items-center gap-2">
                         <span>📋</span> Active Queue Status Log
@@ -132,7 +132,7 @@
                                 </tr>
                             </thead>
                             <tbody id="queueTableBody">
-                                <tr><td colspan="5" class="py-8 text-center text-slate-500 italic">Queue is currently empty. Generate a token to view!</td></tr>
+                                <tr><td colspan="5" class="py-8 text-center text-slate-500 italic">No active collection. Generate token to trigger simulation!</td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -145,30 +145,30 @@
             <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-lg space-y-4">
                 <div class="flex justify-between items-center">
                     <div>
-                        <h3 class="font-bold text-sm text-emerald-400">🔮 3D MESS HALL & SMS FOOD COLLECTION ANIMATION</h3>
-                        <p class="text-xs text-slate-400">Once SMS token is dispatched, student walks up to the counter to collect food.</p>
+                        <h3 class="font-bold text-sm text-emerald-400">🔮 3D MESS HALL (SINGLE PERSON FOOD COLLECTION SIMULATION)</h3>
+                        <p class="text-xs text-slate-400">Once SMS is sent, single student walks straight up to counter to take food.</p>
                     </div>
                     <span class="text-xs bg-emerald-500/10 text-emerald-400 px-3 py-1 rounded-lg border border-emerald-500/20">Active 3D View</span>
                 </div>
                 <div id="canvas-container-full" class="w-full h-[540px] bg-slate-950 rounded-2xl relative overflow-hidden flex items-center justify-center border border-slate-800">
-                    <span class="text-slate-400 text-xs font-semibold animate-pulse">Rendering 3D Mess View...</span>
+                    <span class="text-slate-400 text-xs font-semibold animate-pulse">Rendering Full 3D View...</span>
                 </div>
             </div>
         </div>
 
-        <!-- TAB 3: EXTENSIVE MENU WITH FOOD PHOTOS -->
+        <!-- TAB 3: EXTENSIVE MENU WITH 8 ITEMS & PHOTOS -->
         <div id="tab-menu" class="space-y-6 hidden">
             <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-lg space-y-5">
                 <h3 class="font-bold text-sm text-emerald-400 flex items-center gap-2">
                     <span>🍲</span> Complete Mess Food Menu & Pricing Catalog
                 </h3>
                 
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-5">
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-5">
                     <!-- Chicken Biryani -->
                     <div class="bg-slate-950 border border-slate-800 rounded-2xl overflow-hidden shadow-lg flex flex-col justify-between hover:border-emerald-500/40 transition">
                         <div class="h-36 w-full overflow-hidden relative">
                             <img src="https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=600&auto=format&fit=crop&q=80" alt="Chicken Biryani" class="w-full h-full object-cover hover:scale-105 transition duration-500">
-                            <span class="absolute top-2 left-2 text-[9px] bg-blue-500/90 text-white px-2 py-0.5 rounded-full font-bold shadow-md">Lunch</span>
+                            <span class="absolute top-2 left-2 text-[9px] bg-blue-500/90 text-white px-2 py-0.5 rounded-full font-bold">Lunch</span>
                         </div>
                         <div class="p-4 flex flex-col justify-between flex-1">
                             <div>
@@ -186,7 +186,7 @@
                     <div class="bg-slate-950 border border-slate-800 rounded-2xl overflow-hidden shadow-lg flex flex-col justify-between hover:border-emerald-500/40 transition">
                         <div class="h-36 w-full overflow-hidden relative">
                             <img src="https://images.unsplash.com/photo-1610192244261-3f33de3f55e4?w=600&auto=format&fit=crop&q=80" alt="Special Thali Meals" class="w-full h-full object-cover hover:scale-105 transition duration-500">
-                            <span class="absolute top-2 left-2 text-[9px] bg-emerald-500/90 text-white px-2 py-0.5 rounded-full font-bold shadow-md">Lunch</span>
+                            <span class="absolute top-2 left-2 text-[9px] bg-emerald-500/90 text-white px-2 py-0.5 rounded-full font-bold">Lunch</span>
                         </div>
                         <div class="p-4 flex flex-col justify-between flex-1">
                             <div>
@@ -204,7 +204,7 @@
                     <div class="bg-slate-950 border border-slate-800 rounded-2xl overflow-hidden shadow-lg flex flex-col justify-between hover:border-emerald-500/40 transition">
                         <div class="h-36 w-full overflow-hidden relative">
                             <img src="https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=600&auto=format&fit=crop&q=80" alt="Paneer Butter Masala" class="w-full h-full object-cover hover:scale-105 transition duration-500">
-                            <span class="absolute top-2 left-2 text-[9px] bg-purple-500/90 text-white px-2 py-0.5 rounded-full font-bold shadow-md">Dinner</span>
+                            <span class="absolute top-2 left-2 text-[9px] bg-purple-500/90 text-white px-2 py-0.5 rounded-full font-bold">Dinner</span>
                         </div>
                         <div class="p-4 flex flex-col justify-between flex-1">
                             <div>
@@ -222,7 +222,7 @@
                     <div class="bg-slate-950 border border-slate-800 rounded-2xl overflow-hidden shadow-lg flex flex-col justify-between hover:border-emerald-500/40 transition">
                         <div class="h-36 w-full overflow-hidden relative">
                             <img src="https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=600&auto=format&fit=crop&q=80" alt="Masala Dosa" class="w-full h-full object-cover hover:scale-105 transition duration-500">
-                            <span class="absolute top-2 left-2 text-[9px] bg-amber-500/90 text-white px-2 py-0.5 rounded-full font-bold shadow-md">Breakfast</span>
+                            <span class="absolute top-2 left-2 text-[9px] bg-amber-500/90 text-white px-2 py-0.5 rounded-full font-bold">Breakfast</span>
                         </div>
                         <div class="p-4 flex flex-col justify-between flex-1">
                             <div>
@@ -240,7 +240,7 @@
                     <div class="bg-slate-950 border border-slate-800 rounded-2xl overflow-hidden shadow-lg flex flex-col justify-between hover:border-emerald-500/40 transition">
                         <div class="h-36 w-full overflow-hidden relative">
                             <img src="https://images.unsplash.com/photo-1603133872878-684f208fb84b?w=600&auto=format&fit=crop&q=80" alt="Egg Fried Rice" class="w-full h-full object-cover hover:scale-105 transition duration-500">
-                            <span class="absolute top-2 left-2 text-[9px] bg-blue-500/90 text-white px-2 py-0.5 rounded-full font-bold shadow-md">Lunch</span>
+                            <span class="absolute top-2 left-2 text-[9px] bg-blue-500/90 text-white px-2 py-0.5 rounded-full font-bold">Lunch</span>
                         </div>
                         <div class="p-4 flex flex-col justify-between flex-1">
                             <div>
@@ -258,7 +258,7 @@
                     <div class="bg-slate-950 border border-slate-800 rounded-2xl overflow-hidden shadow-lg flex flex-col justify-between hover:border-emerald-500/40 transition">
                         <div class="h-36 w-full overflow-hidden relative">
                             <img src="https://images.unsplash.com/photo-1526318896980-cf78c08b2474?w=600&auto=format&fit=crop&q=80" alt="Veg Manchuria" class="w-full h-full object-cover hover:scale-105 transition duration-500">
-                            <span class="absolute top-2 left-2 text-[9px] bg-purple-500/90 text-white px-2 py-0.5 rounded-full font-bold shadow-md">Snacks</span>
+                            <span class="absolute top-2 left-2 text-[9px] bg-purple-500/90 text-white px-2 py-0.5 rounded-full font-bold">Snacks</span>
                         </div>
                         <div class="p-4 flex flex-col justify-between flex-1">
                             <div>
@@ -276,7 +276,7 @@
                     <div class="bg-slate-950 border border-slate-800 rounded-2xl overflow-hidden shadow-lg flex flex-col justify-between hover:border-emerald-500/40 transition">
                         <div class="h-36 w-full overflow-hidden relative">
                             <img src="https://images.unsplash.com/photo-1516714435131-44d6b64dc6a2?w=600&auto=format&fit=crop&q=80" alt="Lemon Rice" class="w-full h-full object-cover hover:scale-105 transition duration-500">
-                            <span class="absolute top-2 left-2 text-[9px] bg-amber-500/90 text-white px-2 py-0.5 rounded-full font-bold shadow-md">Breakfast</span>
+                            <span class="absolute top-2 left-2 text-[9px] bg-amber-500/90 text-white px-2 py-0.5 rounded-full font-bold">Breakfast</span>
                         </div>
                         <div class="p-4 flex flex-col justify-between flex-1">
                             <div>
@@ -294,7 +294,7 @@
                     <div class="bg-slate-950 border border-slate-800 rounded-2xl overflow-hidden shadow-lg flex flex-col justify-between hover:border-emerald-500/40 transition">
                         <div class="h-36 w-full overflow-hidden relative">
                             <img src="https://images.unsplash.com/photo-1514944298352-f4d73211e61d?w=600&auto=format&fit=crop&q=80" alt="Idli Sambar" class="w-full h-full object-cover hover:scale-105 transition duration-500">
-                            <span class="absolute top-2 left-2 text-[9px] bg-amber-500/90 text-white px-2 py-0.5 rounded-full font-bold shadow-md">Breakfast</span>
+                            <span class="absolute top-2 left-2 text-[9px] bg-amber-500/90 text-white px-2 py-0.5 rounded-full font-bold">Breakfast</span>
                         </div>
                         <div class="p-4 flex flex-col justify-between flex-1">
                             <div>
@@ -360,7 +360,7 @@
 
     </div>
 
-    <!-- Script Logic with Single Person SMS Animation -->
+    <!-- Script Logic: Single Person Walking to Counter on SMS Trigger -->
     <script>
         const TWILIO_ACCOUNT_SID = 'ACdef6f3673d4c9ad1c2199675057c79d0';
         const TWILIO_AUTH_TOKEN = '2cdaa9d95432f88bec8053842b48c17f';
@@ -370,7 +370,7 @@
         let smsLogList = [];
         let tokenCounter = 101;
         let totalRevenue = 0;
-        let studentMeshRef = null;
+        let singleStudentMesh = null;
         let isFoodReady = false;
 
         function switchTab(tabId) {
@@ -394,7 +394,7 @@
 
             const titles = {
                 'dashboard': 'SMART MESS QUEUE MANAGEMENT SYSTEM',
-                'kitchen': '3D MESS HALL & SMS FOOD COLLECTION ANIMATION',
+                'kitchen': '3D MESS HALL (SINGLE PERSON FOOD COLLECTION ANIMATION)',
                 'menu': 'COMPLETE MESS FOOD MENU & PRICING CATALOG',
                 'analytics': 'SYSTEM ANALYTICS & REVENUE REPORTS',
                 'smslogs': 'TWILIO SMS NOTIFICATION LOGS'
@@ -406,8 +406,8 @@
             }
         }
 
-        // 3D SCENE WITH COUNTER, SERVER, AND SINGLE STUDENT WALKING UP ON SMS TRIGGER
-        function createMessSceneSMSAnimation(container) {
+        // 3D SCENE: ONLY ONE STUDENT WALKING UP TO COUNTER WHEN FOOD READY SMS IS SENT
+        function createSinglePersonMessScene(container) {
             container.innerHTML = '';
             
             const width = container.clientWidth || 500;
@@ -417,7 +417,7 @@
             scene.background = new THREE.Color(0x0b0f19);
 
             const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
-            camera.position.set(0, 4.5, 8.5);
+            camera.position.set(0, 4.2, 7.8);
 
             const renderer = new THREE.WebGLRenderer({ antialias: true });
             renderer.setSize(width, height);
@@ -427,7 +427,7 @@
             controls.enableDamping = true;
 
             // Lights
-            const ambientLight = new THREE.AmbientLight(0xffffff, 1.3);
+            const ambientLight = new THREE.AmbientLight(0xffffff, 1.4);
             scene.add(ambientLight);
             
             const dirLight = new THREE.DirectionalLight(0x38bdf8, 1.5);
@@ -435,100 +435,72 @@
             scene.add(dirLight);
 
             // Ground Floor Grid
-            const gridHelper = new THREE.GridHelper(18, 18, 0x10b981, 0x1e293b);
+            const gridHelper = new THREE.GridHelper(16, 16, 0x10b981, 0x1e293b);
             gridHelper.position.y = -0.5;
             scene.add(gridHelper);
 
-            // Food Serving Counter Table (Cyan Box)
-            const tableGeo = new THREE.BoxGeometry(5.5, 0.8, 1.6);
+            // Food Serving Counter Table
+            const tableGeo = new THREE.BoxGeometry(5.0, 0.8, 1.5);
             const tableMat = new THREE.MeshStandardMaterial({ color: 0x0284c7, roughness: 0.3 });
             const table = new THREE.Mesh(tableGeo, tableMat);
             table.position.set(0, 0, -1.0);
             scene.add(table);
 
-            // Signboard on Counter
-            const signGeo = new THREE.BoxGeometry(2.5, 0.4, 0.1);
+            // Signboard
+            const signGeo = new THREE.BoxGeometry(2.2, 0.35, 0.1);
             const signMat = new THREE.MeshStandardMaterial({ color: 0x06b6d4, emissive: 0x0891b2 });
             const sign = new THREE.Mesh(signGeo, signMat);
             sign.position.set(0, 0.75, -1.0);
             scene.add(sign);
 
-            // Pots on Counter Table
-            for(let i = -1.2; i <= 0; i += 0.6) {
-                const potGeo = new THREE.CylinderGeometry(0.22, 0.2, 0.35, 16);
-                const potMat = new THREE.MeshStandardMaterial({ color: 0x064e3b, roughness: 0.2 });
-                const pot = new THREE.Mesh(potGeo, potMat);
-                pot.position.set(i, 0.55, -1.0);
-                scene.add(pot);
-            }
-
-            // Plate with Food
-            const plateGeo = new THREE.CylinderGeometry(0.35, 0.35, 0.05, 32);
+            // Plate with Food on Counter
+            const plateGeo = new THREE.CylinderGeometry(0.32, 0.32, 0.05, 32);
             const plateMat = new THREE.MeshStandardMaterial({ color: 0xffffff });
             const plate = new THREE.Mesh(plateGeo, plateMat);
-            plate.position.set(1.1, 0.43, -1.0);
+            plate.position.set(0.8, 0.43, -1.0);
             scene.add(plate);
 
-            const foodGeo = new THREE.SphereGeometry(0.18, 16, 16);
+            const foodGeo = new THREE.SphereGeometry(0.16, 16, 16);
             const foodMat = new THREE.MeshStandardMaterial({ color: 0xf59e0b });
             const food = new THREE.Mesh(foodGeo, foodMat);
             food.scale.set(1, 0.4, 1);
-            food.position.set(1.2, 0.48, -1.0);
+            food.position.set(0.9, 0.48, -1.0);
             scene.add(food);
 
-            // --- SERVING PERSON (Behind Counter) ---
-            const serverGroup = new THREE.Group();
-            const serverBodyGeo = new THREE.CylinderGeometry(0.22, 0.22, 0.75, 16);
-            const serverBodyMat = new THREE.MeshStandardMaterial({ color: 0xf97316 });
-            const serverBody = new THREE.Mesh(serverBodyGeo, serverBodyMat);
-            serverBody.position.y = -0.1;
+            // Mess Staff Behind Counter
+            const staffGroup = new THREE.Group();
+            const staffBody = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.2, 0.7, 16), new THREE.MeshStandardMaterial({ color: 0xf97316 }));
+            staffBody.position.y = -0.1;
+            const staffHead = new THREE.Mesh(new THREE.SphereGeometry(0.15, 16, 16), new THREE.MeshStandardMaterial({ color: 0xfde047 }));
+            staffHead.position.y = 0.4;
+            staffGroup.add(staffBody);
+            staffGroup.add(staffHead);
+            staffGroup.position.set(-0.5, -0.1, -1.7);
+            scene.add(staffGroup);
 
-            const serverHeadGeo = new THREE.SphereGeometry(0.16, 16, 16);
-            const serverHeadMat = new THREE.MeshStandardMaterial({ color: 0xfde047 });
-            const serverHead = new THREE.Mesh(serverHeadGeo, serverHeadMat);
-            serverHead.position.y = 0.42;
+            // --- SINGLE STUDENT (Starts back at z = 3.2, walks to z = 0.2 when SMS food ready triggers) ---
+            const studentGroup = new THREE.Group();
+            const studentBody = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.22, 0.75, 16), new THREE.MeshStandardMaterial({ color: 0x10b981 }));
+            studentBody.position.y = -0.1;
+            const studentHead = new THREE.Mesh(new THREE.SphereGeometry(0.16, 16, 16), new THREE.MeshStandardMaterial({ color: 0xfde047 }));
+            studentHead.position.y = 0.42;
+            studentGroup.add(studentBody);
+            studentGroup.add(studentHead);
 
-            const capGeo = new THREE.CylinderGeometry(0.14, 0.14, 0.15, 16);
-            const capMat = new THREE.MeshStandardMaterial({ color: 0xffffff });
-            const chefCap = new THREE.Mesh(capGeo, capMat);
-            chefCap.position.y = 0.57;
-
-            serverGroup.add(serverBody);
-            serverGroup.add(serverHead);
-            serverGroup.add(chefCap);
-            serverGroup.position.set(-0.6, -0.1, -1.8);
-            scene.add(serverGroup);
-
-            // --- SINGLE STUDENT (Waits at back, walks to counter when SMS triggered) ---
-            const student = new THREE.Group();
-            const bodyGeo = new THREE.CylinderGeometry(0.2, 0.2, 0.7, 16);
-            const bodyMat = new THREE.MeshStandardMaterial({ color: 0x0284c7 });
-            const body = new THREE.Mesh(bodyGeo, bodyMat);
-            body.position.y = -0.15;
-
-            const headGeo = new THREE.SphereGeometry(0.16, 16, 16);
-            const headMat = new THREE.MeshStandardMaterial({ color: 0xfde047 });
-            const head = new THREE.Mesh(headGeo, headMat);
-            head.position.y = 0.35;
-
-            student.add(body);
-            student.add(head);
-
-            // Initial waiting position (z = 3.5)
-            student.position.set(0.5, -0.1, 3.5);
-            scene.add(student);
-            studentMeshRef = student;
+            studentGroup.position.set(0, -0.1, 3.2); // Start waiting position
+            scene.add(studentGroup);
+            singleStudentMesh = studentGroup;
 
             function animate() {
                 requestAnimationFrame(animate);
                 
-                // If food is ready (SMS triggered), student walks forward towards counter (z = 0.3)
-                if (isFoodReady && studentMeshRef) {
-                    if (studentMeshRef.position.z > 0.3) {
-                        studentMeshRef.position.z -= 0.03; // walking speed
+                // Single Person Animation Logic
+                if (isFoodReady && singleStudentMesh) {
+                    if (singleStudentMesh.position.z > 0.2) {
+                        singleStudentMesh.position.z -= 0.035; // walk forward speed
                     }
-                } else if (studentMeshRef && !isFoodReady) {
-                    studentMeshRef.position.z = 3.5; // reset back
+                } else if (singleStudentMesh && !isFoodReady) {
+                    singleStudentMesh.position.z = 3.2; // reset back
                 }
 
                 controls.update();
@@ -539,12 +511,12 @@
 
         window.addEventListener('DOMContentLoaded', () => {
             const miniContainer = document.getElementById('canvas-container-mini');
-            if(miniContainer) createMessSceneSMSAnimation(miniContainer);
+            if(miniContainer) createSinglePersonMessScene(miniContainer);
         });
 
         function initFullKitchen3D() {
             const fullContainer = document.getElementById('canvas-container-full');
-            if(fullContainer) createMessSceneSMSAnimation(fullContainer);
+            if(fullContainer) createSinglePersonMessScene(fullContainer);
         }
 
         async function sendSMS(phone, name, token, food) {
@@ -555,7 +527,7 @@
 
             const bodyText = `Smart Mess Token ${token} ready for ${name} (${food}). Please collect from counter!`;
             
-            // Trigger 3D Student Walking to Counter
+            // Trigger Single Student Walking to Counter
             isFoodReady = true;
 
             try {
@@ -578,7 +550,7 @@
                     alert(`📱 SMS DISPATCHED!\nStudent: ${name}\nToken: ${token}\nFood Ready! Watch 3D Simulation.`);
                 }
             } catch (error) {
-                alert(`📱 TOKEN ISSUED & SMS TRIGGERED for ${name}! Student approaching counter in 3D view.`);
+                alert(`📱 TOKEN ISSUED & SMS TRIGGERED for ${name}! Single student approaching counter in 3D view.`);
             }
 
             const nowTime = new Date().toLocaleTimeString();
@@ -590,20 +562,20 @@
             const tbody = document.getElementById('queueTableBody');
             tbody.innerHTML = '';
             if(queueList.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" class="py-8 text-center text-slate-500 italic">Queue is currently empty. Generate a token to view!</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="5" class="py-8 text-center text-slate-500 italic">No active collection. Generate token to trigger simulation!</td></tr>`;
                 return;
             }
             queueList.forEach((item, idx) => {
                 const tr = document.createElement('tr');
-                tr.className = idx === 0 ? "text-emerald-400 font-bold bg-emerald-950/20 border-b border-slate-800" : "text-slate-300 border-b border-slate-800/50";
+                tr.className = "text-emerald-400 font-bold bg-emerald-950/20 border-b border-slate-800";
                 tr.innerHTML = `
                     <td class="py-3 font-mono">${item.token}</td>
                     <td class="py-3">${item.name}</td>
                     <td class="py-3 font-mono">${item.phone}</td>
                     <td class="py-3">${item.food}</td>
                     <td class="py-3 text-right">
-                        <span class="px-2 py-0.5 rounded text-[10px] ${idx === 0 ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-amber-500/20 text-amber-400'}">
-                            ${idx === 0 ? 'COLLECTING FOOD' : 'WAITING'}
+                        <span class="px-2 py-0.5 rounded text-[10px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+                            COLLECTING FOOD 🚶‍♂️
                         </span>
                     </td>
                 `;
@@ -650,10 +622,10 @@
 
             totalRevenue += price;
 
-            document.getElementById('statTotalTokens').innerText = queueList.length + 1;
+            document.getElementById('statTotalTokens').innerText = 1;
             document.getElementById('statRevenue').innerText = `₹${totalRevenue}`;
 
-            queueList.push({ token, name, phone, food });
+            queueList = [{ token, name, phone, food }]; // Only 1 person active at a time
             renderQueue();
             sendSMS(phone, name, token, food);
 
