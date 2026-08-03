@@ -3,98 +3,166 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>3D Smart Mess Queue Manager</title>
+    <title>3D Smart Mess Queue & Menu Manager</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Three.js for 3D Viewport -->
+    <!-- Three.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 </head>
 <body class="bg-slate-950 text-slate-100 font-sans flex h-screen overflow-hidden">
 
     <!-- Sidebar -->
-    <div class="w-64 bg-slate-900 border-r border-slate-800 flex flex-col justify-between p-4">
+    <div class="w-64 bg-slate-900 border-r border-slate-800 flex flex-col justify-between p-4 shadow-xl">
         <div>
-            <div class="flex items-center gap-2 mb-8">
-                <div class="bg-emerald-500 p-2 rounded-lg text-slate-950 font-black">3D</div>
+            <div class="flex items-center gap-3 mb-8">
+                <div class="bg-emerald-500 p-2.5 rounded-xl text-slate-950 font-black text-lg">🍽️</div>
                 <div>
-                    <h1 class="font-bold text-sm">SMART MESS</h1>
-                    <p class="text-[10px] text-slate-400">QUEUE MANAGER</p>
+                    <h1 class="font-bold text-sm tracking-wide">SMART MESS</h1>
+                    <p class="text-[10px] text-emerald-400 font-semibold">QUEUE & MENU SYSTEM</p>
                 </div>
             </div>
             <nav class="space-y-2">
-                <a href="#viewport" class="flex items-center gap-3 px-3 py-2 rounded-lg bg-emerald-500/10 text-emerald-400 text-xs font-semibold">3D Live Viewport</a>
+                <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-emerald-500/10 text-emerald-400 text-xs font-bold border border-emerald-500/20">⚡ Live Dashboard</a>
             </nav>
         </div>
-        <div class="text-xs text-slate-500 border-t border-slate-800 pt-4">
-            <p class="font-bold text-slate-400">K. Sai Prasanna</p>
-            <p>Roll: 25B21A4601</p>
+        <div class="text-xs text-slate-400 border-t border-slate-800 pt-4 bg-slate-950/40 p-3 rounded-xl">
+            <p class="font-bold text-emerald-400">K. Sai Prasanna</p>
+            <p class="text-[11px] text-slate-500">Roll: 25B21A4601</p>
         </div>
     </div>
 
-    <!-- Main Content -->
-    <div class="flex-1 flex flex-col overflow-y-auto p-6">
-        <h2 class="text-xl font-bold mb-4">LIVE SYSTEM CONTROL DASHBOARD</h2>
+    <!-- Main Content Area -->
+    <div class="flex-1 flex flex-col overflow-y-auto p-6 space-y-6">
+        
+        <!-- Header -->
+        <div class="flex justify-between items-center bg-slate-900 p-4 rounded-2xl border border-slate-800">
+            <div>
+                <h2 class="text-lg font-black tracking-wide text-white">LIVE SYSTEM CONTROL DASHBOARD</h2>
+                <p class="text-xs text-slate-400">Manage live tokens, 3D queue visualization, and instant Twilio SMS alerts.</p>
+            </div>
+            <div class="text-xs bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 px-3 py-1.5 rounded-full font-bold">
+                🟢 System Active
+            </div>
+        </div>
         
         <!-- 3D Viewport Box -->
-        <div id="canvas-container" class="w-full h-72 bg-slate-900 border border-slate-800 rounded-xl mb-6 relative overflow-hidden flex items-center justify-center">
-            <span class="text-slate-500 text-sm">Loading 3D Viewport...</span>
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-lg">
+            <div class="flex justify-between items-center mb-3">
+                <h3 class="font-bold text-xs text-emerald-400 uppercase tracking-wider">📦 3D Queue Queue Simulation Viewport</h3>
+                <span class="text-[10px] text-slate-500">Interactive 3D Engine</span>
+            </div>
+            <div id="canvas-container" class="w-full h-64 bg-slate-950 rounded-xl relative overflow-hidden flex items-center justify-center border border-slate-800/80">
+                <span class="text-slate-500 text-xs animate-pulse">Loading 3D Visualizer...</span>
+            </div>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <!-- Issue Token Form -->
-            <div class="bg-slate-900 border border-slate-800 p-5 rounded-xl">
-                <h3 class="font-bold text-sm mb-4 text-emerald-400">Issue Student Token</h3>
-                <form id="tokenForm" class="space-y-4">
-                    <div>
-                        <label class="block text-xs text-slate-400 mb-1">STUDENT NAME</label>
-                        <input type="text" id="studentName" required placeholder="e.g. K. Sai Prasanna" class="w-full bg-slate-950 border border-slate-800 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-emerald-500">
-                    </div>
-                    <div class="grid grid-cols-2 gap-2">
+            <div class="bg-slate-900 border border-slate-800 p-5 rounded-2xl shadow-lg flex flex-col justify-between">
+                <div>
+                    <h3 class="font-bold text-sm mb-4 text-emerald-400 flex items-center gap-2">
+                        <span>🎫</span> Issue Student Token & Trigger SMS
+                    </h3>
+                    <form id="tokenForm" class="space-y-3.5">
                         <div>
-                            <label class="block text-xs text-slate-400 mb-1">ROLL NUMBER</label>
-                            <input type="text" id="rollNumber" value="25B21A4601" class="w-full bg-slate-950 border border-slate-800 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-emerald-500">
+                            <label class="block text-[11px] font-semibold text-slate-400 mb-1">STUDENT NAME</label>
+                            <input type="text" id="studentName" required placeholder="e.g. K. Sai Prasanna" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-emerald-500 transition">
+                        </div>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-[11px] font-semibold text-slate-400 mb-1">ROLL NUMBER</label>
+                                <input type="text" id="rollNumber" value="25B21A4601" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-emerald-500 transition">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-semibold text-slate-400 mb-1">PHONE NUMBER</label>
+                                <input type="text" id="phoneNum" value="8106129837" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-emerald-500 transition">
+                            </div>
                         </div>
                         <div>
-                            <label class="block text-xs text-slate-400 mb-1">PHONE NUMBER</label>
-                            <input type="text" id="phoneNum" value="8106129837" required class="w-full bg-slate-950 border border-slate-800 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-emerald-500">
+                            <label class="block text-[11px] font-semibold text-slate-400 mb-1">SELECT FOOD ITEM</label>
+                            <select id="foodItem" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-emerald-500 transition">
+                                <option value="Special Thali Meals 🍛">Special Thali Meals 🍛</option>
+                                <option value="Chicken Biryani 🍗">Chicken Biryani 🍗</option>
+                                <option value="Veg Fried Rice 🍜">Veg Fried Rice 🍜</option>
+                                <option value="South Indian Tiffin 🥞">South Indian Tiffin 🥞</option>
+                            </select>
                         </div>
-                    </div>
-                    <div>
-                        <label class="block text-xs text-slate-400 mb-1">FOOD ITEM SELECT</label>
-                        <select id="foodItem" class="w-full bg-slate-950 border border-slate-800 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-emerald-500">
-                            <option value="Special Thali Meals">Special Thali Meals</option>
-                            <option value="Chicken Biryani">Chicken Biryani</option>
-                            <option value="Veg Fried Rice">Veg Fried Rice</option>
-                            <option value="South Indian Meals">South Indian Meals</option>
-                        </select>
-                    </div>
-                    <button type="submit" class="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold py-2.5 rounded text-sm transition">
-                        GENERATE TOKEN & SEND SMS
-                    </button>
-                </form>
+                        <button type="submit" class="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black py-3 rounded-xl text-xs tracking-wide transition shadow-lg shadow-emerald-500/20 cursor-pointer">
+                            🚀 GENERATE TOKEN & SEND TWILIO SMS
+                        </button>
+                    </form>
+                </div>
             </div>
 
             <!-- Active Queue Log -->
-            <div class="bg-slate-900 border border-slate-800 p-5 rounded-xl flex flex-col">
-                <h3 class="font-bold text-sm mb-4 text-emerald-400">Active Queue Data Log</h3>
+            <div class="bg-slate-900 border border-slate-800 p-5 rounded-2xl shadow-lg flex flex-col">
+                <h3 class="font-bold text-sm mb-4 text-emerald-400 flex items-center gap-2">
+                    <span>📋</span> Active Queue Status Log
+                </h3>
                 <div class="flex-1 overflow-x-auto">
                     <table class="w-full text-left text-xs">
                         <thead>
-                            <tr class="border-b border-slate-800 text-slate-400">
-                                <th class="pb-2">Token</th>
-                                <th class="pb-2">Student</th>
-                                <th class="pb-2">Phone</th>
-                                <th class="pb-2">Food</th>
-                                <th class="pb-2 text-right">Status</th>
+                            <tr class="border-b border-slate-800 text-slate-400 text-[11px]">
+                                <th class="pb-2.5">Token</th>
+                                <th class="pb-2.5">Student</th>
+                                <th class="pb-2.5">Phone</th>
+                                <th class="pb-2.5">Food Item</th>
+                                <th class="pb-2.5 text-right">Status</th>
                             </tr>
                         </thead>
                         <tbody id="queueTableBody">
-                            <tr><td colspan="5" class="py-4 text-center text-slate-500">Queue is currently empty.</td></tr>
+                            <tr><td colspan="5" class="py-8 text-center text-slate-500 italic">Queue is currently empty. Generate a token to view!</td></tr>
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
+
+        <!-- Extra Bottom Section: Mess Menu Cards with Pictures -->
+        <div class="bg-slate-900 border border-slate-800 p-5 rounded-2xl shadow-lg">
+            <h3 class="font-bold text-sm mb-4 text-emerald-400 flex items-center gap-2">
+                <span>🍲</span> Today's Special Mess Menu & Food Items
+            </h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <!-- Item 1 -->
+                <div class="bg-slate-950 border border-slate-800 rounded-xl overflow-hidden group hover:border-emerald-500/50 transition">
+                    <img src="https://images.unsplash.com/photo-1589301760014-d929f3979dbc?auto=format&fit=crop&w=400&q=80" alt="Biryani" class="w-full h-28 object-cover group-hover:scale-105 transition duration-300">
+                    <div class="p-3">
+                        <h4 class="font-bold text-xs text-white">Chicken Biryani</h4>
+                        <p class="text-[10px] text-slate-400 mt-0.5">Spicy Hyderabadi style with raita.</p>
+                        <span class="inline-block mt-2 text-[10px] bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded font-bold">Available Now</span>
+                    </div>
+                </div>
+                <!-- Item 2 -->
+                <div class="bg-slate-950 border border-slate-800 rounded-xl overflow-hidden group hover:border-emerald-500/50 transition">
+                    <img src="https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?auto=format&fit=crop&w=400&q=80" alt="Thali" class="w-full h-28 object-cover group-hover:scale-105 transition duration-300">
+                    <div class="p-3">
+                        <h4 class="font-bold text-xs text-white">Special Thali Meals</h4>
+                        <p class="text-[10px] text-slate-400 mt-0.5">Rice, dal, curry, papad & sweet.</p>
+                        <span class="inline-block mt-2 text-[10px] bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded font-bold">Available Now</span>
+                    </div>
+                </div>
+                <!-- Item 3 -->
+                <div class="bg-slate-950 border border-slate-800 rounded-xl overflow-hidden group hover:border-emerald-500/50 transition">
+                    <img src="https://images.unsplash.com/photo-1645177628172-a94c1f96e6db?auto=format&fit=crop&w=400&q=80" alt="Fried Rice" class="w-full h-28 object-cover group-hover:scale-105 transition duration-300">
+                    <div class="p-3">
+                        <h4 class="font-bold text-xs text-white">Veg Fried Rice</h4>
+                        <p class="text-[10px] text-slate-400 mt-0.5">Tossed with fresh veggies & sauces.</p>
+                        <span class="inline-block mt-2 text-[10px] bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded font-bold">Available Now</span>
+                    </div>
+                </div>
+                <!-- Item 4 -->
+                <div class="bg-slate-950 border border-slate-800 rounded-xl overflow-hidden group hover:border-emerald-500/50 transition">
+                    <img src="https://images.unsplash.com/photo-1589301760014-d929f3979dbc?auto=format&fit=crop&w=400&q=80" alt="Tiffin" class="w-full h-28 object-cover group-hover:scale-105 transition duration-300">
+                    <div class="p-3">
+                        <h4 class="font-bold text-xs text-white">South Indian Tiffin</h4>
+                        <p class="text-[10px] text-slate-400 mt-0.5">Idli, Dosa with hot sambar & chutney.</p>
+                        <span class="inline-block mt-2 text-[10px] bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded font-bold">Available Now</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 
     <!-- Script Logic -->
@@ -106,9 +174,9 @@
         let queueList = [];
         let tokenCounter = 101;
 
-        // 3D Viewport Initialization with Three.js
+        // 3D Viewport
         const container = document.getElementById('canvas-container');
-        container.innerHTML = ''; // clear loading text
+        container.innerHTML = '';
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -119,12 +187,12 @@
         const material = new THREE.MeshBasicMaterial({ color: 0x10b981, wireframe: true });
         const cube = new THREE.Mesh(geometry, material);
         scene.add(cube);
-        camera.position.z = 5;
+        camera.position.z = 4;
 
         function animate() {
             requestAnimationFrame(animate);
-            cube.rotation.x += 0.01;
-            cube.rotation.y += 0.01;
+            cube.rotation.x += 0.012;
+            cube.rotation.y += 0.015;
             renderer.render(scene, camera);
         }
         animate();
@@ -132,21 +200,36 @@
         // Twilio SMS Function
         async function sendSMS(phone, name, token, food) {
             let formattedPhone = phone.trim();
-            if (!formattedPhone.startsWith('+')) formattedPhone = '+91' + formattedPhone;
+            if (!formattedPhone.startsWith('+')) {
+                formattedPhone = '+91' + formattedPhone;
+            }
 
-            const bodyText = `Hello ${name}, Token ${token} for ${food} is READY! Please collect it.`;
+            const bodyText = `Hello ${name}, your food item (${food}) for Token ${token} is READY! 🍲 Please collect it from the counter.`;
+            
             try {
-                const res = await fetch(`https://api.twilio.com/2010-04-01/Accounts/${TWILIO_ACCOUNT_SID}/Messages.json`, {
+                const response = await fetch(`https://api.twilio.com/2010-04-01/Accounts/${TWILIO_ACCOUNT_SID}/Messages.json`, {
                     method: 'POST',
                     headers: {
                         'Authorization': 'Basic ' + btoa(`${TWILIO_ACCOUNT_SID}:${TWILIO_AUTH_TOKEN}`),
                         'Content-Type': 'application/x-www-form-urlencoded'
                     },
-                    body: new URLSearchParams({ To: formattedPhone, From: TWILIO_PHONE_NUMBER, Body: bodyText })
+                    body: new URLSearchParams({
+                        'To': formattedPhone,
+                        'From': TWILIO_PHONE_NUMBER,
+                        'Body': bodyText
+                    })
                 });
-                if(res.ok) alert("📱 Real SMS Sent Successfully!");
-            } catch (err) {
-                console.error(err);
+
+                const data = await response.json();
+                if (response.ok) {
+                    alert(`📱 SUCCESS! Real SMS sent to ${formattedPhone}`);
+                } else {
+                    console.error("Twilio error:", data);
+                    alert("SMS Error: " + (data.message || "Failed to deliver"));
+                }
+            } catch (error) {
+                console.error("Network error:", error);
+                alert("Network error while sending SMS.");
             }
         }
 
@@ -154,18 +237,23 @@
             const tbody = document.getElementById('queueTableBody');
             tbody.innerHTML = '';
             if(queueList.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" class="py-4 text-center text-slate-500">Queue is currently empty.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="5" class="py-8 text-center text-slate-500 italic">Queue is currently empty. Generate a token to view!</td></tr>`;
                 return;
             }
+            queueList.items = queueList || [];
             queueList.forEach((item, idx) => {
                 const tr = document.createElement('tr');
-                tr.className = idx === 0 ? "text-emerald-400 font-bold bg-emerald-950/20" : "text-slate-300";
+                tr.className = idx === 0 ? "text-emerald-400 font-bold bg-emerald-950/20 border-b border-slate-800" : "text-slate-300 border-b border-slate-800/50";
                 tr.innerHTML = `
-                    <td class="py-2">${item.token}</td>
-                    <td class="py-2">${item.name}</td>
-                    <td class="py-2">${item.phone}</td>
-                    <td class="py-2">${item.food}</td>
-                    <td class="py-2 text-right">${idx === 0 ? 'SERVING' : 'WAITING'}</td>
+                    <td class="py-3 font-mono">${item.token}</td>
+                    <td class="py-3">${item.name}</td>
+                    <td class="py-3 font-mono">${item.phone}</td>
+                    <td class="py-3">${item.food}</td>
+                    <td class="py-3 text-right">
+                        <span class="px-2 py-0.5 rounded text-[10px] ${idx === 0 ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-amber-500/20 text-amber-400'}">
+                            ${idx === 0 ? 'SERVING NOW' : 'WAITING'}
+                        </span>
+                    </td>
                 `;
                 tbody.appendChild(tr);
             });
