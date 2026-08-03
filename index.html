@@ -67,11 +67,11 @@
             <!-- 3D Viewport Box Preview -->
             <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-lg">
                 <div class="flex justify-between items-center mb-3">
-                    <h3 class="font-bold text-xs text-emerald-400 uppercase tracking-wider">🔮 3D MESS HALL & FOOD SERVING COUNTER SIMULATION (INTERACTIVE)</h3>
+                    <h3 class="font-bold text-xs text-emerald-400 uppercase tracking-wider">🔮 3D MESS HALL & SERVING PERSON SIMULATION</h3>
                     <button onclick="switchTab('kitchen')" class="text-[10px] text-emerald-400 hover:underline cursor-pointer font-bold">Expand 3D View →</button>
                 </div>
                 <div id="canvas-container-mini" class="w-full h-80 bg-slate-950 rounded-xl relative overflow-hidden flex items-center justify-center border border-slate-800/80">
-                    <span class="text-slate-400 text-xs font-semibold animate-pulse">Loading 3D Queue View...</span>
+                    <span class="text-slate-400 text-xs font-semibold animate-pulse">Loading 3D Mess Hall...</span>
                 </div>
             </div>
 
@@ -140,8 +140,8 @@
             <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-lg space-y-4">
                 <div class="flex justify-between items-center">
                     <div>
-                        <h3 class="font-bold text-sm text-emerald-400">🔮 3D MESS HALL & FOOD SERVING COUNTER SIMULATION</h3>
-                        <p class="text-xs text-slate-400">Interactive 3D counter view showing live student queue line up.</p>
+                        <h3 class="font-bold text-sm text-emerald-400">🔮 3D MESS HALL & SERVING PERSON SIMULATION</h3>
+                        <p class="text-xs text-slate-400">Mess counter with a dedicated server person distributing food to the student queue.</p>
                     </div>
                     <span class="text-xs bg-emerald-500/10 text-emerald-400 px-3 py-1 rounded-lg border border-emerald-500/20">Active 3D View</span>
                 </div>
@@ -151,7 +151,7 @@
             </div>
         </div>
 
-        <!-- TAB 3: MENU WITH HIGH-RES PHOTOS -->
+        <!-- TAB 3: MENU WITH FOOD IMAGES -->
         <div id="tab-menu" class="space-y-6 hidden">
             <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-lg space-y-5">
                 <h3 class="font-bold text-sm text-emerald-400 flex items-center gap-2">
@@ -297,7 +297,7 @@
 
             const titles = {
                 'dashboard': 'SMART MESS QUEUE MANAGEMENT SYSTEM',
-                'kitchen': '3D MESS HALL & FOOD SERVING COUNTER SIMULATION',
+                'kitchen': '3D MESS HALL & SERVING PERSON SIMULATION',
                 'menu': 'COMPLETE MESS FOOD MENU & PRICING CATALOG',
                 'analytics': 'SYSTEM ANALYTICS & REVENUE REPORTS',
                 'smslogs': 'TWILIO SMS NOTIFICATION LOGS'
@@ -309,8 +309,8 @@
             }
         }
 
-        // ORIGINAL 3D SCENE SETUP (Counter + Grid Floor + Students Lineup)
-        function createOriginal3DScene(container) {
+        // 3D SCENE WITH COUNTER, FOOD, STUDENT QUEUE & SERVING PERSON BEHIND COUNTER
+        function createMessSceneWithServer(container) {
             container.innerHTML = '';
             
             const width = container.clientWidth || 500;
@@ -320,7 +320,7 @@
             scene.background = new THREE.Color(0x0b0f19);
 
             const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
-            camera.position.set(0, 4, 8);
+            camera.position.set(0, 4.5, 8.5);
 
             const renderer = new THREE.WebGLRenderer({ antialias: true });
             renderer.setSize(width, height);
@@ -330,7 +330,7 @@
             controls.enableDamping = true;
 
             // Lights
-            const ambientLight = new THREE.AmbientLight(0xffffff, 1.2);
+            const ambientLight = new THREE.AmbientLight(0xffffff, 1.3);
             scene.add(ambientLight);
             
             const dirLight = new THREE.DirectionalLight(0x38bdf8, 1.5);
@@ -350,10 +350,10 @@
             scene.add(table);
 
             // Signboard on Counter
-            const signGeo = new THREE.BoxGeometry(2.5, 0.5, 0.1);
+            const signGeo = new THREE.BoxGeometry(2.5, 0.4, 0.1);
             const signMat = new THREE.MeshStandardMaterial({ color: 0x06b6d4, emissive: 0x0891b2 });
             const sign = new THREE.Mesh(signGeo, signMat);
-            sign.position.set(0, 0.8, -1.0);
+            sign.position.set(0, 0.75, -1.0);
             scene.add(sign);
 
             // Pots & Bowls on Counter Table
@@ -379,7 +379,33 @@
             food.position.set(1.2, 0.48, -1.0);
             scene.add(food);
 
-            // Student Queue (Cylinder Body + Yellow Sphere Head)
+            // --- FOOD SERVING PERSON (Standing Behind Counter) ---
+            const serverGroup = new THREE.Group();
+            
+            // Server Body (Orange uniform for mess staff)
+            const serverBodyGeo = new THREE.CylinderGeometry(0.22, 0.22, 0.75, 16);
+            const serverBodyMat = new THREE.MeshStandardMaterial({ color: 0xf97316 });
+            const serverBody = new THREE.Mesh(serverBodyGeo, serverBodyMat);
+            serverBody.position.y = -0.1;
+
+            // Server Head with Chef Cap
+            const serverHeadGeo = new THREE.SphereGeometry(0.16, 16, 16);
+            const serverHeadMat = new THREE.MeshStandardMaterial({ color: 0xfde047 });
+            const serverHead = new THREE.Mesh(serverHeadGeo, serverHeadMat);
+            serverHead.position.y = 0.42;
+
+            const capGeo = new THREE.CylinderGeometry(0.14, 0.14, 0.15, 16);
+            const capMat = new THREE.MeshStandardMaterial({ color: 0xffffff });
+            const chefCap = new THREE.Mesh(capGeo, capMat);
+            chefCap.position.y = 0.57;
+
+            serverGroup.add(serverBody);
+            serverGroup.add(serverHead);
+            serverGroup.add(chefCap);
+            serverGroup.position.set(-0.6, -0.1, -1.8); // Behind counter
+            scene.add(serverGroup);
+
+            // --- STUDENT QUEUE (Standing in line) ---
             const queueGroup = new THREE.Group();
             for(let i = 0; i < 4; i++) {
                 const student = new THREE.Group();
@@ -413,12 +439,12 @@
 
         window.addEventListener('DOMContentLoaded', () => {
             const miniContainer = document.getElementById('canvas-container-mini');
-            if(miniContainer) createOriginal3DScene(miniContainer);
+            if(miniContainer) createMessSceneWithServer(miniContainer);
         });
 
         function initFullKitchen3D() {
             const fullContainer = document.getElementById('canvas-container-full');
-            if(fullContainer) createOriginal3DScene(fullContainer);
+            if(fullContainer) createMessSceneWithServer(fullContainer);
         }
 
         async function sendSMS(phone, name, token, food) {
