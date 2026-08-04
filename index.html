@@ -6,19 +6,20 @@
     <title>SMART MESS QUEUE MANAGER (R23 Advanced)</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
         body { background: #0b0f19; color: #f3f4f6; display: flex; height: 100vh; overflow: hidden; }
         
         /* Sidebar */
-        aside { width: 280px; background: #111827; border-right: 1px solid #1f2937; display: flex; flex-direction: column; padding: 20px; }
+        aside { width: 280px; background: #111827; border-right: 1px solid #1f2937; display: flex; flex-direction: column; padding: 20px; overflow-y: auto; }
         .logo-area { display: flex; align-items: center; gap: 12px; margin-bottom: 30px; }
         .logo-icon { background: #10b981; color: #000; width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; }
         .logo-text h1 { font-size: 16px; font-weight: 700; color: #fff; }
         .logo-text p { font-size: 11px; color: #9ca3af; }
         
         .nav-section { font-size: 11px; text-transform: uppercase; color: #6b7280; margin-bottom: 10px; font-weight: 600; letter-spacing: 0.5px; }
-        .nav-item { display: flex; align-items: center; gap: 12px; padding: 12px 16px; color: #9ca3af; text-decoration: none; border-radius: 8px; margin-bottom: 6px; font-size: 14px; font-weight: 500; transition: 0.2s; }
+        .nav-item { display: flex; align-items: center; gap: 12px; padding: 12px 16px; color: #9ca3af; text-decoration: none; border-radius: 8px; margin-bottom: 6px; font-size: 14px; font-weight: 500; transition: 0.2s; cursor: pointer; border: none; background: transparent; width: 100%; text-align: left; }
         .nav-item:hover, .nav-item.active { background: #1f2937; color: #10b981; }
 
         /* Main Content */
@@ -34,6 +35,9 @@
         .banner-left h3 { font-size: 14px; font-weight: 600; color: #fff; }
         .banner-left p { font-size: 12px; color: #9ca3af; }
         .banner-right { background: #1f2937; color: #34d399; padding: 6px 14px; border-radius: 6px; font-size: 12px; font-weight: 600; border: 1px solid #374151; }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
 
         /* Grid Layout */
         .grid-container { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px; }
@@ -65,7 +69,7 @@
         .status-prep { background: #78350f; color: #fbbf24; border: 1px solid #b45309; }
         .status-ready { background: #064e3b; color: #34d399; border: 1px solid #059669; }
 
-        .btn-action { background: #1f2937; color: #34d399; border: 1px solid #374151; padding: 6px 12px; border-radius: 6px; font-size: 11px; cursor: pointer; font-weight: 600; margin-right: 4px; }
+        .btn-action { background: #1f2937; color: #34d399; border: 1px solid #374151; padding: 6px 12px; border-radius: 6px; font-size: 11px; cursor: pointer; font-weight: 600; }
         .btn-action:hover { background: #374151; }
 
         /* Modal */
@@ -87,11 +91,11 @@
             </div>
         </div>
         <div class="nav-section">Navigation</div>
-        <a href="#" class="nav-item active">📊 Live Queue Dashboard</a>
-        <a href="#" class="nav-item">📈 Rush Analytics & Graphs</a>
-        <a href="#" class="nav-item">👤 Student Self-Tracker</a>
-        <a href="#" class="nav-item">💾 File I/O & Storage</a>
-        <a href="#" class="nav-item">💬 Twilio SMS Logs</a>
+        <button onclick="switchTab('dashboard', this)" class="nav-item active">📊 Live Queue Dashboard</button>
+        <button onclick="switchTab('analytics', this)" class="nav-item">📈 Rush Analytics & Graphs</button>
+        <button onclick="switchTab('tracker', this)" class="nav-item">👤 Student Self-Tracker</button>
+        <button onclick="switchTab('fileio', this)" class="nav-item">💾 File I/O & Storage</button>
+        <button onclick="switchTab('smslogs', this)" class="nav-item">💬 Twilio SMS Logs</button>
     </aside>
 
     <!-- Main Section -->
@@ -115,66 +119,106 @@
             <div class="banner-right">Secure QR Ready</div>
         </div>
 
-        <!-- 3D Counter Simulation -->
-        <div class="simulation-card">
-            <div class="card-title">📦 3D COUNTER SIMULATION</div>
-            <div class="canvas-box">
-                <div class="grid-floor"></div>
-                <div class="queue-line"></div>
-                <div class="counter-box"></div>
-                <div class="student-box" id="simStudent">T-118</div>
+        <!-- Tab 1: Dashboard -->
+        <div id="tab-dashboard" class="tab-content active">
+            <div class="simulation-card">
+                <div class="card-title">📦 3D COUNTER SIMULATION</div>
+                <div class="canvas-box">
+                    <div class="grid-floor"></div>
+                    <div class="queue-line"></div>
+                    <div class="counter-box"></div>
+                    <div class="student-box" id="simStudent">T-118</div>
+                </div>
+            </div>
+
+            <div class="grid-container">
+                <div class="card">
+                    <div class="card-title">🎟️ TOKEN & QR QUEUE FORM</div>
+                    <form id="queueForm">
+                        <div class="form-group">
+                            <label>Student Name</label>
+                            <input type="text" id="sName" class="form-control" placeholder="e.g. K. Sai Prasanna" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Roll Number</label>
+                            <input type="text" id="sRoll" class="form-control" placeholder="25B21A4601" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Phone Number</label>
+                            <input type="text" id="sPhone" class="form-control" placeholder="8106129837" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Select Food Item</label>
+                            <select id="sFood" class="form-control">
+                                <option>Paneer Butter Masala - ₹130</option>
+                                <option>Chicken Biryani - ₹160</option>
+                                <option>Veg Meals - ₹90</option>
+                                <option>Idli Vada - ₹40</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn-primary">Issue Token & Generate QR 🎫</button>
+                    </form>
+                </div>
+
+                <div class="card">
+                    <div class="card-title" style="justify-content: space-between;">
+                        <span>📋 ACTIVE QUEUE DATA</span>
+                        <button id="serveBtn" style="background:#2563eb; color:#fff; border:none; padding:6px 12px; border-radius:6px; font-size:11px; cursor:pointer; font-weight:600;">Serve Next & Speak 🔊</button>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>TOKEN</th>
+                                <th>STUDENT</th>
+                                <th>FOOD</th>
+                                <th>TIMER</th>
+                                <th>QR CODE</th>
+                                <th>STATUS</th>
+                            </tr>
+                        </thead>
+                        <tbody id="queueTableBody"></tbody>
+                    </table>
+                </div>
             </div>
         </div>
 
-        <div class="grid-container">
-            <!-- Form Card -->
+        <!-- Tab 2: Analytics -->
+        <div id="tab-analytics" class="tab-content">
             <div class="card">
-                <div class="card-title">🎟️ TOKEN & QR QUEUE FORM</div>
-                <form id="queueForm">
-                    <div class="form-group">
-                        <label>Student Name</label>
-                        <input type="text" id="sName" class="form-control" placeholder="e.g. K. Sai Prasanna" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Roll Number</label>
-                        <input type="text" id="sRoll" class="form-control" placeholder="25B21A4601" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Phone Number</label>
-                        <input type="text" id="sPhone" class="form-control" placeholder="8106129837" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Select Food Item</label>
-                        <select id="sFood" class="form-control">
-                            <option>Paneer Butter Masala - ₹130</option>
-                            <option>Chicken Biryani - ₹160</option>
-                            <option>Veg Meals - ₹90</option>
-                            <option>Idli Vada - ₹40</option>
-                        </select>
-                    </div>
-                    <button type="submit" class="btn-primary">Issue Token & Generate QR 🎫</button>
-                </form>
+                <div class="card-title">📈 Peak Hours Traffic Analytics</div>
+                <p style="font-size: 12px; color: #9ca3af; margin-bottom: 16px;">Historical rush analysis across breakfast, lunch, and dinner shifts.</p>
+                <div style="height: 300px;"><canvas id="rushChart"></canvas></div>
             </div>
+        </div>
 
-            <!-- Active Queue Table -->
+        <!-- Tab 3: Tracker -->
+        <div id="tab-tracker" class="tab-content">
             <div class="card">
-                <div class="card-title" style="justify-content: space-between;">
-                    <span>📋 ACTIVE QUEUE DATA</span>
-                    <button id="serveBtn" style="background:#2563eb; color:#fff; border:none; padding:6px 12px; border-radius:6px; font-size:11px; cursor:pointer; font-weight:600;">Serve Next & Speak 🔊</button>
+                <div class="card-title">👤 Student Live Queue Position Tracker</div>
+                <div style="display: flex; gap: 10px; max-width: 400px; margin-top: 12px;">
+                    <input type="text" id="trackInput" class="form-control" placeholder="Enter Token (e.g. T-118)">
+                    <button onclick="trackStudent()" class="btn-primary" style="margin-top:0; width:auto; padding: 0 20px;">Track</button>
                 </div>
+                <div id="trackResult" style="margin-top: 16px; font-size: 13px; color: #34d399;"></div>
+            </div>
+        </div>
+
+        <!-- Tab 4: File I/O -->
+        <div id="tab-fileio" class="tab-content">
+            <div class="card">
+                <div class="card-title">💾 File I/O & Storage View</div>
+                <textarea id="fileViewer" class="form-control" style="height: 200px; font-family: monospace; font-size: 11px;" readonly></textarea>
+            </div>
+        </div>
+
+        <!-- Tab 5: SMS Logs -->
+        <div id="tab-smslogs" class="tab-content">
+            <div class="card">
+                <div class="card-title">💬 Twilio SMS Dispatch Logs</div>
                 <table>
-                    <thead>
-                        <tr>
-                            <th>TOKEN</th>
-                            <th>STUDENT</th>
-                            <th>FOOD</th>
-                            <th>TIMER</th>
-                            <th>QR CODE</th>
-                            <th>STATUS</th>
-                        </tr>
-                    <</thead>
-                    <tbody id="queueTableBody">
-                        <!-- Dynamic rows appear here -->
+                    <thead><tr><th>TIME</th><th>PHONE</th><th>MESSAGE</th><th>STATUS</th></tr></thead>
+                    <tbody id="smsTableBody">
+                        <tr><td>10:45 AM</td><td>8106129837</td><td>Token T-118 generated successfully.</td><td>Sent ✅</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -195,11 +239,24 @@
         let queueData = [
             { token: 'T-118', name: 'vardhan', roll: '25B21A4444', food: 'Paneer Butter Masala - ₹130', timeLeft: 180, status: 'Preparing' }
         ];
+        let chartInstance = null;
+
+        function switchTab(tabId, el) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            document.getElementById('tab-' + tabId).classList.add('active');
+            el.classList.add('active');
+
+            if(tabId === 'analytics') loadChart();
+            if(tabId === 'fileio') {
+                document.getElementById('fileViewer').value = JSON.stringify(queueData, null, 2);
+            }
+        }
 
         function renderQueue() {
             const tbody = document.getElementById('queueTableBody');
             tbody.innerHTML = '';
-            queueData.forEach((item, index) => {
+            queueData.forEach((item) => {
                 let minutes = Math.floor(item.timeLeft / 60);
                 let seconds = item.timeLeft % 60;
                 let formattedTime = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
@@ -217,7 +274,6 @@
             });
         }
 
-        // Timer decrement loop every 1 second
         setInterval(() => {
             let updated = false;
             queueData.forEach(item => {
@@ -277,6 +333,37 @@
                 alert('Queue is empty!');
             }
         });
+
+        function trackStudent() {
+            const val = document.getElementById('trackInput').value.trim();
+            const found = queueData.find(q => q.token.toLowerCase() === val.toLowerCase());
+            const res = document.getElementById('trackResult');
+            if(found) {
+                res.innerHTML = `Found! Token: ${found.token}, Status: ${found.status}, Time Left: ${Math.floor(found.timeLeft/60)}m ${found.timeLeft%60}s`;
+            } else {
+                res.innerHTML = `Token not found in active queue.`;
+            }
+        }
+
+        function loadChart() {
+            if(chartInstance) return;
+            const ctx = document.getElementById('rushChart').getContext('2d');
+            chartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['8:00 AM', '9:00 AM', '12:30 PM', '1:30 PM', '7:30 PM', '8:30 PM'],
+                    datasets: [{
+                        label: 'Rush Count',
+                        data: [40, 120, 250, 180, 220, 90],
+                        borderColor: '#10b981',
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        fill: true,
+                        tension: 0.3
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false }
+            });
+        }
 
         renderQueue();
     </script>
