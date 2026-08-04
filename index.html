@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smart Mess Queue Management System - Sequential 3D & Live Tracking</title>
+    <title>Smart Mess Queue Management System - Exact 3-Min Sequential Timer</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -23,7 +23,7 @@
                 </div>
                 <div>
                     <h1 class="font-bold text-sm sm:text-base tracking-wide text-white">SMART MESS QUEUE MANAGEMENT SYSTEM</h1>
-                    <p class="text-[11px] text-slate-400">Zero Physical Crowd | Sequential 3-Min Queue | Live Phone Tracking</p>
+                    <p class="text-[11px] text-slate-400">Zero Physical Crowd | Exact 3-Min Sequential Timer per Person</p>
                 </div>
             </div>
             <div class="flex items-center space-x-3">
@@ -73,7 +73,7 @@
                 <!-- 3D Counter View -->
                 <div class="bg-[#111827] border border-slate-800 rounded-2xl p-4 shadow-sm">
                     <div class="flex items-center justify-between mb-3">
-                        <h3 class="font-bold text-xs uppercase tracking-wider text-slate-300"><i class="fa-solid fa-cube text-emerald-400 mr-2"></i> 3D Mess Counter Simulation (Sequential Delivery & Walkaway Animation)</h3>
+                        <h3 class="font-bold text-xs uppercase tracking-wider text-slate-300"><i class="fa-solid fa-cube text-emerald-400 mr-2"></i> 3D Counter Simulation (Exact 3-Min Sequential Timer)</h3>
                         <span id="simulationStatusText" class="text-[10px] text-emerald-400 font-mono">Counter Ready</span>
                     </div>
                     <div id="canvas-container" class="w-full h-56 rounded-xl overflow-hidden bg-[#07090f] border border-slate-800 relative"></div>
@@ -83,7 +83,7 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <!-- Issue Token Form -->
                     <div class="bg-[#111827] border border-slate-800 rounded-2xl p-5 shadow-sm">
-                        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-300 mb-4"><i class="fa-solid fa-ticket mr-2 text-emerald-400"></i> Order Food & Sequential Timer</h3>
+                        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-300 mb-4"><i class="fa-solid fa-ticket mr-2 text-emerald-400"></i> Order Food & Exact 3-Min Timer</h3>
                         <form id="tokenForm" class="space-y-3">
                             <div>
                                 <label class="block text-[11px] font-medium text-slate-400 mb-1">Student Name</label>
@@ -125,7 +125,7 @@
                                 </select>
                             </div>
                             <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 px-4 rounded-xl text-xs transition shadow-lg shadow-emerald-600/20 cursor-pointer">
-                                Place Order & Join Queue 🚀
+                                Place Order & Start 3-Min Timer 🚀
                             </button>
                         </form>
                     </div>
@@ -146,7 +146,7 @@
                                             <th class="py-2">Token</th>
                                             <th class="py-2">Student</th>
                                             <th class="py-2">Food</th>
-                                            <th class="py-2">Phone ETA</th>
+                                            <th class="py-2">Timer</th>
                                             <th class="py-2">Status</th>
                                         </tr>
                                     </thead>
@@ -157,7 +157,7 @@
                             </div>
                         </div>
                         <div class="mt-4 pt-3 border-t border-slate-800 text-[11px] text-slate-400 flex justify-between">
-                            <span>Queue Mode: <strong class="text-emerald-400">Sequential (3m each)</strong></span>
+                            <span>Queue Mode: <strong class="text-emerald-400">Exact 3 Mins Each</strong></span>
                             <span>Queue Status: <strong class="text-cyan-400" id="queueCountLabel">0 Active</strong></span>
                         </div>
                     </div>
@@ -244,7 +244,7 @@
                                 <th class="py-3">Timestamp</th>
                                 <th class="py-3">Phone Number</th>
                                 <th class="py-3">Student Name</th>
-                                <th class="py-3">SMS Message / Live Phone ETA</th>
+                                <th class="py-3">SMS Message / Timer Status</th>
                                 <th class="py-3">Twilio Status</th>
                             </tr>
                         </thead>
@@ -267,7 +267,6 @@
         let tokenCounter = parseInt(localStorage.getItem('smart_mess_token_counter')) || 101;
 
         let scene, camera, renderer, studentAvatar, foodTray;
-        let walkProgress = 0; // For smooth walking & exit animation
 
         function saveData() {
             localStorage.setItem('smart_mess_queue', JSON.stringify(queueList));
@@ -340,35 +339,28 @@
             totalRevenue += price;
             updateAnalytics();
 
-            let totalQueueAheadTime = 180;
-            if(queueList.length > 0) {
-                queueList.forEach(q => {
-                    if(q.timeLeft > 0) totalQueueAheadTime += q.timeLeft;
-                });
-            }
-
+            // EVERY person gets EXACTLY 180 seconds (3 minutes) independently
             const newOrder = {
                 token, name, roll, phone, food,
                 status: queueList.length === 0 ? "Preparing 🍳" : "Waiting in Queue ⏳",
-                timeLeft: totalQueueAheadTime 
+                timeLeft: 180 
             };
 
             queueList.push(newOrder);
             saveData();
             renderQueue();
 
-            let calculatedMins = Math.ceil(totalQueueAheadTime / 60);
             smsLogList.unshift({
                 time: new Date().toLocaleTimeString(),
                 phone: phone,
                 name: name,
-                type: `Token Booked! Live Phone ETA: ~${calculatedMins} mins`,
+                type: `Token Booked! Timer set to exactly 3 mins.`,
                 status: "Sent ✅"
             });
             saveData();
             renderSMSLogs();
 
-            alert(`📱 [TWILIO SMS SENT TO PHONE]\nToken ${token} booked for ${name}.\nLive Phone ETA: ~${calculatedMins} mins remaining!`);
+            alert(`📱 [TWILIO SMS SENT]\nToken ${token} booked for ${name}.\nExact 3-Minute Timer assigned!`);
             document.getElementById('studentName').value = '';
             document.getElementById('rollNum').value = '';
             document.getElementById('phoneNum').value = '';
@@ -402,14 +394,14 @@
                     <td class="py-2.5 font-mono font-bold text-emerald-400">${order.token}</td>
                     <td class="py-2.5 font-semibold">${order.name}<br><span class="text-[10px] text-slate-500 font-mono">${order.roll}</span></td>
                     <td class="py-2.5">${order.food}</td>
-                    <td class="py-2.5 font-mono text-cyan-400">${timeStr} <span class="text-[9px] text-slate-400">(Phone Live)</span></td>
+                    <td class="py-2.5 font-mono text-cyan-400">${timeStr}</td>
                     <td class="py-2.5"><span class="px-2 py-0.5 rounded text-[10px] font-bold ${order.status.includes('Ready') ? 'bg-emerald-500/20 text-emerald-300' : 'bg-amber-500/20 text-amber-300'}">${order.status}</span></td>
                 `;
                 tbody.appendChild(tr);
             });
         }
 
-        // Sequential Timer Loop
+        // Sequential Timer Loop: ONLY the 0-th person's timer ticks down. When served, next person starts at 03:00.
         setInterval(() => {
             if(queueList.length > 0) {
                 let currentOrder = queueList[0];
@@ -442,13 +434,12 @@
                 alert("No students in the queue!");
                 return;
             }
-            const served = queueList.shift(); 
+            const served = queueList.shift(); // First person removed, next person becomes index 0 with their fresh 3 min timer!
             completedOrdersCount++;
-            walkProgress = 0; // Reset walk animation for exit
             updateAnalytics();
             saveData();
             renderQueue();
-            alert(`✅ Student ${served.name} (${served.token}) collected food and walked away. Next person's 3-minute timer has started!`);
+            alert(`✅ Student ${served.name} (${served.token}) collected food and left. Next person's exact 3-minute timer is now running!`);
         }
 
         function renderSMSLogs() {
@@ -473,7 +464,7 @@
             });
         }
 
-        // 3D Scene Initialization with Walking & Food Collection Animation
+        // 3D Scene Initialization
         function init3D() {
             const container = document.getElementById('canvas-container');
             if(!container) return;
@@ -525,26 +516,24 @@
                 const activeOrder = queueList[0];
 
                 if (readyOrder) {
-                    // Student moves to counter, gets food, and walks away to the side/exit
                     if (studentAvatar.position.z > -1.2) {
-                        studentAvatar.position.z -= 0.03; // Walk to counter
+                        studentAvatar.position.z -= 0.03;
                         document.getElementById('simulationStatusText').innerText = `Token ${readyOrder.token} - Collecting Food at Counter`;
                     } else {
-                        foodTray.visible = false; // Tray taken by student
-                        studentAvatar.position.x += 0.03; // Walk away to the right (Exit)
+                        foodTray.visible = false;
+                        studentAvatar.position.x += 0.03;
                         studentAvatar.position.z -= 0.01;
                         document.getElementById('simulationStatusText').innerText = `Token ${readyOrder.token} - Food Collected & Walking Away!`;
                     }
                     studentAvatar.material.color.setHex(0x10b981);
                 } else if (activeOrder) {
-                    // Reset position and walk towards counter
                     foodTray.visible = true;
                     if (studentAvatar.position.z > 0.5) {
                         studentAvatar.position.z -= 0.02;
                     }
                     studentAvatar.position.x = 0;
                     studentAvatar.material.color.setHex(0x3b82f6);
-                    document.getElementById('simulationStatusText').innerText = `Token ${activeOrder.token} - Preparing in Sequential Queue`;
+                    document.getElementById('simulationStatusText').innerText = `Token ${activeOrder.token} - Active 3-Min Timer Running`;
                 } else {
                     foodTray.visible = false;
                     studentAvatar.position.set(0, 0.6, 3);
