@@ -55,7 +55,6 @@
                 </nav>
             </div>
 
-            <!-- Data Storage Box in Sidebar -->
             <div class="bg-[#111827] border border-slate-800 rounded-2xl p-4 shadow-sm space-y-3">
                 <h4 class="text-xs font-bold uppercase tracking-wider text-slate-300"><i class="fa-solid fa-database text-emerald-400 mr-2"></i> Local Data Storage</h4>
                 <p class="text-[11px] text-slate-400">Queue & orders are safely stored in browser storage.</p>
@@ -267,6 +266,8 @@
         let totalRevenue = parseInt(localStorage.getItem('smart_mess_revenue')) || 0;
         let tokenCounter = parseInt(localStorage.getItem('smart_mess_token_counter')) || 101;
 
+        let scene, camera, renderer, studentAvatar, foodTray;
+
         function saveData() {
             localStorage.setItem('smart_mess_queue', JSON.stringify(queueList));
             localStorage.setItem('smart_mess_sms_logs', JSON.stringify(smsLogList));
@@ -286,6 +287,7 @@
                 renderQueue();
                 renderSMSLogs();
                 updateAnalytics();
+                update3DVisual();
                 alert("Data cleared successfully!");
             }
         }
@@ -347,6 +349,7 @@
             queueList.push(newOrder);
             saveData();
             renderQueue();
+            update3DVisual();
 
             smsLogList.unshift({
                 time: new Date().toLocaleTimeString(),
@@ -410,6 +413,7 @@
             if(updated) {
                 saveData();
                 renderQueue();
+                update3DVisual();
             }
         }, 1000);
 
@@ -435,6 +439,7 @@
             updateAnalytics();
             saveData();
             renderQueue();
+            update3DVisual();
             alert(`✅ Student ${served.name} (${served.token}) collected food and left quietly.`);
         }
 
@@ -460,21 +465,21 @@
             });
         }
 
-        // 3D Scene Initialization Fix
+        // 3D Scene Initialization with Student & Food Tray Animation
         function init3D() {
             const container = document.getElementById('canvas-container');
             if(!container) return;
             container.innerHTML = '';
 
-            const scene = new THREE.Scene();
-            const camera = new THREE.PerspectiveCamera(60, container.clientWidth / container.clientHeight, 0.1, 1000);
-            const renderer = new THREE.WebGLRenderer({ antialias: true });
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(60, container.clientWidth / container.clientHeight, 0.1, 1000);
+            renderer = new THREE.WebGLRenderer({ antialias: true });
             renderer.setSize(container.clientWidth, container.clientHeight);
             container.appendChild(renderer.domElement);
 
             const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
             scene.add(ambientLight);
-            const pointLight = new THREE.PointLight(0x10b981, 1.2, 50);
+            const pointLight = new THREE.PointLight(0x10b981, 1.5, 50);
             pointLight.position.set(0, 10, 5);
             scene.add(pointLight);
 
@@ -488,14 +493,56 @@
             desk.position.set(0, 0.35, -2);
             scene.add(desk);
 
-            camera.position.set(0, 3.5, 4);
+            // Student Avatar (Blue/Cyan Box representing Student)
+            const studentGeo = new THREE.BoxGeometry(0.6, 1.2, 0.4);
+            const studentMat = new THREE.MeshStandardMaterial({ color: 0x3b82f6 });
+            studentAvatar = new THREE.Mesh(studentGeo, studentMat);
+            studentAvatar.position.set(0, 0.6, 2); // Starts away from counter
+            scene.add(studentAvatar);
+
+            // Food Tray (Yellow Box representing Food)
+            const trayGeo = new THREE.BoxGeometry(0.5, 0.1, 0.4);
+            const trayMat = new THREE.MeshStandardMaterial({ color: 0xf59e0b });
+            foodTray = new THREE.Mesh(trayGeo, trayMat);
+            foodTray.position.set(0, 0.75, -2); // On counter desk
+            scene.add(foodTray);
+
+            camera.position.set(0, 3.5, 4.5);
             camera.lookAt(0, 0, -2);
+
+            update3DVisual();
 
             function animate() {
                 requestAnimationFrame(animate);
                 renderer.render(scene, camera);
             }
             animate();
+        }
+
+        function update3DVisual() {
+            if(!studentAvatar || !foodTray) return;
+            const activeOrder = queueList.find(o => o.timeLeft > 0);
+            const readyOrder = queueList.find(o => o.status.includes('Ready'));
+
+            if(readyOrder) {
+                // Student has arrived at counter to collect food
+                studentAvatar.position.set(0, 0.6, -1.2);
+                studentAvatar.material.color.setHex(0x10b981); // Turns green when ready to collect
+                foodTray.visible = true;
+                document.getElementById('simulationStatusText').innerText = `Token ${readyOrder.token} - Food Ready! Collected by ${readyOrder.name}`;
+            } else if(activeOrder) {
+                // Student is waiting (walking towards counter or preparing)
+                studentAvatar.position.set(0, 0.6, 0.5);
+                studentAvatar.material.color.setHex(0x3b82f6); // Blue for preparing
+                foodTray.visible = false;
+                document.getElementById('simulationStatusText').innerText = `Token ${activeOrder.token} - Preparing (Timer: ${activeOrder.timeLeft}s)`;
+            } else {
+                // Empty queue
+                studentAvatar.position.set(0, 0.6, 2);
+                studentAvatar.material.color.setHex(0x64748b);
+                foodTray.visible = false;
+                document.getElementById('simulationStatusText').innerText = "Counter Ready (Waiting for Orders)";
+            }
         }
 
         window.onload = () => {
