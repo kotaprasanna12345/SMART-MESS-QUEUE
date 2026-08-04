@@ -1,555 +1,284 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smart Mess Queue Manager - AI & Advanced Voice Enabled</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>SMART MESS QUEUE MANAGER (R23 Advanced)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #0b0f19; color: #f8fafc; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { background: #0b0f19; color: #f3f4f6; display: flex; height: 100vh; overflow: hidden; }
+        
+        /* Sidebar */
+        aside { width: 280px; background: #111827; border-right: 1px solid #1f2937; display: flex; flex-direction: column; padding: 20px; }
+        .logo-area { display: flex; align-items: center; gap: 12px; margin-bottom: 30px; }
+        .logo-icon { background: #10b981; color: #000; width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; }
+        .logo-text h1 { font-size: 16px; font-weight: 700; color: #fff; }
+        .logo-text p { font-size: 11px; color: #9ca3af; }
+        
+        .nav-section { font-size: 11px; text-transform: uppercase; color: #6b7280; margin-bottom: 10px; font-weight: 600; letter-spacing: 0.5px; }
+        .nav-item { display: flex; align-items: center; gap: 12px; padding: 12px 16px; color: #9ca3af; text-decoration: none; border-radius: 8px; margin-bottom: 6px; font-size: 14px; font-weight: 500; transition: 0.2s; }
+        .nav-item:hover, .nav-item.active { background: #1f2937; color: #10b981; }
+
+        /* Main Content */
+        main { flex: 1; display: flex; flex-direction: column; overflow-y: auto; padding: 24px; }
+        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; background: #111827; padding: 16px 24px; border-radius: 12px; border: 1px solid #1f2937; }
+        .header-title h2 { font-size: 18px; font-weight: 700; color: #fff; }
+        .header-title p { font-size: 12px; color: #9ca3af; }
+        .badge { background: #064e3b; color: #34d399; padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; border: 1px solid #059669; }
+
+        .banner { background: #111827; border: 1px solid #1f2937; border-radius: 12px; padding: 16px 24px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
+        .banner-left { display: flex; align-items: center; gap: 16px; }
+        .banner-left svg { color: #10b981; width: 24px; height: 24px; }
+        .banner-left h3 { font-size: 14px; font-weight: 600; color: #fff; }
+        .banner-left p { font-size: 12px; color: #9ca3af; }
+        .banner-right { background: #1f2937; color: #34d399; padding: 6px 14px; border-radius: 6px; font-size: 12px; font-weight: 600; border: 1px solid #374151; }
+
+        /* Grid Layout */
+        .grid-container { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px; }
+        .card { background: #111827; border: 1px solid #1f2937; border-radius: 12px; padding: 20px; }
+        .card-title { font-size: 15px; font-weight: 600; color: #fff; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+
+        /* 3D Simulation Container */
+        .simulation-card { background: #111827; border: 1px solid #1f2937; border-radius: 12px; padding: 20px; margin-bottom: 24px; }
+        .canvas-box { width: 100%; height: 200px; background: #030712; border-radius: 8px; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; border: 1px solid #1f2937; }
+        .grid-floor { position: absolute; width: 200%; height: 200%; background-image: linear-gradient(#1f2937 1px, transparent 1px), linear-gradient(90deg, #1f2937 1px, transparent 1px); background-size: 40px 40px; transform: perspective(300px) rotateX(60deg); }
+        .counter-box { position: absolute; top: 30px; width: 80px; height: 20px; background: #065f46; border: 1px solid #10b981; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #34d399; font-weight: 700; }
+        .counter-box::after { content: 'COUNTER'; }
+        .student-box { position: absolute; bottom: 20px; width: 30px; height: 30px; background: #3b82f6; border-radius: 4px; transition: 0.5s ease; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: bold; color: #fff; box-shadow: 0 0 10px rgba(59,130,246,0.5); }
+        .queue-line { position: absolute; bottom: 35px; width: 2px; height: 100px; background: #10b981; z-index: 1; }
+
+        /* Form Controls */
+        .form-group { margin-bottom: 14px; }
+        .form-group label { display: block; font-size: 12px; color: #9ca3af; margin-bottom: 6px; font-weight: 500; }
+        .form-control { width: 100%; padding: 10px 14px; background: #030712; border: 1px solid #1f2937; border-radius: 8px; color: #fff; font-size: 13px; outline: none; transition: 0.2s; }
+        .form-control:focus { border-color: #10b981; }
+        .btn-primary { width: 100%; background: #059669; color: #fff; border: none; padding: 12px; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 13px; transition: 0.2s; margin-top: 8px; }
+        .btn-primary:hover { background: #047857; }
+
+        /* Tables */
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th { text-align: left; font-size: 11px; color: #6b7280; font-weight: 600; padding-bottom: 10px; border-bottom: 1px solid #1f2937; }
+        td { padding: 12px 0; font-size: 13px; border-bottom: 1px solid #1f2937; color: #d1d5db; vertical-align: middle; }
+        .status-badge { padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; display: inline-block; }
+        .status-prep { background: #78350f; color: #fbbf24; border: 1px solid #b45309; }
+        .status-ready { background: #064e3b; color: #34d399; border: 1px solid #059669; }
+
+        .btn-action { background: #1f2937; color: #34d399; border: 1px solid #374151; padding: 6px 12px; border-radius: 6px; font-size: 11px; cursor: pointer; font-weight: 600; margin-right: 4px; }
+        .btn-action:hover { background: #374151; }
+
+        /* Modal */
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); align-items: center; justify-content: center; z-index: 100; }
+        .modal-content { background: #111827; border: 1px solid #1f2937; padding: 24px; border-radius: 12px; text-align: center; max-width: 320px; width: 100%; }
+        .qr-wrapper { background: #fff; padding: 16px; border-radius: 8px; display: inline-block; margin: 16px 0; }
+        .btn-close { background: #1f2937; color: #fff; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 12px; width: 100%; }
     </style>
 </head>
-<body class="min-h-screen flex flex-col antialiased">
+<body>
 
-    <!-- Top Navbar -->
-    <header class="bg-[#111827] border-b border-slate-800 sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-            <div class="flex items-center space-x-3">
-                <div class="bg-emerald-500/10 border border-emerald-500/30 p-2 rounded-xl text-emerald-400">
-                    <i class="fa-solid fa-utensils text-lg"></i>
-                </div>
+    <!-- Sidebar -->
+    <aside>
+        <div class="logo-area">
+            <div class="logo-icon">🍽️</div>
+            <div class="logo-text">
+                <h1>SMART MESS</h1>
+                <p>Queue Manager v2.3</p>
+            </div>
+        </div>
+        <div class="nav-section">Navigation</div>
+        <a href="#" class="nav-item active">📊 Live Queue Dashboard</a>
+        <a href="#" class="nav-item">📈 Rush Analytics & Graphs</a>
+        <a href="#" class="nav-item">👤 Student Self-Tracker</a>
+        <a href="#" class="nav-item">💾 File I/O & Storage</a>
+        <a href="#" class="nav-item">💬 Twilio SMS Logs</a>
+    </aside>
+
+    <!-- Main Section -->
+    <main>
+        <header>
+            <div class="header-title">
+                <h2>SMART MESS QUEUE MANAGER (R23 Advanced)</h2>
+                <p>Queue > Loops > Switches > AI Predictor > Voice TTS > QR Ticketing</p>
+            </div>
+            <div class="badge">Voice & QR Active</div>
+        </header>
+
+        <div class="banner">
+            <div class="banner-left">
+                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 100-6 3 3 0 000 6z"></path></svg>
                 <div>
-                    <h1 class="font-bold text-sm sm:text-base tracking-wide text-white">SMART MESS QUEUE MANAGER (R23 Advanced)</h1>
-                    <p class="text-[11px] text-slate-400">Queue + Loops + Switches + AI Predictor + Voice TTS + QR Ticketing</p>
+                    <h3>VOICE TTS & QR TICKETING LAYER</h3>
+                    <p>Automatic QR Ticketing enabled. Estimated average wait: <b>3 mins per person</b>.</p>
                 </div>
             </div>
-            <div class="flex items-center space-x-3">
-                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Voice & QR Active
-                </span>
+            <div class="banner-right">Secure QR Ready</div>
+        </div>
+
+        <!-- 3D Counter Simulation -->
+        <div class="simulation-card">
+            <div class="card-title">📦 3D COUNTER SIMULATION</div>
+            <div class="canvas-box">
+                <div class="grid-floor"></div>
+                <div class="queue-line"></div>
+                <div class="counter-box"></div>
+                <div class="student-box" id="simStudent">T-118</div>
             </div>
         </div>
-    </header>
 
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-1 w-full grid grid-cols-1 lg:grid-cols-4 gap-6">
-        
-        <!-- Sidebar Navigation -->
-        <aside class="lg:col-span-1 space-y-4">
-            <div class="bg-[#111827] border border-slate-800 rounded-2xl p-3 shadow-sm">
-                <nav class="space-y-1">
-                    <button onclick="switchTab('dashboard')" id="nav-dashboard" class="w-full text-left flex items-center gap-3 px-3.5 py-2.5 rounded-xl bg-emerald-500/10 text-emerald-400 text-xs font-bold border border-emerald-500/25 transition cursor-pointer">
-                        <i class="fa-solid fa-chart-line w-5"></i> Live Queue Dashboard
-                    </button>
-                    <button onclick="switchTab('analytics')" id="nav-analytics" class="w-full text-left flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-slate-800 text-slate-300 text-xs font-medium transition cursor-pointer">
-                        <i class="fa-solid fa-chart-pie w-5"></i> Rush Analytics & Graphs
-                    </button>
-                    <button onclick="switchTab('tracker')" id="nav-tracker" class="w-full text-left flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-slate-800 text-slate-300 text-xs font-medium transition cursor-pointer">
-                        <i class="fa-solid fa-bullseye w-5"></i> Student Self-Tracker
-                    </button>
-                    <button onclick="switchTab('fileio')" id="nav-fileio" class="w-full text-left flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-slate-800 text-slate-300 text-xs font-medium transition cursor-pointer">
-                        <i class="fa-solid fa-file-code w-5"></i> File I/O & Storage
-                    </button>
-                    <button onclick="switchTab('smslogs')" id="nav-smslogs" class="w-full text-left flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-slate-800 text-slate-300 text-xs font-medium transition cursor-pointer">
-                        <i class="fa-solid fa-comment-sms w-5"></i> Twilio SMS Logs
-                    </button>
-                </nav>
-            </div>
-
-            <!-- File I/O Quick Actions Card -->
-            <div class="bg-[#111827] border border-slate-800 rounded-2xl p-4 shadow-sm space-y-3">
-                <h4 class="text-xs font-bold uppercase tracking-wider text-slate-300"><i class="fa-solid fa-hdd text-emerald-400 mr-2"></i> File I/O Management</h4>
-                <div class="grid grid-cols-2 gap-2">
-                    <button onclick="exportDataFile()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold py-2 px-2 rounded-xl text-[11px] transition cursor-pointer text-center">
-                        Export (.json) 📥
-                    </button>
-                    <button onclick="clearStoredData()" class="bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/30 font-bold py-2 px-2 rounded-xl text-[11px] transition cursor-pointer text-center">
-                        Reset DB 🗑️
-                    </button>
-                </div>
-            </div>
-        </aside>
-
-        <!-- Main Content Area -->
-        <main class="lg:col-span-3 space-y-6">
-
-            <!-- Tab 1: Live Dashboard -->
-            <div id="tab-dashboard" class="space-y-6">
-                <!-- AI Prediction Banner -->
-                <div class="bg-gradient-to-r from-emerald-900/40 via-[#111827] to-[#111827] border border-emerald-500/30 rounded-2xl p-4 shadow-sm flex items-center justify-between">
-                    <div class="flex items-center space-x-3">
-                        <div class="bg-emerald-500/20 p-2.5 rounded-xl text-emerald-400">
-                            <i class="fa-solid fa-microphone-lines text-lg"></i>
-                        </div>
-                        <div>
-                            <h4 class="text-xs font-bold text-emerald-400 uppercase tracking-wider">Voice TTS & QR Ticketing Layer</h4>
-                            <p class="text-[11px] text-slate-300">Automatic QR Ticketing enabled. Estimated average wait: <strong class="text-white">3 mins per person</strong>.</p>
-                        </div>
+        <div class="grid-container">
+            <!-- Form Card -->
+            <div class="card">
+                <div class="card-title">🎟️ TOKEN & QR QUEUE FORM</div>
+                <form id="queueForm">
+                    <div class="form-group">
+                        <label>Student Name</label>
+                        <input type="text" id="sName" class="form-control" placeholder="e.g. K. Sai Prasanna" required>
                     </div>
-                    <span class="hidden sm:inline-block px-3 py-1 bg-emerald-500/10 text-emerald-400 rounded-lg text-[10px] font-mono border border-emerald-500/20">Secure QR Ready</span>
-                </div>
-
-                <!-- 3D Counter View -->
-                <div class="bg-[#111827] border border-slate-800 rounded-2xl p-4 shadow-sm">
-                    <div class="flex items-center justify-between mb-3">
-                        <h3 class="font-bold text-xs uppercase tracking-wider text-slate-300"><i class="fa-solid fa-cube text-emerald-400 mr-2"></i> 3D Counter Simulation</h3>
-                        <span id="simulationStatusText" class="text-[10px] text-emerald-400 font-mono">Counter Ready</span>
+                    <div class="form-group">
+                        <label>Roll Number</label>
+                        <input type="text" id="sRoll" class="form-control" placeholder="25B21A4601" required>
                     </div>
-                    <div id="canvas-container" class="w-full h-52 rounded-xl overflow-hidden bg-[#07090f] border border-slate-800 relative"></div>
-                </div>
-
-                <!-- Form & Queue Table -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <!-- Issue Token Form -->
-                    <div class="bg-[#111827] border border-slate-800 rounded-2xl p-5 shadow-sm">
-                        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-300 mb-4"><i class="fa-solid fa-ticket mr-2 text-emerald-400"></i> Token & QR Queue Form</h3>
-                        <form id="tokenForm" class="space-y-3">
-                            <div>
-                                <label class="block text-[11px] font-medium text-slate-400 mb-1">Student Name</label>
-                                <input type="text" id="studentName" required placeholder="e.g. K. Sai Prasanna" class="w-full bg-[#0b0f19] border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-emerald-500">
-                            </div>
-                            <div>
-                                <label class="block text-[11px] font-medium text-slate-400 mb-1">Roll Number</label>
-                                <input type="text" id="rollNum" required placeholder="25B21A4601" class="w-full bg-[#0b0f19] border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-emerald-500">
-                            </div>
-                            <div>
-                                <label class="block text-[11px] font-medium text-slate-400 mb-1">Phone Number</label>
-                                <input type="tel" id="phoneNum" required placeholder="8106129837" class="w-full bg-[#0b0f19] border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-emerald-500">
-                            </div>
-                            <div>
-                                <label class="block text-[11px] font-medium text-slate-400 mb-1">Select Food Item</label>
-                                <select id="foodItem" class="w-full bg-[#0b0f19] border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-emerald-500">
-                                    <option value="Idli Vada - ₹40">Idli Vada - ₹40</option>
-                                    <option value="Masala Dosa - ₹50">Masala Dosa - ₹50</option>
-                                    <option value="Chicken Biryani - ₹150">Chicken Biryani - ₹150</option>
-                                    <option value="Paneer Butter Masala - ₹130">Paneer Butter Masala - ₹130</option>
-                                </select>
-                            </div>
-                            <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 px-4 rounded-xl text-xs transition shadow-lg shadow-emerald-600/20 cursor-pointer">
-                                Issue Token & Generate QR 🚀
-                            </button>
-                        </form>
+                    <div class="form-group">
+                        <label>Phone Number</label>
+                        <input type="text" id="sPhone" class="form-control" placeholder="8106129837" required>
                     </div>
-
-                    <!-- Active Queue Table -->
-                    <div class="bg-[#111827] border border-slate-800 rounded-2xl p-5 shadow-sm flex flex-col justify-between">
-                        <div>
-                            <div class="flex items-center justify-between mb-3">
-                                <h3 class="text-xs font-bold uppercase tracking-wider text-slate-300"><i class="fa-solid fa-list-ol mr-2 text-emerald-400"></i> Active Queue Data</h3>
-                                <button onclick="serveNextOrder()" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-1.5 px-3 rounded-xl text-[10px] transition cursor-pointer">
-                                    Serve Next & Speak 🔊
-                                </button>
-                            </div>
-                            <div class="overflow-x-auto max-h-[280px] overflow-y-auto">
-                                <table class="w-full text-left border-collapse text-xs">
-                                    <thead>
-                                        <tr class="border-b border-slate-800 text-slate-400 text-[10px] uppercase">
-                                            <th class="py-2">Token</th>
-                                            <th class="py-2">Student</th>
-                                            <th class="py-2">Food</th>
-                                            <th class="py-2">QR Code</th>
-                                            <th class="py-2">Status</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="waitingQueueTableBody">
-                                        <tr><td colspan="5" class="py-6 text-center text-slate-500 italic">Queue is empty. Enqueue students!</td></tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                        <div class="mt-4 pt-3 border-t border-slate-800 text-[11px] text-slate-400 flex justify-between">
-                            <span>Algorithm: <strong class="text-emerald-400">FIFO Queue</strong></span>
-                            <span>Total Count: <strong class="text-cyan-400" id="queueCountLabel">0 Active</strong></span>
-                        </div>
+                    <div class="form-group">
+                        <label>Select Food Item</label>
+                        <select id="sFood" class="form-control">
+                            <option>Paneer Butter Masala - ₹130</option>
+                            <option>Chicken Biryani - ₹160</option>
+                            <option>Veg Meals - ₹90</option>
+                            <option>Idli Vada - ₹40</option>
+                        </select>
                     </div>
-                </div>
+                    <button type="submit" class="btn-primary">Issue Token & Generate QR 🎫</button>
+                </form>
             </div>
 
-            <!-- Tab 2: Analytics & Peak Rush Chart -->
-            <div id="tab-analytics" class="hidden bg-[#111827] border border-slate-800 rounded-2xl p-5 shadow-sm space-y-4">
-                <h3 class="font-bold text-sm text-white"><i class="fa-solid fa-chart-pie text-emerald-400 mr-2"></i> Peak Hours Traffic Analytics</h3>
-                <p class="text-xs text-slate-400">Historical rush analysis across breakfast, lunch, and dinner shifts.</p>
-                <div class="w-full h-72 bg-[#0b0f19] p-4 rounded-xl border border-slate-800 flex items-center justify-center">
-                    <canvas id="rushChart"></canvas>
+            <!-- Active Queue Table -->
+            <div class="card">
+                <div class="card-title" style="justify-content: space-between;">
+                    <span>📋 ACTIVE QUEUE DATA</span>
+                    <button id="serveBtn" style="background:#2563eb; color:#fff; border:none; padding:6px 12px; border-radius:6px; font-size:11px; cursor:pointer; font-weight:600;">Serve Next & Speak 🔊</button>
                 </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>TOKEN</th>
+                            <th>STUDENT</th>
+                            <th>FOOD</th>
+                            <th>TIMER</th>
+                            <th>QR CODE</th>
+                            <th>STATUS</th>
+                        </tr>
+                    <</thead>
+                    <tbody id="queueTableBody">
+                        <!-- Dynamic rows appear here -->
+                    </tbody>
+                </table>
             </div>
+        </div>
+    </main>
 
-            <!-- Tab 3: Student Self-Tracker -->
-            <div id="tab-tracker" class="hidden bg-[#111827] border border-slate-800 rounded-2xl p-5 shadow-sm space-y-4">
-                <h3 class="font-bold text-sm text-white"><i class="fa-solid fa-bullseye text-emerald-400 mr-2"></i> Student Live Queue Position Tracker</h3>
-                <p class="text-xs text-slate-400">Enter your phone number or token to check your exact live status in the queue.</p>
-                <div class="flex gap-2 max-w-md">
-                    <input type="text" id="trackInput" placeholder="Enter Token (e.g. T-101) or Phone" class="flex-1 bg-[#0b0f19] border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-emerald-500">
-                    <button onclick="trackStudentStatus()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-4 py-2 rounded-xl text-xs transition cursor-pointer">Track 🔍</button>
-                </div>
-                <div id="trackResultBox" class="mt-4 p-4 bg-[#0b0f19] border border-slate-700 rounded-xl text-xs hidden">
-                    <!-- Tracking results appear here -->
-                </div>
-            </div>
-
-            <!-- Tab 4: File I/O Storage -->
-            <div id="tab-fileio" class="hidden bg-[#111827] border border-slate-800 rounded-2xl p-5 shadow-sm space-y-4">
-                <h3 class="font-bold text-sm text-white"><i class="fa-solid fa-file-code text-emerald-400 mr-2"></i> File I/O Records Viewer</h3>
-                <div class="bg-[#0b0f19] border border-slate-700 rounded-xl p-4 space-y-3 text-xs font-mono">
-                    <textarea id="fileIoViewer" readonly class="w-full h-40 bg-[#07090f] text-emerald-400 p-3 rounded-lg border border-slate-800 text-[11px] focus:outline-none resize-none"></textarea>
-                    <button onclick="exportDataFile()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2 px-4 rounded-xl text-xs transition cursor-pointer">
-                        Download File (.json) 💾
-                    </button>
-                </div>
-            </div>
-
-            <!-- Tab 5: SMS Logs -->
-            <div id="tab-smslogs" class="hidden bg-[#111827] border border-slate-800 rounded-2xl p-5 shadow-sm space-y-4">
-                <h3 class="font-bold text-sm text-white"><i class="fa-solid fa-comment-sms text-emerald-400 mr-2"></i> Twilio SMS Dispatch Logs</h3>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse">
-                        <thead>
-                            <tr class="border-b border-slate-800 text-slate-400 text-xs uppercase tracking-wider">
-                                <th class="py-3">Timestamp</th>
-                                <th class="py-3">Phone Number</th>
-                                <th class="py-3">Student Name</th>
-                                <th class="py-3">Message Details</th>
-                                <th class="py-3">Status</th>
-                            </tr>
-                        </thead>
-                        <tbody id="smsLogTableBody" class="text-xs">
-                            <tr><td colspan="5" class="py-8 text-center text-slate-500 italic">No SMS logs recorded yet.</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-        </main>
-    </div>
-
-    <!-- QR Code Modal Overlay -->
-    <div id="qrModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-[#111827] border border-slate-700 rounded-2xl p-6 max-w-sm w-full text-center space-y-4 shadow-2xl">
-            <h3 class="font-bold text-sm text-white uppercase tracking-wider"><i class="fa-solid fa-qrcode text-emerald-400 mr-2"></i> Student Mess Token QR</h3>
-            <div id="qrcodeContainer" class="bg-white p-4 rounded-xl inline-block mx-auto flex justify-center"></div>
-            <p id="qrModalDetails" class="text-xs text-slate-300 font-mono"></p>
-            <button onclick="closeQrModal()" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold py-2 rounded-xl text-xs transition cursor-pointer">Close ✖</button>
+    <!-- QR Modal -->
+    <div class="modal" id="qrModal">
+        <div class="modal-content">
+            <h3 style="font-size: 15px; color:#fff; font-weight: 700;" id="modalTitle">STUDENT MESS TOKEN QR</h3>
+            <div class="qr-wrapper" id="qrcode"></div>
+            <p style="font-size: 12px; color: #9ca3af; margin-bottom: 16px;" id="modalSub">Token: T-118</p>
+            <button class="btn-close" onclick="closeModal()">Close ✕</button>
         </div>
     </div>
 
-    <!-- JavaScript Application Logic -->
     <script>
-        let queueList = JSON.parse(localStorage.getItem('smart_mess_queue')) || [];
-        let smsLogList = JSON.parse(localStorage.getItem('smart_mess_sms_logs')) || [];
-        let tokenCounter = parseInt(localStorage.getItem('smart_mess_token_counter')) || 101;
-        let scene, camera, renderer, studentAvatar, foodTray, rushChartInstance;
-
-        function saveData() {
-            localStorage.setItem('smart_mess_queue', JSON.stringify(queueList));
-            localStorage.setItem('smart_mess_sms_logs', JSON.stringify(smsLogList));
-            localStorage.setItem('smart_mess_token_counter', tokenCounter);
-            updateFileIoViewer();
-        }
-
-        function clearStoredData() {
-            if(confirm("Are you sure you want to reset queue database?")) {
-                localStorage.clear();
-                queueList = [];
-                smsLogList = [];
-                tokenCounter = 101;
-                renderQueue();
-                renderSMSLogs();
-                updateFileIoViewer();
-                alert("Database reset successfully!");
-            }
-        }
-
-        function switchTab(tabId) {
-            ['dashboard', 'analytics', 'tracker', 'fileio', 'smslogs'].forEach(t => {
-                const tabEl = document.getElementById(`tab-${t}`);
-                if(tabEl) tabEl.classList.add('hidden');
-                const navBtn = document.getElementById(`nav-${t}`);
-                if(navBtn) navBtn.className = "w-full text-left flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-slate-800 text-slate-300 text-xs font-medium transition cursor-pointer";
-            });
-
-            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
-            document.getElementById(`nav-${tabId}`).className = "w-full text-left flex items-center gap-3 px-3.5 py-2.5 rounded-xl bg-emerald-500/10 text-emerald-400 text-xs font-bold border border-emerald-500/25 transition cursor-pointer";
-            
-            if(tabId === 'analytics') initRushChart();
-            if(tabId === 'fileio') updateFileIoViewer();
-        }
-
-        function speakText(text) {
-            if ('speechSynthesis' in window) {
-                const utterance = new SpeechSynthesisUtterance(text);
-                utterance.rate = 1.0;
-                utterance.pitch = 1.0;
-                window.speechSynthesis.speak(utterance);
-            }
-        }
-
-        document.getElementById('tokenForm').addEventListener('submit', (e) => {
-            e.preventDefault();
-            const name = document.getElementById('studentName').value;
-            const roll = document.getElementById('rollNum').value;
-            const phone = document.getElementById('phoneNum').value;
-            const food = document.getElementById('foodItem').value;
-            const token = `T-${tokenCounter++}`;
-
-            const newOrder = {
-                token, name, roll, phone, food,
-                status: queueList.length === 0 ? "Preparing 🍳" : "Waiting in Queue ⏳",
-                timeLeft: 180
-            };
-
-            queueList.push(newOrder);
-            saveData();
-            renderQueue();
-
-            smsLogList.unshift({
-                time: new Date().toLocaleTimeString(),
-                phone: phone,
-                name: name,
-                type: `Token ${token} issued with QR. Wait: 3 mins.`,
-                status: "Sent ✅"
-            });
-            saveData();
-            renderSMSLogs();
-
-            // Automatically show QR code modal for generated token
-            showQrModal(token, name, roll, food);
-            document.getElementById('tokenForm').reset();
-        });
-
-        function showQrModal(token, name, roll, food) {
-            const modal = document.getElementById('qrModal');
-            const container = document.getElementById('qrcodeContainer');
-            const details = document.getElementById('qrModalDetails');
-            
-            container.innerHTML = '';
-            new QRCode(container, {
-                text: `TOKEN:${token}|NAME:${name}|ROLL:${roll}|FOOD:${food}`,
-                width: 128,
-                height: 128
-            });
-
-            details.innerHTML = `Token: <strong>${token}</strong><br>Student: ${name} (${roll})<br>Food: ${food}`;
-            modal.classList.remove('hidden');
-        }
-
-        function closeQrModal() {
-            document.getElementById('qrModal').classList.add('hidden');
-        }
+        let queueData = [
+            { token: 'T-118', name: 'vardhan', roll: '25B21A4444', food: 'Paneer Butter Masala - ₹130', timeLeft: 180, status: 'Preparing' }
+        ];
 
         function renderQueue() {
-            const tbody = document.getElementById('waitingQueueTableBody');
-            const countLabel = document.getElementById('queueCountLabel');
-            if(!tbody) return;
-
+            const tbody = document.getElementById('queueTableBody');
             tbody.innerHTML = '';
-            countLabel.innerText = `${queueList.length} Active`;
-
-            if(queueList.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" class="py-6 text-center text-slate-500 italic">Queue is empty. Enqueue students!</td></tr>`;
-                return;
-            }
-
-            queueList.forEach((order, index) => {
-                let mins = Math.floor(order.timeLeft / 60);
-                let secs = order.timeLeft % 60;
-                let timeStr = `${mins < 10 ? '0' : ''}${mins}:${secs < 10 ? '0' : ''}${secs}`;
-
-                if(index === 0 && order.status.includes('Waiting')) {
-                    order.status = "Preparing 🍳";
-                }
+            queueData.forEach((item, index) => {
+                let minutes = Math.floor(item.timeLeft / 60);
+                let seconds = item.timeLeft % 60;
+                let formattedTime = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
 
                 const tr = document.createElement('tr');
-                tr.className = "border-b border-slate-800/50 text-slate-300";
                 tr.innerHTML = `
-                    <td class="py-2.5 font-mono font-bold text-emerald-400">${order.token}</td>
-                    <td class="py-2.5 font-semibold">${order.name}<br><span class="text-[10px] text-slate-500 font-mono">${order.roll}</span></td>
-                    <td class="py-2.5">${order.food}</td>
-                    <td class="py-2.5">
-                        <button onclick="showQrModal('${order.token}', '${order.name}', '${order.roll}', '${order.food}')" class="bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2.5 py-1 rounded-lg text-[10px] font-bold cursor-pointer">
-                            View QR 📱
-                        </button>
-                    </td>
-                    <td class="py-2.5"><span class="px-2 py-0.5 rounded text-[10px] font-bold ${order.status.includes('Ready') ? 'bg-emerald-500/20 text-emerald-300' : 'bg-amber-500/20 text-amber-300'}">${order.status}</span></td>
+                    <td style="font-weight:700; color:#34d399;">${item.token}</td>
+                    <td>${item.name}<br><span style="font-size:10px; color:#6b7280;">${item.roll}</span></td>
+                    <td style="font-size:11px;">${item.food}</td>
+                    <td style="font-weight:600; color:${item.timeLeft > 0 ? '#fbbf24' : '#34d399'};">${item.timeLeft > 0 ? formattedTime : 'Ready! 🟢'}</td>
+                    <td><button class="btn-action" onclick="showQR('${item.token}', '${item.name}', '${item.roll}', '${item.food}')">View QR 📱</button></td>
+                    <td><span class="status-badge ${item.status === 'Ready' ? 'status-ready' : 'status-prep'}">${item.status}</span></td>
                 `;
                 tbody.appendChild(tr);
             });
         }
 
+        // Timer decrement loop every 1 second
         setInterval(() => {
-            if(queueList.length > 0) {
-                let currentOrder = queueList[0];
-                if(currentOrder.timeLeft > 0) {
-                    currentOrder.timeLeft--;
-                    if(currentOrder.timeLeft === 0 && !currentOrder.status.includes('Ready')) {
-                        currentOrder.status = "Ready! 🟢";
-                        speakText(`Token ${currentOrder.token}, ${currentOrder.name}, please collect your food.`);
+            let updated = false;
+            queueData.forEach(item => {
+                if (item.timeLeft > 0) {
+                    item.timeLeft--;
+                    if (item.timeLeft === 0) {
+                        item.status = 'Ready';
+                        if ('speechSynthesis' in window) {
+                            let utterance = new SpeechSynthesisUtterance(`Token ${item.token}, ${item.name}, your food is ready at the counter.`);
+                            window.speechSynthesis.speak(utterance);
+                        }
                     }
-                    saveData();
-                    renderQueue();
+                    updated = true;
                 }
-            }
+            });
+            if (updated) renderQueue();
         }, 1000);
 
-        function serveNextOrder() {
-            if(queueList.length === 0) {
-                alert("Queue is empty!");
-                return;
-            }
-            const served = queueList.shift();
-            speakText(`Token ${served.token} collected food. Next student please.`);
-            saveData();
+        document.getElementById('queueForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const name = document.getElementById('sName').value;
+            const roll = document.getElementById('sRoll').value;
+            const phone = document.getElementById('sPhone').value;
+            const food = document.getElementById('sFood').value;
+
+            const tokenNum = 'T-' + (119 + queueData.length);
+            queueData.push({ token: tokenNum, name, roll, food, timeLeft: 180, status: 'Preparing' });
             renderQueue();
-            alert(`✅ Student ${served.name} (${served.token}) served successfully!`);
+            showQR(tokenNum, name, roll, food);
+            this.reset();
+        });
+
+        function showQR(token, name, roll, food) {
+            document.getElementById('qrModal').style.display = 'flex';
+            document.getElementById('modalSub').innerText = `Token: ${token} | ${name} (${roll})\n${food}`;
+            document.getElementById('qrcode').innerHTML = '';
+            new QRCode(document.getElementById('qrcode'), {
+                text: `TOKEN:${token}|NAME:${name}|ROLL:${roll}|FOOD:${food}`,
+                width: 140,
+                height: 140
+            });
         }
 
-        function trackStudentStatus() {
-            const query = document.getElementById('trackInput').value.trim().toUpperCase();
-            const resBox = document.getElementById('trackResultBox');
-            resBox.classList.remove('hidden');
+        function closeModal() {
+            document.getElementById('qrModal').style.display = 'none';
+        }
 
-            const index = queueList.findIndex(o => o.token === query || o.phone === query);
-            if(index !== -1) {
-                const item = queueList[index];
-                resBox.innerHTML = `
-                    <div class="space-y-1 text-slate-200">
-                        <p><strong>Student:</strong> ${item.name} (${item.roll})</p>
-                        <p><strong>Token:</strong> <span class="text-emerald-400 font-bold">${item.token}</span></p>
-                        <p><strong>Queue Position:</strong> <span class="text-cyan-400 font-bold">${index + 1}</span></p>
-                        <p><strong>Status:</strong> ${item.status}</p>
-                    </div>
-                `;
+        document.getElementById('serveBtn').addEventListener('click', function() {
+            if (queueData.length > 0) {
+                let served = queueData.shift();
+                renderQueue();
+                if ('speechSynthesis' in window) {
+                    let utterance = new SpeechSynthesisUtterance(`Token ${served.token}, please collect your order.`);
+                    window.speechSynthesis.speak(utterance);
+                }
             } else {
-                resBox.innerHTML = `<p class="text-red-400">Token or Phone number not found in active queue.</p>`;
+                alert('Queue is empty!');
             }
-        }
+        });
 
-        function initRushChart() {
-            const ctx = document.getElementById('rushChart').getContext('2d');
-            if(rushChartInstance) rushChartInstance.destroy();
-
-            rushChartInstance = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: ['08:00 AM', '09:00 AM', '12:30 PM', '01:30 PM', '07:30 PM', '08:30 PM'],
-                    datasets: [{
-                        label: 'Students Count (Rush Pattern)',
-                        data: [45, 120, 250, 180, 210, 95],
-                        borderColor: '#10b981',
-                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
-                        fill: true,
-                        tension: 0.4
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { labels: { color: '#94a3b8' } } },
-                    scales: {
-                        x: { ticks: { color: '#94a3b8' }, grid: { color: '#1e293b' } },
-                        y: { ticks: { color: '#94a3b8' }, grid: { color: '#1e293b' } }
-                    }
-                }
-            });
-        }
-
-        function updateFileIoViewer() {
-            const dataObj = { queue: queueList, logs: smsLogList, tokenCounter: tokenCounter };
-            document.getElementById('fileIoViewer').value = JSON.stringify(dataObj, null, 2);
-        }
-
-        function exportDataFile() {
-            const blob = new Blob([JSON.stringify({ queue: queueList, logs: smsLogList }, null, 2)], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'mess_queue_records.json';
-            a.click();
-        }
-
-        function renderSMSLogs() {
-            const tbody = document.getElementById('smsLogTableBody');
-            if(!tbody) return;
-            tbody.innerHTML = '';
-            if(smsLogList.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" class="py-8 text-center text-slate-500 italic">No SMS logs recorded yet.</td></tr>`;
-                return;
-            }
-            smsLogList.forEach(log => {
-                const tr = document.createElement('tr');
-                tr.className = "border-b border-slate-800/50 text-slate-300";
-                tr.innerHTML = `
-                    <td class="py-3 font-mono text-slate-400">${log.time}</td>
-                    <td class="py-3 font-mono">${log.phone}</td>
-                    <td class="py-3 font-semibold">${log.name}</td>
-                    <td class="py-3 text-cyan-400 font-medium">${log.type}</td>
-                    <td class="py-3 text-emerald-400 font-semibold">${log.status}</td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-
-        function init3D() {
-            const container = document.getElementById('canvas-container');
-            if(!container) return;
-            container.innerHTML = '';
-
-            scene = new THREE.Scene();
-            camera = new THREE.PerspectiveCamera(60, container.clientWidth / container.clientHeight, 0.1, 1000);
-            renderer = new THREE.WebGLRenderer({ antialias: true });
-            renderer.setSize(container.clientWidth, container.clientHeight);
-            container.appendChild(renderer.domElement);
-
-            scene.add(new THREE.AmbientLight(0xffffff, 0.8));
-            scene.add(new THREE.GridHelper(20, 20, 0x10b981, 0x1f2937));
-
-            const desk = new THREE.Mesh(new THREE.BoxGeometry(4, 0.7, 1.2), new THREE.MeshStandardMaterial({ color: 0x065f46 }));
-            desk.position.set(0, 0.35, -2);
-            scene.add(desk);
-
-            studentAvatar = new THREE.Mesh(new THREE.BoxGeometry(0.6, 1.2, 0.4), new THREE.MeshStandardMaterial({ color: 0x3b82f6 }));
-            studentAvatar.position.set(0, 0.6, 3);
-            scene.add(studentAvatar);
-
-            foodTray = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.1, 0.4), new THREE.MeshStandardMaterial({ color: 0xf59e0b }));
-            foodTray.position.set(0, 0.75, -2);
-            scene.add(foodTray);
-
-            camera.position.set(0, 3.5, 5);
-            camera.lookAt(0, 0, -2);
-
-            function animate() {
-                requestAnimationFrame(animate);
-                const readyOrder = queueList.find(o => o.status.includes('Ready'));
-                const activeOrder = queueList[0];
-
-                if (readyOrder) {
-                    if (studentAvatar.position.z > -1.2) studentAvatar.position.z -= 0.03;
-                    else { foodTray.visible = false; studentAvatar.position.x += 0.03; }
-                    studentAvatar.material.color.setHex(0x10b981);
-                } else if (activeOrder) {
-                    foodTray.visible = true;
-                    if (studentAvatar.position.z > 0.5) studentAvatar.position.z -= 0.02;
-                    studentAvatar.material.color.setHex(0x3b82f6);
-                } else {
-                    foodTray.visible = false;
-                    studentAvatar.position.set(0, 0.6, 3);
-                    studentAvatar.material.color.setHex(0x64748b);
-                }
-                renderer.render(scene, camera);
-            }
-            animate();
-        }
-
-        window.onload = () => {
-            init3D();
-            renderQueue();
-            renderSMSLogs();
-            updateFileIoViewer();
-        };
+        renderQueue();
     </script>
 </body>
 </html>
