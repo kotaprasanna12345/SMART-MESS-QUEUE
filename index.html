@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smart Mess Queue Manager - AI & File I/O Integrated</title>
+    <title>Smart Mess Queue Manager - AI & Advanced Voice Enabled</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
@@ -22,13 +23,13 @@
                     <i class="fa-solid fa-utensils text-lg"></i>
                 </div>
                 <div>
-                    <h1 class="font-bold text-sm sm:text-base tracking-wide text-white">SMART MESS QUEUE MANAGER (R23 Aligned)</h1>
-                    <p class="text-[11px] text-slate-400">Queue + Loops + Switches + AI Predictor + File I/O + Twilio</p>
+                    <h1 class="font-bold text-sm sm:text-base tracking-wide text-white">SMART MESS QUEUE MANAGER (R23 Advanced)</h1>
+                    <p class="text-[11px] text-slate-400">Queue + Loops + Switches + AI Predictor + Voice TTS + Analytics</p>
                 </div>
             </div>
             <div class="flex items-center space-x-3">
                 <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> AI Engine Active
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Voice & AI Active
                 </span>
             </div>
         </div>
@@ -43,8 +44,11 @@
                     <button onclick="switchTab('dashboard')" id="nav-dashboard" class="w-full text-left flex items-center gap-3 px-3.5 py-2.5 rounded-xl bg-emerald-500/10 text-emerald-400 text-xs font-bold border border-emerald-500/25 transition cursor-pointer">
                         <i class="fa-solid fa-chart-line w-5"></i> Live Queue Dashboard
                     </button>
-                    <button onclick="switchTab('menu')" id="nav-menu" class="w-full text-left flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-slate-800 text-slate-300 text-xs font-medium transition cursor-pointer">
-                        <i class="fa-solid fa-book-open w-5"></i> Mess Menu & Switches
+                    <button onclick="switchTab('analytics')" id="nav-analytics" class="w-full text-left flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-slate-800 text-slate-300 text-xs font-medium transition cursor-pointer">
+                        <i class="fa-solid fa-chart-pie w-5"></i> Rush Analytics & Graphs
+                    </button>
+                    <button onclick="switchTab('tracker')" id="nav-tracker" class="w-full text-left flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-slate-800 text-slate-300 text-xs font-medium transition cursor-pointer">
+                        <i class="fa-solid fa-bullseye w-5"></i> Student Self-Tracker
                     </button>
                     <button onclick="switchTab('fileio')" id="nav-fileio" class="w-full text-left flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-slate-800 text-slate-300 text-xs font-medium transition cursor-pointer">
                         <i class="fa-solid fa-file-code w-5"></i> File I/O & Storage
@@ -58,7 +62,6 @@
             <!-- File I/O Quick Actions Card -->
             <div class="bg-[#111827] border border-slate-800 rounded-2xl p-4 shadow-sm space-y-3">
                 <h4 class="text-xs font-bold uppercase tracking-wider text-slate-300"><i class="fa-solid fa-hdd text-emerald-400 mr-2"></i> File I/O Management</h4>
-                <p class="text-[11px] text-slate-400">Export/Import queue records like C File Handling.</p>
                 <div class="grid grid-cols-2 gap-2">
                     <button onclick="exportDataFile()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold py-2 px-2 rounded-xl text-[11px] transition cursor-pointer text-center">
                         Export (.json) 📥
@@ -73,37 +76,36 @@
         <!-- Main Content Area -->
         <main class="lg:col-span-3 space-y-6">
 
-            <!-- Tab 1: Live Dashboard & 3D & Waiting List -->
+            <!-- Tab 1: Live Dashboard -->
             <div id="tab-dashboard" class="space-y-6">
-                
                 <!-- AI Prediction Banner -->
                 <div class="bg-gradient-to-r from-emerald-900/40 via-[#111827] to-[#111827] border border-emerald-500/30 rounded-2xl p-4 shadow-sm flex items-center justify-between">
                     <div class="flex items-center space-x-3">
                         <div class="bg-emerald-500/20 p-2.5 rounded-xl text-emerald-400">
-                            <i class="fa-solid fa-brain text-lg"></i>
+                            <i class="fa-solid fa-microphone-lines text-lg"></i>
                         </div>
                         <div>
-                            <h4 class="text-xs font-bold text-emerald-400 uppercase tracking-wider">AI / LLM Wait Time Prediction Layer</h4>
-                            <p class="text-[11px] text-slate-300" id="aiPredictionText">Analyzing historical rush patterns... Estimated average wait: <strong class="text-white">3 mins per person</strong>.</p>
+                            <h4 class="text-xs font-bold text-emerald-400 uppercase tracking-wider">Voice TTS & AI Predictor Layer</h4>
+                            <p class="text-[11px] text-slate-300" id="aiPredictionText">Audio Announcer ready. Estimated average wait: <strong class="text-white">3 mins per person</strong>.</p>
                         </div>
                     </div>
-                    <span class="hidden sm:inline-block px-3 py-1 bg-emerald-500/10 text-emerald-400 rounded-lg text-[10px] font-mono border border-emerald-500/20">Model: R23-AI-Queue v2.4</span>
+                    <span class="hidden sm:inline-block px-3 py-1 bg-emerald-500/10 text-emerald-400 rounded-lg text-[10px] font-mono border border-emerald-500/20">TTS Audio Enabled</span>
                 </div>
 
                 <!-- 3D Counter View -->
                 <div class="bg-[#111827] border border-slate-800 rounded-2xl p-4 shadow-sm">
                     <div class="flex items-center justify-between mb-3">
-                        <h3 class="font-bold text-xs uppercase tracking-wider text-slate-300"><i class="fa-solid fa-cube text-emerald-400 mr-2"></i> 3D Counter Simulation (Sequential Queue & Walkaway)</h3>
+                        <h3 class="font-bold text-xs uppercase tracking-wider text-slate-300"><i class="fa-solid fa-cube text-emerald-400 mr-2"></i> 3D Counter Simulation</h3>
                         <span id="simulationStatusText" class="text-[10px] text-emerald-400 font-mono">Counter Ready</span>
                     </div>
                     <div id="canvas-container" class="w-full h-52 rounded-xl overflow-hidden bg-[#07090f] border border-slate-800 relative"></div>
                 </div>
 
-                <!-- Form & Active Waiting Queue Table Section -->
+                <!-- Form & Queue Table -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <!-- Issue Token Form -->
                     <div class="bg-[#111827] border border-slate-800 rounded-2xl p-5 shadow-sm">
-                        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-300 mb-4"><i class="fa-solid fa-ticket mr-2 text-emerald-400"></i> Token Queue & Switch Control</h3>
+                        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-300 mb-4"><i class="fa-solid fa-ticket mr-2 text-emerald-400"></i> Token Queue Form</h3>
                         <form id="tokenForm" class="space-y-3">
                             <div>
                                 <label class="block text-[11px] font-medium text-slate-400 mb-1">Student Name</label>
@@ -114,24 +116,16 @@
                                 <input type="text" id="rollNum" required placeholder="25B21A4601" class="w-full bg-[#0b0f19] border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-emerald-500">
                             </div>
                             <div>
-                                <label class="block text-[11px] font-medium text-slate-400 mb-1">Phone Number (Twilio SMS Tracking)</label>
+                                <label class="block text-[11px] font-medium text-slate-400 mb-1">Phone Number</label>
                                 <input type="tel" id="phoneNum" required placeholder="8106129837" class="w-full bg-[#0b0f19] border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-emerald-500">
                             </div>
                             <div>
-                                <label class="block text-[11px] font-medium text-slate-400 mb-1">Select Food Item (Switch Switcher)</label>
+                                <label class="block text-[11px] font-medium text-slate-400 mb-1">Select Food Item</label>
                                 <select id="foodItem" class="w-full bg-[#0b0f19] border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-emerald-500">
-                                    <optgroup label="Breakfast">
-                                        <option value="Idli Vada - ₹40">Idli Vada - ₹40</option>
-                                        <option value="Masala Dosa - ₹50">Masala Dosa - ₹50</option>
-                                    </optgroup>
-                                    <optgroup label="Lunch">
-                                        <option value="Chicken Biryani - ₹150">Chicken Biryani - ₹150</option>
-                                        <option value="Special Thali Meals - ₹120">Special Thali Meals - ₹120</option>
-                                    </optgroup>
-                                    <optgroup label="Snacks">
-                                        <option value="Veg Manchuria - ₹80">Veg Manchuria - ₹80</option>
-                                        <option value="Samosa (2 pcs) - ₹30">Samosa (2 pcs) - ₹30</option>
-                                    </optgroup>
+                                    <option value="Idli Vada - ₹40">Idli Vada - ₹40</option>
+                                    <option value="Masala Dosa - ₹50">Masala Dosa - ₹50</option>
+                                    <option value="Chicken Biryani - ₹150">Chicken Biryani - ₹150</option>
+                                    <option value="Paneer Butter Masala - ₹130">Paneer Butter Masala - ₹130</option>
                                 </select>
                             </div>
                             <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 px-4 rounded-xl text-xs transition shadow-lg shadow-emerald-600/20 cursor-pointer">
@@ -140,13 +134,13 @@
                         </form>
                     </div>
 
-                    <!-- Waiting List Queue Table -->
+                    <!-- Active Queue Table -->
                     <div class="bg-[#111827] border border-slate-800 rounded-2xl p-5 shadow-sm flex flex-col justify-between">
                         <div>
                             <div class="flex items-center justify-between mb-3">
-                                <h3 class="text-xs font-bold uppercase tracking-wider text-slate-300"><i class="fa-solid fa-list-ol mr-2 text-emerald-400"></i> Active Queue Data Structure</h3>
+                                <h3 class="text-xs font-bold uppercase tracking-wider text-slate-300"><i class="fa-solid fa-list-ol mr-2 text-emerald-400"></i> Active Queue Data</h3>
                                 <button onclick="serveNextOrder()" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-1.5 px-3 rounded-xl text-[10px] transition cursor-pointer">
-                                    Serve Next ⚡
+                                    Serve Next & Speak 🔊
                                 </button>
                             </div>
                             <div class="overflow-x-auto max-h-[280px] overflow-y-auto">
@@ -167,61 +161,47 @@
                             </div>
                         </div>
                         <div class="mt-4 pt-3 border-t border-slate-800 text-[11px] text-slate-400 flex justify-between">
-                            <span>Algorithm: <strong class="text-emerald-400">FIFO Queue + AI Timing</strong></span>
+                            <span>Algorithm: <strong class="text-emerald-400">FIFO Queue</strong></span>
                             <span>Total Count: <strong class="text-cyan-400" id="queueCountLabel">0 Active</strong></span>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Tab 2: Menu & Switches Control Panel -->
-            <div id="tab-menu" class="hidden bg-[#111827] border border-slate-800 rounded-2xl p-5 shadow-sm space-y-4">
-                <h3 class="font-bold text-sm text-white mb-2"><i class="fa-solid fa-sliders text-emerald-400 mr-2"></i> Mess Counter Operational Switches & Menu Control</h3>
-                <p class="text-xs text-slate-400 mb-4">Use switches below to toggle mess counters or quick menu categories (Simulating Switch/Case logic).</p>
-                
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div class="bg-[#0b0f19] border border-slate-700 rounded-xl p-4 flex items-center justify-between">
-                        <div>
-                            <h4 class="text-xs font-bold text-white">Counter 1 (Breakfast / Snacks)</h4>
-                            <p class="text-[11px] text-slate-400">Status: Operational</p>
-                        </div>
-                        <label class="relative inline-flex items-center cursor-pointer">
-                            <input type="checkbox" checked class="sr-only peer" onchange="toggleCounterStatus(1, this)">
-                            <div class="w-9 h-5 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-emerald-600"></div>
-                        </label>
-                    </div>
-                    <div class="bg-[#0b0f19] border border-slate-700 rounded-xl p-4 flex items-center justify-between">
-                        <div>
-                            <h4 class="text-xs font-bold text-white">Counter 2 (Lunch / Special Meals)</h4>
-                            <p class="text-[11px] text-slate-400">Status: Operational</p>
-                        </div>
-                        <label class="relative inline-flex items-center cursor-pointer">
-                            <input type="checkbox" checked class="sr-only peer" onchange="toggleCounterStatus(2, this)">
-                            <div class="w-9 h-5 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-emerald-600"></div>
-                        </label>
-                    </div>
+            <!-- Tab 2: Analytics & Peak Rush Chart -->
+            <div id="tab-analytics" class="hidden bg-[#111827] border border-slate-800 rounded-2xl p-5 shadow-sm space-y-4">
+                <h3 class="font-bold text-sm text-white"><i class="fa-solid fa-chart-pie text-emerald-400 mr-2"></i> Peak Hours Traffic Analytics</h3>
+                <p class="text-xs text-slate-400">Historical rush analysis across breakfast, lunch, and dinner shifts.</p>
+                <div class="w-full h-72 bg-[#0b0f19] p-4 rounded-xl border border-slate-800 flex items-center justify-center">
+                    <canvas id="rushChart"></canvas>
                 </div>
             </div>
 
-            <!-- Tab 3: File I/O & Storage Management -->
+            <!-- Tab 3: Student Self-Tracker -->
+            <div id="tab-tracker" class="hidden bg-[#111827] border border-slate-800 rounded-2xl p-5 shadow-sm space-y-4">
+                <h3 class="font-bold text-sm text-white"><i class="fa-solid fa-bullseye text-emerald-400 mr-2"></i> Student Live Queue Position Tracker</h3>
+                <p class="text-xs text-slate-400">Enter your phone number or token to check your exact live status in the queue.</p>
+                <div class="flex gap-2 max-w-md">
+                    <input type="text" id="trackInput" placeholder="Enter Token (e.g. T-101) or Phone" class="flex-1 bg-[#0b0f19] border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-emerald-500">
+                    <button onclick="trackStudentStatus()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-4 py-2 rounded-xl text-xs transition cursor-pointer">Track 🔍</button>
+                </div>
+                <div id="trackResultBox" class="mt-4 p-4 bg-[#0b0f19] border border-slate-700 rounded-xl text-xs hidden">
+                    <!-- Tracking results appear here -->
+                </div>
+            </div>
+
+            <!-- Tab 4: File I/O Storage -->
             <div id="tab-fileio" class="hidden bg-[#111827] border border-slate-800 rounded-2xl p-5 shadow-sm space-y-4">
-                <h3 class="font-bold text-sm text-white"><i class="fa-solid fa-file-code text-emerald-400 mr-2"></i> File I/O Records & Database Simulation</h3>
-                <p class="text-xs text-slate-400">Simulating C-style file input/output streams for queue logs and transactions.</p>
+                <h3 class="font-bold text-sm text-white"><i class="fa-solid fa-file-code text-emerald-400 mr-2"></i> File I/O Records Viewer</h3>
                 <div class="bg-[#0b0f19] border border-slate-700 rounded-xl p-4 space-y-3 text-xs font-mono">
-                    <div class="flex justify-between items-center text-slate-400 pb-2 border-b border-slate-800">
-                        <span>storage_stream.dat / mess_records.json</span>
-                        <span class="text-emerald-400" id="fileRecordCount">0 records loaded</span>
-                    </div>
-                    <textarea id="fileIoViewer" readonly class="w-full h-36 bg-[#07090f] text-emerald-400 p-3 rounded-lg border border-slate-800 text-[11px] focus:outline-none resize-none"></textarea>
-                    <div class="flex gap-3 pt-2">
-                        <button onclick="exportDataFile()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2 px-4 rounded-xl text-xs transition cursor-pointer">
-                            Download File (.json) 💾
-                        </button>
-                    </div>
+                    <textarea id="fileIoViewer" readonly class="w-full h-40 bg-[#07090f] text-emerald-400 p-3 rounded-lg border border-slate-800 text-[11px] focus:outline-none resize-none"></textarea>
+                    <button onclick="exportDataFile()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2 px-4 rounded-xl text-xs transition cursor-pointer">
+                        Download File (.json) 💾
+                    </button>
                 </div>
             </div>
 
-            <!-- Tab 4: SMS Logs -->
+            <!-- Tab 5: SMS Logs -->
             <div id="tab-smslogs" class="hidden bg-[#111827] border border-slate-800 rounded-2xl p-5 shadow-sm space-y-4">
                 <h3 class="font-bold text-sm text-white"><i class="fa-solid fa-comment-sms text-emerald-400 mr-2"></i> Twilio SMS Dispatch Logs</h3>
                 <div class="overflow-x-auto">
@@ -250,8 +230,7 @@
         let queueList = JSON.parse(localStorage.getItem('smart_mess_queue')) || [];
         let smsLogList = JSON.parse(localStorage.getItem('smart_mess_sms_logs')) || [];
         let tokenCounter = parseInt(localStorage.getItem('smart_mess_token_counter')) || 101;
-
-        let scene, camera, renderer, studentAvatar, foodTray;
+        let scene, camera, renderer, studentAvatar, foodTray, rushChartInstance;
 
         function saveData() {
             localStorage.setItem('smart_mess_queue', JSON.stringify(queueList));
@@ -274,48 +253,27 @@
         }
 
         function switchTab(tabId) {
-            ['dashboard', 'menu', 'fileio', 'smslogs'].forEach(t => {
+            ['dashboard', 'analytics', 'tracker', 'fileio', 'smslogs'].forEach(t => {
                 const tabEl = document.getElementById(`tab-${t}`);
                 if(tabEl) tabEl.classList.add('hidden');
-                
                 const navBtn = document.getElementById(`nav-${t}`);
-                if(navBtn) {
-                    navBtn.className = "w-full text-left flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-slate-800 text-slate-300 text-xs font-medium transition cursor-pointer";
-                }
+                if(navBtn) navBtn.className = "w-full text-left flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-slate-800 text-slate-300 text-xs font-medium transition cursor-pointer";
             });
 
-            const targetTab = document.getElementById(`tab-${tabId}`);
-            if(targetTab) targetTab.classList.remove('hidden');
-
-            const activeBtn = document.getElementById(`nav-${tabId}`);
-            if(activeBtn) {
-                activeBtn.className = "w-full text-left flex items-center gap-3 px-3.5 py-2.5 rounded-xl bg-emerald-500/10 text-emerald-400 text-xs font-bold border border-emerald-500/25 transition cursor-pointer";
-            }
+            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+            document.getElementById(`nav-${tabId}`).className = "w-full text-left flex items-center gap-3 px-3.5 py-2.5 rounded-xl bg-emerald-500/10 text-emerald-400 text-xs font-bold border border-emerald-500/25 transition cursor-pointer";
+            
+            if(tabId === 'analytics') initRushChart();
             if(tabId === 'fileio') updateFileIoViewer();
         }
 
-        function updateFileIoViewer() {
-            const dataObj = { queue: queueList, logs: smsLogList, tokenCounter: tokenCounter };
-            const jsonStr = JSON.stringify(dataObj, null, 2);
-            const viewer = document.getElementById('fileIoViewer');
-            if(viewer) viewer.value = jsonStr;
-            const recordCount = document.getElementById('fileRecordCount');
-            if(recordCount) recordCount.innerText = `${queueList.length} active queue, ${smsLogList.length} SMS logs`;
-        }
-
-        function exportDataFile() {
-            const dataObj = { queue: queueList, logs: smsLogList, exportedAt: new Date().toISOString() };
-            const blob = new Blob([JSON.stringify(dataObj, null, 2)], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'mess_queue_file_stream.json';
-            a.click();
-            URL.revokeObjectURL(url);
-        }
-
-        function toggleCounterStatus(counterNum, el) {
-            alert(`[SWITCH LOGIC] Counter ${counterNum} status switched to: ${el.checked ? 'OPEN (Operational)' : 'CLOSED'}`);
+        function speakText(text) {
+            if ('speechSynthesis' in window) {
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.rate = 1.0;
+                utterance.pitch = 1.0;
+                window.speechSynthesis.speak(utterance);
+            }
         }
 
         document.getElementById('tokenForm').addEventListener('submit', (e) => {
@@ -326,13 +284,10 @@
             const food = document.getElementById('foodItem').value;
             const token = `T-${tokenCounter++}`;
 
-            // AI Wait Time Calculation based on current queue length (Simulated AI Model Layer)
-            let aiPredictedSeconds = 180; // base 3 mins
-
             const newOrder = {
                 token, name, roll, phone, food,
                 status: queueList.length === 0 ? "Preparing 🍳" : "Waiting in Queue ⏳",
-                timeLeft: aiPredictedSeconds
+                timeLeft: 180
             };
 
             queueList.push(newOrder);
@@ -343,17 +298,14 @@
                 time: new Date().toLocaleTimeString(),
                 phone: phone,
                 name: name,
-                type: `AI Predicted Wait: 3 mins. Token ${token} issued.`,
+                type: `Token ${token} issued. Wait: 3 mins.`,
                 status: "Sent ✅"
             });
             saveData();
             renderSMSLogs();
 
-            document.getElementById('aiPredictionText').innerHTML = `AI Model predicts stable traffic. Last assigned: <strong>${token}</strong> (~3 mins slot).`;
-            alert(`📱 [TWILIO SMS SENT]\nToken ${token} issued for ${name}.\nAI assigned exact 3-min timer!`);
-            document.getElementById('studentName').value = '';
-            document.getElementById('rollNum').value = '';
-            document.getElementById('phoneNum').value = '';
+            alert(`📱 [TWILIO SMS SENT] Token ${token} issued for ${name}!`);
+            document.getElementById('tokenForm').reset();
         });
 
         function renderQueue() {
@@ -391,7 +343,6 @@
             });
         }
 
-        // Timer Loop (Exact 3 mins per person)
         setInterval(() => {
             if(queueList.length > 0) {
                 let currentOrder = queueList[0];
@@ -399,6 +350,7 @@
                     currentOrder.timeLeft--;
                     if(currentOrder.timeLeft === 0 && !currentOrder.status.includes('Ready')) {
                         currentOrder.status = "Ready! 🟢";
+                        speakText(`Token ${currentOrder.token}, ${currentOrder.name}, please collect your food.`);
                     }
                     saveData();
                     renderQueue();
@@ -412,9 +364,74 @@
                 return;
             }
             const served = queueList.shift();
+            speakText(`Token ${served.token} collected food. Next student please.`);
             saveData();
             renderQueue();
-            alert(`✅ Student ${served.name} (${served.token}) served successfully and walked away!`);
+            alert(`✅ Student ${served.name} (${served.token}) served successfully!`);
+        }
+
+        function trackStudentStatus() {
+            const query = document.getElementById('trackInput').value.trim().toUpperCase();
+            const resBox = document.getElementById('trackResultBox');
+            resBox.classList.remove('hidden');
+
+            const index = queueList.findIndex(o => o.token === query || o.phone === query);
+            if(index !== -1) {
+                const item = queueList[index];
+                resBox.innerHTML = `
+                    <div class="space-y-1 text-slate-200">
+                        <p><strong>Student:</strong> ${item.name} (${item.roll})</p>
+                        <p><strong>Token:</strong> <span class="text-emerald-400 font-bold">${item.token}</span></p>
+                        <p><strong>Queue Position:</strong> <span class="text-cyan-400 font-bold">${index + 1}</span></p>
+                        <p><strong>Status:</strong> ${item.status}</p>
+                    </div>
+                `;
+            } else {
+                resBox.innerHTML = `<p class="text-red-400">Token or Phone number not found in active queue.</p>`;
+            }
+        }
+
+        function initRushChart() {
+            const ctx = document.getElementById('rushChart').getContext('2d');
+            if(rushChartInstance) rushChartInstance.destroy();
+
+            rushChartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['08:00 AM', '09:00 AM', '12:30 PM', '01:30 PM', '07:30 PM', '08:30 PM'],
+                    datasets: [{
+                        label: 'Students Count (Rush Pattern)',
+                        data: [45, 120, 250, 180, 210, 95],
+                        borderColor: '#10b981',
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { labels: { color: '#94a3b8' } } },
+                    scales: {
+                        x: { ticks: { color: '#94a3b8' }, grid: { color: '#1e293b' } },
+                        y: { ticks: { color: '#94a3b8' }, grid: { color: '#1e293b' } }
+                    }
+                }
+            });
+        }
+
+        function updateFileIoViewer() {
+            const dataObj = { queue: queueList, logs: smsLogList, tokenCounter: tokenCounter };
+            document.getElementById('fileIoViewer').value = JSON.stringify(dataObj, null, 2);
+        }
+
+        function exportDataFile() {
+            const blob = new Blob([JSON.stringify({ queue: queueList, logs: smsLogList }, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'mess_queue_records.json';
+            a.click();
         }
 
         function renderSMSLogs() {
@@ -439,7 +456,6 @@
             });
         }
 
-        // 3D Scene Simulation
         function init3D() {
             const container = document.getElementById('canvas-container');
             if(!container) return;
@@ -451,30 +467,18 @@
             renderer.setSize(container.clientWidth, container.clientHeight);
             container.appendChild(renderer.domElement);
 
-            const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
-            scene.add(ambientLight);
-            const pointLight = new THREE.PointLight(0x10b981, 1.5, 50);
-            pointLight.position.set(0, 10, 5);
-            scene.add(pointLight);
+            scene.add(new THREE.AmbientLight(0xffffff, 0.8));
+            scene.add(new THREE.GridHelper(20, 20, 0x10b981, 0x1f2937));
 
-            const gridHelper = new THREE.GridHelper(20, 20, 0x10b981, 0x1f2937);
-            scene.add(gridHelper);
-
-            const deskGeo = new THREE.BoxGeometry(4, 0.7, 1.2);
-            const deskMat = new THREE.MeshStandardMaterial({ color: 0x065f46 });
-            const desk = new THREE.Mesh(deskGeo, deskMat);
+            const desk = new THREE.Mesh(new THREE.BoxGeometry(4, 0.7, 1.2), new THREE.MeshStandardMaterial({ color: 0x065f46 }));
             desk.position.set(0, 0.35, -2);
             scene.add(desk);
 
-            const studentGeo = new THREE.BoxGeometry(0.6, 1.2, 0.4);
-            const studentMat = new THREE.MeshStandardMaterial({ color: 0x3b82f6 });
-            studentAvatar = new THREE.Mesh(studentGeo, studentMat);
+            studentAvatar = new THREE.Mesh(new THREE.BoxGeometry(0.6, 1.2, 0.4), new THREE.MeshStandardMaterial({ color: 0x3b82f6 }));
             studentAvatar.position.set(0, 0.6, 3);
             scene.add(studentAvatar);
 
-            const trayGeo = new THREE.BoxGeometry(0.5, 0.1, 0.4);
-            const trayMat = new THREE.MeshStandardMaterial({ color: 0xf59e0b });
-            foodTray = new THREE.Mesh(trayGeo, trayMat);
+            foodTray = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.1, 0.4), new THREE.MeshStandardMaterial({ color: 0xf59e0b }));
             foodTray.position.set(0, 0.75, -2);
             scene.add(foodTray);
 
@@ -483,32 +487,22 @@
 
             function animate() {
                 requestAnimationFrame(animate);
-
                 const readyOrder = queueList.find(o => o.status.includes('Ready'));
                 const activeOrder = queueList[0];
 
                 if (readyOrder) {
-                    if (studentAvatar.position.z > -1.2) {
-                        studentAvatar.position.z -= 0.03;
-                    } else {
-                        foodTray.visible = false;
-                        studentAvatar.position.x += 0.03;
-                        studentAvatar.position.z -= 0.01;
-                    }
+                    if (studentAvatar.position.z > -1.2) studentAvatar.position.z -= 0.03;
+                    else { foodTray.visible = false; studentAvatar.position.x += 0.03; }
                     studentAvatar.material.color.setHex(0x10b981);
                 } else if (activeOrder) {
                     foodTray.visible = true;
-                    if (studentAvatar.position.z > 0.5) {
-                        studentAvatar.position.z -= 0.02;
-                    }
-                    studentAvatar.position.x = 0;
+                    if (studentAvatar.position.z > 0.5) studentAvatar.position.z -= 0.02;
                     studentAvatar.material.color.setHex(0x3b82f6);
                 } else {
                     foodTray.visible = false;
                     studentAvatar.position.set(0, 0.6, 3);
                     studentAvatar.material.color.setHex(0x64748b);
                 }
-
                 renderer.render(scene, camera);
             }
             animate();
