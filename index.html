@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smart Mess Queue Management System - Live Queue & Categories</title>
+    <title>Smart Mess Queue Management System - Sequential 3D & Live Tracking</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -73,7 +73,7 @@
                 <!-- 3D Counter View -->
                 <div class="bg-[#111827] border border-slate-800 rounded-2xl p-4 shadow-sm">
                     <div class="flex items-center justify-between mb-3">
-                        <h3 class="font-bold text-xs uppercase tracking-wider text-slate-300"><i class="fa-solid fa-cube text-emerald-400 mr-2"></i> 3D Mess Counter Simulation (Sequential Queue)</h3>
+                        <h3 class="font-bold text-xs uppercase tracking-wider text-slate-300"><i class="fa-solid fa-cube text-emerald-400 mr-2"></i> 3D Mess Counter Simulation (Sequential Delivery)</h3>
                         <span id="simulationStatusText" class="text-[10px] text-emerald-400 font-mono">Counter Ready</span>
                     </div>
                     <div id="canvas-container" class="w-full h-56 rounded-xl overflow-hidden bg-[#07090f] border border-slate-800 relative"></div>
@@ -94,7 +94,7 @@
                                 <input type="text" id="rollNum" required placeholder="25B21A4601" class="w-full bg-[#0b0f19] border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-emerald-500">
                             </div>
                             <div>
-                                <label class="block text-[11px] font-medium text-slate-400 mb-1">Phone Number (For Twilio SMS Live ETA)</label>
+                                <label class="block text-[11px] font-medium text-slate-400 mb-1">Phone Number (For Live Phone Tracking)</label>
                                 <input type="tel" id="phoneNum" required placeholder="8106129837" class="w-full bg-[#0b0f19] border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-emerald-500">
                             </div>
                             <div>
@@ -125,7 +125,7 @@
                                 </select>
                             </div>
                             <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 px-4 rounded-xl text-xs transition shadow-lg shadow-emerald-600/20 cursor-pointer">
-                                Place Order & Join Sequential Queue 🚀
+                                Place Order & Join Queue 🚀
                             </button>
                         </form>
                     </div>
@@ -244,7 +244,7 @@
                                 <th class="py-3">Timestamp</th>
                                 <th class="py-3">Phone Number</th>
                                 <th class="py-3">Student Name</th>
-                                <th class="py-3">SMS Message / Live ETA</th>
+                                <th class="py-3">SMS Message / Live Phone ETA</th>
                                 <th class="py-3">Twilio Status</th>
                             </tr>
                         </thead>
@@ -340,15 +340,13 @@
             totalRevenue += price;
             updateAnalytics();
 
-            // Calculate sequential time: If queue has items, accumulate 180s for each person ahead
-            let totalQueueAheadTime = 0;
+            // Calculate cumulative time for queue position (Each person gets 180s = 3 mins)
+            let totalQueueAheadTime = 180;
             if(queueList.length > 0) {
-                // Sum up remaining times of active queue items
+                // Add remaining time of all active orders in queue
                 queueList.forEach(q => {
                     if(q.timeLeft > 0) totalQueueAheadTime += q.timeLeft;
                 });
-            } else {
-                totalQueueAheadTime = 180; // First person gets 3 mins directly
             }
 
             const newOrder = {
@@ -397,7 +395,7 @@
                 let secs = order.timeLeft % 60;
                 let timeStr = `${mins < 10 ? '0' : ''}${mins}:${secs < 10 ? '0' : ''}${secs}`;
 
-                // Only the 0-th index person's timer runs actively (Sequential processing)
+                // If first person and status was waiting, change to preparing
                 if(index === 0 && order.status.includes('Waiting')) {
                     order.status = "Preparing 🍳";
                 }
@@ -415,7 +413,7 @@
             });
         }
 
-        // Sequential Timer Loop: Only the first person's timer ticks down. When it hits 0, next person automatically starts!
+        // Sequential Timer Loop: Only the 0-th index person's timer ticks down.
         setInterval(() => {
             if(queueList.length > 0) {
                 let currentOrder = queueList[0];
@@ -449,13 +447,13 @@
                 alert("No students in the queue!");
                 return;
             }
-            const served = queueList.shift();
+            const served = queueList.shift(); // Remove current person, next person automatically moves to index 0 and starts!
             completedOrdersCount++;
             updateAnalytics();
             saveData();
             renderQueue();
             update3DVisual();
-            alert(`✅ Student ${served.name} (${served.token}) collected food. Next person's 3-minute timer has started!`);
+            alert(`✅ Student ${served.name} (${served.token}) collected food and left. Next person's 3-minute timer has started!`);
         }
 
         function renderSMSLogs() {
@@ -540,15 +538,17 @@
             const activeOrder = queueList[0];
 
             if(readyOrder) {
+                // Student moves to counter to collect food
                 studentAvatar.position.set(0, 0.6, -1.2);
                 studentAvatar.material.color.setHex(0x10b981);
                 foodTray.visible = true;
-                document.getElementById('simulationStatusText').innerText = `Token ${readyOrder.token} (${readyOrder.name}) - Food Ready!`;
+                document.getElementById('simulationStatusText').innerText = `Token ${readyOrder.token} (${readyOrder.name}) - Food Ready at Counter!`;
             } else if(activeOrder) {
-                studentAvatar.position.set(0, 0.6, 0.5);
+                // Student walking towards counter / preparing
+                studentAvatar.position.set(0, 0.6, 0.2);
                 studentAvatar.material.color.setHex(0x3b82f6);
                 foodTray.visible = false;
-                document.getElementById('simulationStatusText').innerText = `Token ${activeOrder.token} (${activeOrder.name}) - Preparing (Live Timer)`;
+                document.getElementById('simulationStatusText').innerText = `Token ${activeOrder.token} (${activeOrder.name}) - Preparing in Sequential Queue`;
             } else {
                 studentAvatar.position.set(0, 0.6, 2);
                 studentAvatar.material.color.setHex(0x64748b);
