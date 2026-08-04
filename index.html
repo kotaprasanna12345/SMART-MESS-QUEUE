@@ -44,7 +44,7 @@
         .card { background: #0d1322; border: 1px solid #1a2234; border-radius: 14px; padding: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.2); }
         .card-title { font-size: 14px; font-weight: 700; color: #fff; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; letter-spacing: 0.3px; }
 
-        /* Enhanced 3D Animation Counter Simulation */
+        /* Simulation */
         .simulation-card { background: #0d1322; border: 1px solid #1a2234; border-radius: 14px; padding: 20px; margin-bottom: 20px; box-shadow: 0 4px 25px rgba(0,0,0,0.4); }
         .canvas-box { width: 100%; height: 220px; background: radial-gradient(circle at center, #0f172a 0%, #030712 100%); border-radius: 10px; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; border: 1px solid #1a2234; }
         
@@ -56,9 +56,7 @@
         
         .queue-path { position: absolute; top: 45px; bottom: 20px; width: 4px; background: linear-gradient(to bottom, #10b981, rgba(16,185,129,0.1)); border-radius: 2px; box-shadow: 0 0 10px #10b981; }
 
-        /* Animated Student Nodes */
-        .sim-student { position: absolute; bottom: 20px; background: linear-gradient(135deg, #3b82f6, #1d4ed8); border: 2px solid #60a5fa; border-radius: 50px; padding: 6px 14px; font-size: 11px; font-weight: 700; color: #fff; box-shadow: 0 0 20px rgba(59,130,246,0.7); display: flex; align-items: center; gap: 6px; transition: all 1s cubic-bezier(0.4, 0, 0.2, 1); z-index: 10; animation: pulseNode 2s infinite; }
-        @keyframes pulseNode { 0% { transform: scale(1); } 50% { transform: scale(1.06); box-shadow: 0 0 25px rgba(59,130,246,0.9); } 100% { transform: scale(1); } }
+        .sim-student { position: absolute; bottom: 20px; background: linear-gradient(135deg, #3b82f6, #1d4ed8); border: 2px solid #60a5fa; border-radius: 50px; padding: 6px 14px; font-size: 11px; font-weight: 700; color: #fff; box-shadow: 0 0 20px rgba(59,130,246,0.7); display: flex; align-items: center; gap: 6px; transition: all 1s cubic-bezier(0.4, 0, 0.2, 1); z-index: 10; }
 
         /* Form Controls */
         .form-group { margin-bottom: 12px; }
@@ -111,9 +109,9 @@
         <header>
             <div class="header-title">
                 <h2>SMART MESS QUEUE MANAGER (R23 Advanced)</h2>
-                <p>Queue > Loops > Switches > AI Predictor > Voice TTS > QR Ticketing</p>
+                <p>Queue > Sequential Timers > AI Predictor > Voice TTS > QR Ticketing</p>
             </div>
-            <div class="badge">✨ 3D Animation Active</div>
+            <div class="badge">✨ Sequential 3M Active</div>
         </header>
 
         <div class="banner">
@@ -121,7 +119,7 @@
                 <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 100-6 3 3 0 000 6z"></path></svg>
                 <div>
                     <h3>VOICE TTS & QR TICKETING LAYER</h3>
-                    <p>Automatic QR Ticketing enabled. Estimated average wait: <b>3 mins per person</b>.</p>
+                    <p>Sequential queue timer enabled. Next person starts only after the previous one.</p>
                 </div>
             </div>
             <div class="banner-right">Secure QR Ready</div>
@@ -129,7 +127,6 @@
 
         <!-- Tab 1: Dashboard -->
         <div id="tab-dashboard" class="tab-content active">
-            <!-- Animated 3D Counter Simulation -->
             <div class="simulation-card">
                 <div class="card-title">🚀 LIVE 3D QUEUE ANIMATION SIMULATION</div>
                 <div class="canvas-box">
@@ -139,7 +136,7 @@
                         <div class="counter-glow">COUNTER PICKUP</div>
                     </div>
                     <div class="sim-student" id="simStudent">
-                        <span>🟢</span> <span id="simTokenText">T-118 (vardhan)</span>
+                        <span>🟢</span> <span id="simTokenText">T-119 (sai)</span>
                     </div>
                 </div>
             </div>
@@ -175,7 +172,7 @@
 
                 <div class="card">
                     <div class="card-title" style="justify-content: space-between;">
-                        <span>📋 ACTIVE QUEUE DATA (3M Timer)</span>
+                        <span>📋 ACTIVE QUEUE DATA (Sequential)</span>
                         <button id="serveBtn" style="background:linear-gradient(135deg, #2563eb, #1d4ed8); color:#fff; border:none; padding:6px 12px; border-radius:6px; font-size:11px; cursor:pointer; font-weight:700; box-shadow: 0 2px 10px rgba(37,99,235,0.4);">Serve Next & Speak 🔊</button>
                     </div>
                     <table>
@@ -199,7 +196,6 @@
         <div id="tab-analytics" class="tab-content">
             <div class="card">
                 <div class="card-title">📈 Peak Hours Traffic Analytics</div>
-                <p style="font-size: 11px; color: #9ca3af; margin-bottom: 16px;">Historical rush analysis across breakfast, lunch, and dinner shifts.</p>
                 <div style="height: 300px;"><canvas id="rushChart"></canvas></div>
             </div>
         </div>
@@ -209,7 +205,7 @@
             <div class="card">
                 <div class="card-title">👤 Student Live Queue Position Tracker</div>
                 <div style="display: flex; gap: 10px; max-width: 400px; margin-top: 12px;">
-                    <input type="text" id="trackInput" class="form-control" placeholder="Enter Token (e.g. T-118)">
+                    <input type="text" id="trackInput" class="form-control" placeholder="Enter Token (e.g. T-119)">
                     <button onclick="trackStudent()" class="btn-primary" style="margin-top:0; width:auto; padding: 0 20px;">Track</button>
                 </div>
                 <div id="trackResult" style="margin-top: 16px; font-size: 12px; color: #34d399; font-weight: 700;"></div>
@@ -231,7 +227,7 @@
                 <table>
                     <thead><tr><th>TIME</th><th>PHONE</th><th>MESSAGE</th><th>STATUS</th></tr></thead>
                     <tbody id="smsTableBody">
-                        <tr><td>10:45 AM</td><td>8106129837</td><td>Token T-118 generated successfully.</td><td>Sent ✅</td></tr>
+                        <tr><td>10:45 AM</td><td>8106129837</td><td>Token T-119 generated successfully.</td><td>Sent ✅</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -243,14 +239,15 @@
         <div class="modal-content">
             <h3 style="font-size: 14px; color:#fff; font-weight: 700;" id="modalTitle">STUDENT MESS TOKEN QR</h3>
             <div class="qr-wrapper" id="qrcode"></div>
-            <p style="font-size: 11px; color: #9ca3af; margin-bottom: 16px;" id="modalSub">Token: T-118</p>
+            <p style="font-size: 11px; color: #9ca3af; margin-bottom: 16px;" id="modalSub">Token: T-119</p>
             <button class="btn-close" onclick="closeModal()">Close ✕</button>
         </div>
     </div>
 
     <script>
         let queueData = [
-            { token: 'T-118', name: 'vardhan', roll: '25B21A4444', food: 'Paneer Butter Masala - ₹130', timeLeft: 180, status: 'Preparing' }
+            { token: 'T-119', name: 'sai', roll: '25B21A4601', food: 'Chicken Biryani - ₹160', timeLeft: 180, active: true, status: 'Preparing' },
+            { token: 'T-120', name: 'prasu', roll: '25B21A4602', food: 'Veg Meals - ₹90', timeLeft: 180, active: false, status: 'Waiting in Queue' }
         ];
         let chartInstance = null;
 
@@ -269,15 +266,14 @@
         function updateSimulation() {
             const studentBox = document.getElementById('simStudent');
             const tokenText = document.getElementById('simTokenText');
-            if (queueData.length > 0) {
-                const current = queueData[0];
-                tokenText.innerText = `${current.token} (${current.name})`;
-                // Animate position based on timeLeft or status
-                let progress = (180 - current.timeLeft) / 180; // 0 to 1
-                let bottomPx = 20 + (progress * 110); // Moves from bottom 20px to upper counter zone
+            const activeItem = queueData.find(q => q.active && q.status === 'Preparing');
+            if (activeItem) {
+                tokenText.innerText = `${activeItem.token} (${activeItem.name})`;
+                let progress = (180 - activeItem.timeLeft) / 180;
+                let bottomPx = 20 + (progress * 110);
                 studentBox.style.bottom = `${bottomPx}px`;
             } else {
-                tokenText.innerText = "Queue Empty - Ready";
+                tokenText.innerText = "All Clear - Ready";
                 studentBox.style.bottom = "20px";
             }
         }
@@ -290,12 +286,21 @@
                 let seconds = item.timeLeft % 60;
                 let formattedTime = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
 
+                let timerDisplay = '';
+                if (item.status === 'Ready') {
+                    timerDisplay = '<span style="color:#34d399; font-weight:700;">Ready! 🟢</span>';
+                } else if (item.active) {
+                    timerDisplay = `<span style="color:#fbbf24; font-weight:700;">${formattedTime}</span>`;
+                } else {
+                    timerDisplay = '<span style="color:#6b7280; font-weight:600;">Waiting (3:00)</span>';
+                }
+
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
                     <td style="font-weight:700; color:#34d399;">${item.token}</td>
                     <td>${item.name}<br><span style="font-size:10px; color:#6b7280;">${item.roll}</span></td>
                     <td style="font-size:11px;">${item.food}</td>
-                    <td style="font-weight:700; color:${item.timeLeft > 0 ? '#fbbf24' : '#34d399'};">${item.timeLeft > 0 ? formattedTime : 'Ready! 🟢'}</td>
+                    <td>${timerDisplay}</td>
                     <td><button class="btn-action" onclick="showQR('${item.token}', '${item.name}', '${item.roll}', '${item.food}')">View QR 📱</button></td>
                     <td><span class="status-badge ${item.status === 'Ready' ? 'status-ready' : 'status-prep'}">${item.status}</span></td>
                 `;
@@ -304,22 +309,29 @@
             updateSimulation();
         }
 
+        // Timer Loop for Sequential Processing
         setInterval(() => {
-            let updated = false;
-            queueData.forEach(item => {
-                if (item.timeLeft > 0) {
-                    item.timeLeft--;
-                    if (item.timeLeft === 0) {
-                        item.status = 'Ready';
+            let activeItem = queueData.find(q => q.active && q.status === 'Preparing');
+            if (activeItem) {
+                if (activeItem.timeLeft > 0) {
+                    activeItem.timeLeft--;
+                    if (activeItem.timeLeft === 0) {
+                        activeItem.status = 'Ready';
                         if ('speechSynthesis' in window) {
-                            let utterance = new SpeechSynthesisUtterance(`Token ${item.token}, ${item.name}, your food is ready at the counter.`);
+                            let utterance = new SpeechSynthesisUtterance(`Token ${activeItem.token}, ${activeItem.name}, your food is ready at the counter.`);
                             window.speechSynthesis.speak(utterance);
                         }
+                        
+                        // Automatically activate next person in queue if available
+                        let nextIndex = queueData.findIndex(q => q.token === activeItem.token) + 1;
+                        if (nextIndex < queueData.length) {
+                            queueData[nextIndex].active = true;
+                            queueData[nextIndex].status = 'Preparing';
+                        }
                     }
-                    updated = true;
                 }
-            });
-            if (updated) renderQueue();
+                renderQueue();
+            }
         }, 1000);
 
         document.getElementById('queueForm').addEventListener('submit', function(e) {
@@ -329,10 +341,21 @@
             const phone = document.getElementById('sPhone').value;
             const food = document.getElementById('sFood').value;
 
-            const tokenNum = 'T-' + (119 + queueData.length);
-            queueData.push({ token: tokenNum, name, roll, food, timeLeft: 180, status: 'Preparing' });
+            const nextTokenNum = 'T-' + (119 + queueData.length);
+            const isFirst = queueData.length === 0;
+
+            queueData.push({ 
+                token: nextTokenNum, 
+                name, 
+                roll, 
+                food, 
+                timeLeft: 180, 
+                active: isFirst, 
+                status: isFirst ? 'Preparing' : 'Waiting in Queue' 
+            });
+
             renderQueue();
-            showQR(tokenNum, name, roll, food);
+            showQR(nextTokenNum, name, roll, food);
             this.reset();
         });
 
@@ -354,6 +377,11 @@
         document.getElementById('serveBtn').addEventListener('click', function() {
             if (queueData.length > 0) {
                 let served = queueData.shift();
+                // If there's a next person, make them active
+                if (queueData.length > 0) {
+                    queueData[0].active = true;
+                    queueData[0].status = 'Preparing';
+                }
                 renderQueue();
                 if ('speechSynthesis' in window) {
                     let utterance = new SpeechSynthesisUtterance(`Token ${served.token}, please collect your order.`);
