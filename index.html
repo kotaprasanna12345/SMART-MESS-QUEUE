@@ -111,7 +111,7 @@
                 <h2>SMART MESS QUEUE MANAGER (R23 Advanced)</h2>
                 <p>Queue > Sequential Timers > AI Predictor > Voice TTS > QR Ticketing</p>
             </div>
-            <div class="badge">✨ Sequential 3M Active</div>
+            <div class="badge">✨ Sequential 2M Active</div>
         </header>
 
         <div class="banner">
@@ -119,7 +119,7 @@
                 <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 100-6 3 3 0 000 6z"></path></svg>
                 <div>
                     <h3>VOICE TTS & QR TICKETING LAYER</h3>
-                    <p>Sequential queue timer enabled. Next person starts only after the previous one.</p>
+                    <p>Sequential queue timer enabled. Estimated average wait: <b>2 mins per person</b>.</p>
                 </div>
             </div>
             <div class="banner-right">Secure QR Ready</div>
@@ -172,7 +172,7 @@
 
                 <div class="card">
                     <div class="card-title" style="justify-content: space-between;">
-                        <span>📋 ACTIVE QUEUE DATA (Sequential)</span>
+                        <span>📋 ACTIVE QUEUE DATA (Sequential 2M Timer)</span>
                         <button id="serveBtn" style="background:linear-gradient(135deg, #2563eb, #1d4ed8); color:#fff; border:none; padding:6px 12px; border-radius:6px; font-size:11px; cursor:pointer; font-weight:700; box-shadow: 0 2px 10px rgba(37,99,235,0.4);">Serve Next & Speak 🔊</button>
                     </div>
                     <table>
@@ -245,9 +245,10 @@
     </div>
 
     <script>
+        // Set Default 120 Seconds (2 Minutes)
         let queueData = [
-            { token: 'T-119', name: 'sai', roll: '25B21A4601', food: 'Chicken Biryani - ₹160', timeLeft: 180, active: true, status: 'Preparing' },
-            { token: 'T-120', name: 'prasu', roll: '25B21A4602', food: 'Veg Meals - ₹90', timeLeft: 180, active: false, status: 'Waiting in Queue' }
+            { token: 'T-119', name: 'sai', roll: '25B21A4601', food: 'Chicken Biryani - ₹160', timeLeft: 120, active: true, status: 'Preparing' },
+            { token: 'T-120', name: 'prasu', roll: '25B21A4602', food: 'Veg Meals - ₹90', timeLeft: 120, active: false, status: 'Waiting in Queue' }
         ];
         let chartInstance = null;
 
@@ -269,7 +270,7 @@
             const activeItem = queueData.find(q => q.active && q.status === 'Preparing');
             if (activeItem) {
                 tokenText.innerText = `${activeItem.token} (${activeItem.name})`;
-                let progress = (180 - activeItem.timeLeft) / 180;
+                let progress = (120 - activeItem.timeLeft) / 120; // Based on 120s
                 let bottomPx = 20 + (progress * 110);
                 studentBox.style.bottom = `${bottomPx}px`;
             } else {
@@ -292,7 +293,7 @@
                 } else if (item.active) {
                     timerDisplay = `<span style="color:#fbbf24; font-weight:700;">${formattedTime}</span>`;
                 } else {
-                    timerDisplay = '<span style="color:#6b7280; font-weight:600;">Waiting (3:00)</span>';
+                    timerDisplay = '<span style="color:#6b7280; font-weight:600;">Waiting (2:00)</span>';
                 }
 
                 const tr = document.createElement('tr');
@@ -309,7 +310,7 @@
             updateSimulation();
         }
 
-        // Timer Loop for Sequential Processing
+        // Sequential 2-Minute Timer Loop
         setInterval(() => {
             let activeItem = queueData.find(q => q.active && q.status === 'Preparing');
             if (activeItem) {
@@ -322,7 +323,7 @@
                             window.speechSynthesis.speak(utterance);
                         }
                         
-                        // Automatically activate next person in queue if available
+                        // Automatically activate next person in queue
                         let nextIndex = queueData.findIndex(q => q.token === activeItem.token) + 1;
                         if (nextIndex < queueData.length) {
                             queueData[nextIndex].active = true;
@@ -349,7 +350,7 @@
                 name, 
                 roll, 
                 food, 
-                timeLeft: 180, 
+                timeLeft: 120, // 2 Minutes = 120 Seconds
                 active: isFirst, 
                 status: isFirst ? 'Preparing' : 'Waiting in Queue' 
             });
@@ -377,7 +378,6 @@
         document.getElementById('serveBtn').addEventListener('click', function() {
             if (queueData.length > 0) {
                 let served = queueData.shift();
-                // If there's a next person, make them active
                 if (queueData.length > 0) {
                     queueData[0].active = true;
                     queueData[0].status = 'Preparing';
