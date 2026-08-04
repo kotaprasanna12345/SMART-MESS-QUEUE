@@ -266,7 +266,6 @@
         let completedOrdersCount = parseInt(localStorage.getItem('smart_mess_completed_count')) || 0;
         let totalRevenue = parseInt(localStorage.getItem('smart_mess_revenue')) || 0;
         let tokenCounter = parseInt(localStorage.getItem('smart_mess_token_counter')) || 101;
-        let timerInterval = null;
 
         function saveData() {
             localStorage.setItem('smart_mess_queue', JSON.stringify(queueList));
@@ -342,7 +341,7 @@
             const newOrder = {
                 token, name, roll, phone, food,
                 status: "Preparing 🍳",
-                timeLeft: 180 // 3 minutes in seconds
+                timeLeft: 180 
             };
 
             queueList.push(newOrder);
@@ -378,7 +377,7 @@
                 return;
             }
 
-            queueList.forEach((order, index) => {
+            queueList.forEach((order) => {
                 let mins = Math.floor(order.timeLeft / 60);
                 let secs = order.timeLeft % 60;
                 let timeStr = `${mins < 10 ? '0' : ''}${mins}:${secs < 10 ? '0' : ''}${secs}`;
@@ -396,7 +395,6 @@
             });
         }
 
-        // Global Timer loop to manage 3 minutes countdown for all active orders
         setInterval(() => {
             let updated = false;
             queueList.forEach(order => {
@@ -462,7 +460,7 @@
             });
         }
 
-        // 3D Scene Initialization
+        // 3D Scene Initialization Fix
         function init3D() {
             const container = document.getElementById('canvas-container');
             if(!container) return;
