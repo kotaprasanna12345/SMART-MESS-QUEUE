@@ -7,6 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
@@ -24,12 +25,12 @@
                 </div>
                 <div>
                     <h1 class="font-bold text-sm sm:text-base tracking-wide text-white">SMART MESS QUEUE MANAGER (R23 Advanced)</h1>
-                    <p class="text-[11px] text-slate-400">Queue + Loops + Switches + AI Predictor + Voice TTS + Analytics</p>
+                    <p class="text-[11px] text-slate-400">Queue + Loops + Switches + AI Predictor + Voice TTS + QR Ticketing</p>
                 </div>
             </div>
             <div class="flex items-center space-x-3">
                 <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Voice & AI Active
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Voice & QR Active
                 </span>
             </div>
         </div>
@@ -85,11 +86,11 @@
                             <i class="fa-solid fa-microphone-lines text-lg"></i>
                         </div>
                         <div>
-                            <h4 class="text-xs font-bold text-emerald-400 uppercase tracking-wider">Voice TTS & AI Predictor Layer</h4>
-                            <p class="text-[11px] text-slate-300" id="aiPredictionText">Audio Announcer ready. Estimated average wait: <strong class="text-white">3 mins per person</strong>.</p>
+                            <h4 class="text-xs font-bold text-emerald-400 uppercase tracking-wider">Voice TTS & QR Ticketing Layer</h4>
+                            <p class="text-[11px] text-slate-300">Automatic QR Ticketing enabled. Estimated average wait: <strong class="text-white">3 mins per person</strong>.</p>
                         </div>
                     </div>
-                    <span class="hidden sm:inline-block px-3 py-1 bg-emerald-500/10 text-emerald-400 rounded-lg text-[10px] font-mono border border-emerald-500/20">TTS Audio Enabled</span>
+                    <span class="hidden sm:inline-block px-3 py-1 bg-emerald-500/10 text-emerald-400 rounded-lg text-[10px] font-mono border border-emerald-500/20">Secure QR Ready</span>
                 </div>
 
                 <!-- 3D Counter View -->
@@ -105,7 +106,7 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <!-- Issue Token Form -->
                     <div class="bg-[#111827] border border-slate-800 rounded-2xl p-5 shadow-sm">
-                        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-300 mb-4"><i class="fa-solid fa-ticket mr-2 text-emerald-400"></i> Token Queue Form</h3>
+                        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-300 mb-4"><i class="fa-solid fa-ticket mr-2 text-emerald-400"></i> Token & QR Queue Form</h3>
                         <form id="tokenForm" class="space-y-3">
                             <div>
                                 <label class="block text-[11px] font-medium text-slate-400 mb-1">Student Name</label>
@@ -129,7 +130,7 @@
                                 </select>
                             </div>
                             <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 px-4 rounded-xl text-xs transition shadow-lg shadow-emerald-600/20 cursor-pointer">
-                                Issue Token & Enqueue 🚀
+                                Issue Token & Generate QR 🚀
                             </button>
                         </form>
                     </div>
@@ -150,7 +151,7 @@
                                             <th class="py-2">Token</th>
                                             <th class="py-2">Student</th>
                                             <th class="py-2">Food</th>
-                                            <th class="py-2">Timer</th>
+                                            <th class="py-2">QR Code</th>
                                             <th class="py-2">Status</th>
                                         </tr>
                                     </thead>
@@ -223,6 +224,16 @@
             </div>
 
         </main>
+    </div>
+
+    <!-- QR Code Modal Overlay -->
+    <div id="qrModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-[#111827] border border-slate-700 rounded-2xl p-6 max-w-sm w-full text-center space-y-4 shadow-2xl">
+            <h3 class="font-bold text-sm text-white uppercase tracking-wider"><i class="fa-solid fa-qrcode text-emerald-400 mr-2"></i> Student Mess Token QR</h3>
+            <div id="qrcodeContainer" class="bg-white p-4 rounded-xl inline-block mx-auto flex justify-center"></div>
+            <p id="qrModalDetails" class="text-xs text-slate-300 font-mono"></p>
+            <button onclick="closeQrModal()" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold py-2 rounded-xl text-xs transition cursor-pointer">Close ✖</button>
+        </div>
     </div>
 
     <!-- JavaScript Application Logic -->
@@ -298,15 +309,36 @@
                 time: new Date().toLocaleTimeString(),
                 phone: phone,
                 name: name,
-                type: `Token ${token} issued. Wait: 3 mins.`,
+                type: `Token ${token} issued with QR. Wait: 3 mins.`,
                 status: "Sent ✅"
             });
             saveData();
             renderSMSLogs();
 
-            alert(`📱 [TWILIO SMS SENT] Token ${token} issued for ${name}!`);
+            // Automatically show QR code modal for generated token
+            showQrModal(token, name, roll, food);
             document.getElementById('tokenForm').reset();
         });
+
+        function showQrModal(token, name, roll, food) {
+            const modal = document.getElementById('qrModal');
+            const container = document.getElementById('qrcodeContainer');
+            const details = document.getElementById('qrModalDetails');
+            
+            container.innerHTML = '';
+            new QRCode(container, {
+                text: `TOKEN:${token}|NAME:${name}|ROLL:${roll}|FOOD:${food}`,
+                width: 128,
+                height: 128
+            });
+
+            details.innerHTML = `Token: <strong>${token}</strong><br>Student: ${name} (${roll})<br>Food: ${food}`;
+            modal.classList.remove('hidden');
+        }
+
+        function closeQrModal() {
+            document.getElementById('qrModal').classList.add('hidden');
+        }
 
         function renderQueue() {
             const tbody = document.getElementById('waitingQueueTableBody');
@@ -336,7 +368,11 @@
                     <td class="py-2.5 font-mono font-bold text-emerald-400">${order.token}</td>
                     <td class="py-2.5 font-semibold">${order.name}<br><span class="text-[10px] text-slate-500 font-mono">${order.roll}</span></td>
                     <td class="py-2.5">${order.food}</td>
-                    <td class="py-2.5 font-mono text-cyan-400">${timeStr}</td>
+                    <td class="py-2.5">
+                        <button onclick="showQrModal('${order.token}', '${order.name}', '${order.roll}', '${order.food}')" class="bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2.5 py-1 rounded-lg text-[10px] font-bold cursor-pointer">
+                            View QR 📱
+                        </button>
+                    </td>
                     <td class="py-2.5"><span class="px-2 py-0.5 rounded text-[10px] font-bold ${order.status.includes('Ready') ? 'bg-emerald-500/20 text-emerald-300' : 'bg-amber-500/20 text-amber-300'}">${order.status}</span></td>
                 `;
                 tbody.appendChild(tr);
