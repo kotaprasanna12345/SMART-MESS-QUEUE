@@ -73,7 +73,7 @@
                 <!-- 3D Counter View -->
                 <div class="bg-[#111827] border border-slate-800 rounded-2xl p-4 shadow-sm">
                     <div class="flex items-center justify-between mb-3">
-                        <h3 class="font-bold text-xs uppercase tracking-wider text-slate-300"><i class="fa-solid fa-cube text-emerald-400 mr-2"></i> 3D Mess Counter Simulation (Sequential Delivery)</h3>
+                        <h3 class="font-bold text-xs uppercase tracking-wider text-slate-300"><i class="fa-solid fa-cube text-emerald-400 mr-2"></i> 3D Mess Counter Simulation (Sequential Delivery & Walkaway Animation)</h3>
                         <span id="simulationStatusText" class="text-[10px] text-emerald-400 font-mono">Counter Ready</span>
                     </div>
                     <div id="canvas-container" class="w-full h-56 rounded-xl overflow-hidden bg-[#07090f] border border-slate-800 relative"></div>
@@ -267,6 +267,7 @@
         let tokenCounter = parseInt(localStorage.getItem('smart_mess_token_counter')) || 101;
 
         let scene, camera, renderer, studentAvatar, foodTray;
+        let walkProgress = 0; // For smooth walking & exit animation
 
         function saveData() {
             localStorage.setItem('smart_mess_queue', JSON.stringify(queueList));
@@ -287,7 +288,6 @@
                 renderQueue();
                 renderSMSLogs();
                 updateAnalytics();
-                update3DVisual();
                 alert("Data cleared successfully!");
             }
         }
@@ -340,10 +340,8 @@
             totalRevenue += price;
             updateAnalytics();
 
-            // Calculate cumulative time for queue position (Each person gets 180s = 3 mins)
             let totalQueueAheadTime = 180;
             if(queueList.length > 0) {
-                // Add remaining time of all active orders in queue
                 queueList.forEach(q => {
                     if(q.timeLeft > 0) totalQueueAheadTime += q.timeLeft;
                 });
@@ -358,7 +356,6 @@
             queueList.push(newOrder);
             saveData();
             renderQueue();
-            update3DVisual();
 
             let calculatedMins = Math.ceil(totalQueueAheadTime / 60);
             smsLogList.unshift({
@@ -395,7 +392,6 @@
                 let secs = order.timeLeft % 60;
                 let timeStr = `${mins < 10 ? '0' : ''}${mins}:${secs < 10 ? '0' : ''}${secs}`;
 
-                // If first person and status was waiting, change to preparing
                 if(index === 0 && order.status.includes('Waiting')) {
                     order.status = "Preparing 🍳";
                 }
@@ -413,7 +409,7 @@
             });
         }
 
-        // Sequential Timer Loop: Only the 0-th index person's timer ticks down.
+        // Sequential Timer Loop
         setInterval(() => {
             if(queueList.length > 0) {
                 let currentOrder = queueList[0];
@@ -425,7 +421,6 @@
                     }
                     saveData();
                     renderQueue();
-                    update3DVisual();
                 }
             }
         }, 1000);
@@ -447,13 +442,13 @@
                 alert("No students in the queue!");
                 return;
             }
-            const served = queueList.shift(); // Remove current person, next person automatically moves to index 0 and starts!
+            const served = queueList.shift(); 
             completedOrdersCount++;
+            walkProgress = 0; // Reset walk animation for exit
             updateAnalytics();
             saveData();
             renderQueue();
-            update3DVisual();
-            alert(`✅ Student ${served.name} (${served.token}) collected food and left. Next person's 3-minute timer has started!`);
+            alert(`✅ Student ${served.name} (${served.token}) collected food and walked away. Next person's 3-minute timer has started!`);
         }
 
         function renderSMSLogs() {
@@ -478,7 +473,7 @@
             });
         }
 
-        // 3D Scene Initialization with Student & Food Tray Animation
+        // 3D Scene Initialization with Walking & Food Collection Animation
         function init3D() {
             const container = document.getElementById('canvas-container');
             if(!container) return;
@@ -510,7 +505,7 @@
             const studentGeo = new THREE.BoxGeometry(0.6, 1.2, 0.4);
             const studentMat = new THREE.MeshStandardMaterial({ color: 0x3b82f6 });
             studentAvatar = new THREE.Mesh(studentGeo, studentMat);
-            studentAvatar.position.set(0, 0.6, 2);
+            studentAvatar.position.set(0, 0.6, 3);
             scene.add(studentAvatar);
 
             // Food Tray
@@ -520,41 +515,46 @@
             foodTray.position.set(0, 0.75, -2);
             scene.add(foodTray);
 
-            camera.position.set(0, 3.5, 4.5);
+            camera.position.set(0, 3.5, 5);
             camera.lookAt(0, 0, -2);
-
-            update3DVisual();
 
             function animate() {
                 requestAnimationFrame(animate);
+
+                const readyOrder = queueList.find(o => o.status.includes('Ready'));
+                const activeOrder = queueList[0];
+
+                if (readyOrder) {
+                    // Student moves to counter, gets food, and walks away to the side/exit
+                    if (studentAvatar.position.z > -1.2) {
+                        studentAvatar.position.z -= 0.03; // Walk to counter
+                        document.getElementById('simulationStatusText').innerText = `Token ${readyOrder.token} - Collecting Food at Counter`;
+                    } else {
+                        foodTray.visible = false; // Tray taken by student
+                        studentAvatar.position.x += 0.03; // Walk away to the right (Exit)
+                        studentAvatar.position.z -= 0.01;
+                        document.getElementById('simulationStatusText').innerText = `Token ${readyOrder.token} - Food Collected & Walking Away!`;
+                    }
+                    studentAvatar.material.color.setHex(0x10b981);
+                } else if (activeOrder) {
+                    // Reset position and walk towards counter
+                    foodTray.visible = true;
+                    if (studentAvatar.position.z > 0.5) {
+                        studentAvatar.position.z -= 0.02;
+                    }
+                    studentAvatar.position.x = 0;
+                    studentAvatar.material.color.setHex(0x3b82f6);
+                    document.getElementById('simulationStatusText').innerText = `Token ${activeOrder.token} - Preparing in Sequential Queue`;
+                } else {
+                    foodTray.visible = false;
+                    studentAvatar.position.set(0, 0.6, 3);
+                    studentAvatar.material.color.setHex(0x64748b);
+                    document.getElementById('simulationStatusText').innerText = "Counter Ready (Queue Empty)";
+                }
+
                 renderer.render(scene, camera);
             }
             animate();
-        }
-
-        function update3DVisual() {
-            if(!studentAvatar || !foodTray) return;
-            const readyOrder = queueList.find(o => o.status.includes('Ready'));
-            const activeOrder = queueList[0];
-
-            if(readyOrder) {
-                // Student moves to counter to collect food
-                studentAvatar.position.set(0, 0.6, -1.2);
-                studentAvatar.material.color.setHex(0x10b981);
-                foodTray.visible = true;
-                document.getElementById('simulationStatusText').innerText = `Token ${readyOrder.token} (${readyOrder.name}) - Food Ready at Counter!`;
-            } else if(activeOrder) {
-                // Student walking towards counter / preparing
-                studentAvatar.position.set(0, 0.6, 0.2);
-                studentAvatar.material.color.setHex(0x3b82f6);
-                foodTray.visible = false;
-                document.getElementById('simulationStatusText').innerText = `Token ${activeOrder.token} (${activeOrder.name}) - Preparing in Sequential Queue`;
-            } else {
-                studentAvatar.position.set(0, 0.6, 2);
-                studentAvatar.material.color.setHex(0x64748b);
-                foodTray.visible = false;
-                document.getElementById('simulationStatusText').innerText = "Counter Ready (Queue Empty)";
-            }
         }
 
         window.onload = () => {
