@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smart Mess Queue Management System - Single Person 3D & SMS</title>
+    <title>Smart Mess Queue Management System - Live Queue & Categories</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -23,7 +23,7 @@
                 </div>
                 <div>
                     <h1 class="font-bold text-sm sm:text-base tracking-wide text-white">SMART MESS QUEUE MANAGEMENT SYSTEM</h1>
-                    <p class="text-[11px] text-slate-400">Single Person 3D Simulation, 3 Min SMS Trigger & Local Storage</p>
+                    <p class="text-[11px] text-slate-400">Zero Physical Crowd | Live Waiting List | 3-Min SMS Dispatch</p>
                 </div>
             </div>
             <div class="flex items-center space-x-3">
@@ -36,15 +36,12 @@
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-1 w-full grid grid-cols-1 lg:grid-cols-4 gap-6">
         
-        <!-- Sidebar Navigation & Data Storage Control -->
+        <!-- Sidebar Navigation -->
         <aside class="lg:col-span-1 space-y-4">
             <div class="bg-[#111827] border border-slate-800 rounded-2xl p-3 shadow-sm">
                 <nav class="space-y-1">
                     <button onclick="switchTab('dashboard')" id="nav-dashboard" class="w-full text-left flex items-center gap-3 px-3.5 py-2.5 rounded-xl bg-emerald-500/10 text-emerald-400 text-xs font-bold border border-emerald-500/25 transition cursor-pointer">
                         <i class="fa-solid fa-chart-line w-5"></i> Live Dashboard
-                    </button>
-                    <button onclick="switchTab('simulation')" id="nav-simulation" class="w-full text-left flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-slate-800 text-slate-300 text-xs font-medium transition cursor-pointer">
-                        <i class="fa-solid fa-cube w-5"></i> 3D Mess Hall Simulation
                     </button>
                     <button onclick="switchTab('menu')" id="nav-menu" class="w-full text-left flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-slate-800 text-slate-300 text-xs font-medium transition cursor-pointer">
                         <i class="fa-solid fa-book-open w-5"></i> Mess Food Menu & Prices
@@ -61,7 +58,7 @@
             <!-- Data Storage Box in Sidebar -->
             <div class="bg-[#111827] border border-slate-800 rounded-2xl p-4 shadow-sm space-y-3">
                 <h4 class="text-xs font-bold uppercase tracking-wider text-slate-300"><i class="fa-solid fa-database text-emerald-400 mr-2"></i> Local Data Storage</h4>
-                <p class="text-[11px] text-slate-400">Queue & SMS logs are securely saved in browser storage.</p>
+                <p class="text-[11px] text-slate-400">Queue & orders are safely stored in browser storage.</p>
                 <button onclick="clearStoredData()" class="w-full bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/30 font-bold py-2 px-3 rounded-xl text-xs transition cursor-pointer">
                     Clear Stored Data 🗑️
                 </button>
@@ -71,22 +68,23 @@
         <!-- Main Content Area -->
         <main class="lg:col-span-3 space-y-6">
 
-            <!-- Tab 1: Live Dashboard & Single Person 3D Simulation -->
+            <!-- Tab 1: Live Dashboard & 3D & Waiting List -->
             <div id="tab-dashboard" class="space-y-6">
-                <!-- 3D Simulation Canvas Box (Single Person) -->
+                
+                <!-- 3D Counter View -->
                 <div class="bg-[#111827] border border-slate-800 rounded-2xl p-4 shadow-sm">
                     <div class="flex items-center justify-between mb-3">
-                        <h3 class="font-bold text-xs uppercase tracking-wider text-slate-300"><i class="fa-solid fa-cube text-emerald-400 mr-2"></i> 3D Counter View (Single Active Student)</h3>
-                        <span id="simulationStatusText" class="text-[10px] text-emerald-400 font-mono">Waiting for order...</span>
+                        <h3 class="font-bold text-xs uppercase tracking-wider text-slate-300"><i class="fa-solid fa-cube text-emerald-400 mr-2"></i> 3D Mess Counter Simulation (Calm & Silent Queue)</h3>
+                        <span id="simulationStatusText" class="text-[10px] text-emerald-400 font-mono">Counter Ready</span>
                     </div>
-                    <div id="canvas-container" class="w-full h-64 rounded-xl overflow-hidden bg-[#07090f] border border-slate-800 relative"></div>
+                    <div id="canvas-container" class="w-full h-56 rounded-xl overflow-hidden bg-[#07090f] border border-slate-800 relative"></div>
                 </div>
 
-                <!-- Form & Queue Split -->
+                <!-- Form & Active Waiting Queue Table Section -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <!-- Issue Token Form -->
                     <div class="bg-[#111827] border border-slate-800 rounded-2xl p-5 shadow-sm">
-                        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-300 mb-4"><i class="fa-solid fa-ticket mr-2 text-emerald-400"></i> Issue Student Token & 3-Min SMS</h3>
+                        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-300 mb-4"><i class="fa-solid fa-ticket mr-2 text-emerald-400"></i> Order Food & Trigger 3-Min SMS</h3>
                         <form id="tokenForm" class="space-y-3">
                             <div>
                                 <label class="block text-[11px] font-medium text-slate-400 mb-1">Student Name</label>
@@ -103,97 +101,126 @@
                             <div>
                                 <label class="block text-[11px] font-medium text-slate-400 mb-1">Select Food Item & Price</label>
                                 <select id="foodItem" class="w-full bg-[#0b0f19] border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-emerald-500">
-                                    <option value="Chicken Biryani - ₹150">Chicken Biryani - ₹150</option>
-                                    <option value="Special Thali - ₹120">Special Thali - ₹120</option>
-                                    <option value="Paneer Butter Masala - ₹130">Paneer Butter Masala - ₹130</option>
-                                    <option value="Veg Manchuria - ₹80">Veg Manchuria - ₹80</option>
-                                    <option value="Egg Fried Rice - ₹90">Egg Fried Rice - ₹90</option>
-                                    <option value="Masala Dosa - ₹50">Masala Dosa - ₹50</option>
+                                    <optgroup label="Breakfast">
+                                        <option value="Idli Vada - ₹40">Idli Vada - ₹40</option>
+                                        <option value="Masala Dosa - ₹50">Masala Dosa - ₹50</option>
+                                        <option value="Puri Bhaji - ₹45">Puri Bhaji - ₹45</option>
+                                    </optgroup>
+                                    <optgroup label="Lunch">
+                                        <option value="Chicken Biryani - ₹150">Chicken Biryani - ₹150</option>
+                                        <option value="Special Thali Meals - ₹120">Special Thali Meals - ₹120</option>
+                                        <option value="Egg Fried Rice - ₹90">Egg Fried Rice - ₹90</option>
+                                    </optgroup>
+                                    <optgroup label="Snacks">
+                                        <option value="Veg Manchuria - ₹80">Veg Manchuria - ₹80</option>
+                                        <option value="Samosa (2 pcs) - ₹30">Samosa (2 pcs) - ₹30</option>
+                                    </optgroup>
+                                    <optgroup label="Dinner">
+                                        <option value="Paneer Butter Masala & Roti - ₹130">Paneer Butter Masala & Roti - ₹130</option>
+                                        <option value="Chapati with Dal - ₹70">Chapati with Dal - ₹70</option>
+                                    </optgroup>
+                                    <optgroup label="Drinks">
+                                        <option value="Cold Badam Milk - ₹40">Cold Badam Milk - ₹40</option>
+                                        <option value="Fresh Lemon Juice - ₹25">Fresh Lemon Juice - ₹25</option>
+                                    </optgroup>
                                 </select>
                             </div>
                             <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 px-4 rounded-xl text-xs transition shadow-lg shadow-emerald-600/20 cursor-pointer">
-                                Generate Token & Start 3-Min Timer 🚀
+                                Place Order & Start 3-Min Timer 🚀
                             </button>
                         </form>
                     </div>
 
-                    <!-- Active Queue & 3-Min Countdown Status -->
+                    <!-- Waiting List Queue Table -->
                     <div class="bg-[#111827] border border-slate-800 rounded-2xl p-5 shadow-sm flex flex-col justify-between">
                         <div>
-                            <div class="flex items-center justify-between mb-4">
-                                <h3 class="text-xs font-bold uppercase tracking-wider text-slate-300"><i class="fa-solid fa-stopwatch mr-2 text-emerald-400"></i> Active Order Status (3 Mins)</h3>
-                                <button onclick="simulateCollectionNow()" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-1.5 px-3 rounded-xl text-[11px] transition cursor-pointer">
-                                    Simulate Collection ⚡
+                            <div class="flex items-center justify-between mb-3">
+                                <h3 class="text-xs font-bold uppercase tracking-wider text-slate-300"><i class="fa-solid fa-list-ol mr-2 text-emerald-400"></i> Active Waiting List Queue</h3>
+                                <button onclick="serveNextOrder()" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-1.5 px-3 rounded-xl text-[10px] transition cursor-pointer">
+                                    Serve Next ⚡
                                 </button>
                             </div>
-                            <div id="activeOrderDisplay" class="bg-[#0b0f19] border border-slate-800 rounded-xl p-4 text-center space-y-3">
-                                <p class="text-slate-500 italic text-xs">No active order right now. Generate a token!</p>
+                            <div class="overflow-x-auto max-h-[300px] overflow-y-auto">
+                                <table class="w-full text-left border-collapse text-xs">
+                                    <thead>
+                                        <tr class="border-b border-slate-800 text-slate-400 text-[10px] uppercase">
+                                            <th class="py-2">Token</th>
+                                            <th class="py-2">Student</th>
+                                            <th class="py-2">Food</th>
+                                            <th class="py-2">Time</th>
+                                            <th class="py-2">Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="waitingQueueTableBody">
+                                        <tr><td colspan="5" class="py-6 text-center text-slate-500 italic">Queue is empty. Place an order!</td></tr>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                         <div class="mt-4 pt-3 border-t border-slate-800 text-[11px] text-slate-400 flex justify-between">
-                            <span>Auto SMS Trigger: <strong class="text-emerald-400">After 3 Mins</strong></span>
-                            <span>Status: <strong class="text-cyan-400" id="timerStatusLabel">Idle</strong></span>
+                            <span>Auto SMS Dispatch: <strong class="text-emerald-400">After 3 Mins</strong></span>
+                            <span>Queue Status: <strong class="text-cyan-400" id="queueCountLabel">0 Active</strong></span>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Tab 2: Dedicated 3D View Simulation -->
-            <div id="tab-simulation" class="hidden bg-[#111827] border border-slate-800 rounded-2xl p-5 shadow-sm space-y-4">
-                <h3 class="font-bold text-sm text-white"><i class="fa-solid fa-cube text-emerald-400 mr-2"></i> Dedicated 3D Mess Counter View</h3>
-                <div id="canvas-container-full" class="w-full h-[450px] rounded-xl overflow-hidden bg-[#07090f] border border-slate-800"></div>
-            </div>
-
-            <!-- Tab 3: Menu Catalog with Pictures -->
+            <!-- Tab 2: Menu Catalog with Pictures -->
             <div id="tab-menu" class="hidden bg-[#111827] border border-slate-800 rounded-2xl p-5 shadow-sm space-y-4">
-                <h3 class="font-bold text-sm text-white mb-4"><i class="fa-solid fa-utensils text-emerald-400 mr-2"></i> Complete Mess Food Menu & Pricing Catalog</h3>
+                <h3 class="font-bold text-sm text-white mb-4"><i class="fa-solid fa-utensils text-emerald-400 mr-2"></i> Mess Food Menu Categories & Prices</h3>
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
+                    <div class="bg-[#0b0f19] border border-slate-700 rounded-xl overflow-hidden flex flex-col">
+                        <img src="https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=500&auto=format&fit=crop&q=60" alt="Masala Dosa" class="w-full h-32 object-cover">
+                        <div class="p-3 flex flex-col flex-1 justify-between">
+                            <span class="text-[10px] text-emerald-400 font-semibold uppercase">Breakfast</span>
+                            <p class="font-bold text-white text-sm">Masala Dosa</p>
+                            <p class="text-emerald-400 font-bold text-sm mt-1">₹50</p>
+                        </div>
+                    </div>
                     <div class="bg-[#0b0f19] border border-slate-700 rounded-xl overflow-hidden flex flex-col">
                         <img src="https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=500&auto=format&fit=crop&q=60" alt="Chicken Biryani" class="w-full h-32 object-cover">
                         <div class="p-3 flex flex-col flex-1 justify-between">
+                            <span class="text-[10px] text-emerald-400 font-semibold uppercase">Lunch</span>
                             <p class="font-bold text-white text-sm">Chicken Biryani</p>
-                            <p class="text-emerald-400 font-bold text-sm mt-2">₹150</p>
+                            <p class="text-emerald-400 font-bold text-sm mt-1">₹150</p>
                         </div>
                     </div>
                     <div class="bg-[#0b0f19] border border-slate-700 rounded-xl overflow-hidden flex flex-col">
                         <img src="https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?w=500&auto=format&fit=crop&q=60" alt="Special Thali" class="w-full h-32 object-cover">
                         <div class="p-3 flex flex-col flex-1 justify-between">
+                            <span class="text-[10px] text-emerald-400 font-semibold uppercase">Lunch</span>
                             <p class="font-bold text-white text-sm">Special Thali Meals</p>
-                            <p class="text-emerald-400 font-bold text-sm mt-2">₹120</p>
-                        </div>
-                    </div>
-                    <div class="bg-[#0b0f19] border border-slate-700 rounded-xl overflow-hidden flex flex-col">
-                        <img src="https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=500&auto=format&fit=crop&q=60" alt="Paneer Butter Masala" class="w-full h-32 object-cover">
-                        <div class="p-3 flex flex-col flex-1 justify-between">
-                            <p class="font-bold text-white text-sm">Paneer Butter Masala</p>
-                            <p class="text-emerald-400 font-bold text-sm mt-2">₹130</p>
+                            <p class="text-emerald-400 font-bold text-sm mt-1">₹120</p>
                         </div>
                     </div>
                     <div class="bg-[#0b0f19] border border-slate-700 rounded-xl overflow-hidden flex flex-col">
                         <img src="https://images.unsplash.com/photo-1525351484163-7529414344d8?w=500&auto=format&fit=crop&q=60" alt="Veg Manchuria" class="w-full h-32 object-cover">
                         <div class="p-3 flex flex-col flex-1 justify-between">
+                            <span class="text-[10px] text-emerald-400 font-semibold uppercase">Snacks</span>
                             <p class="font-bold text-white text-sm">Veg Manchuria</p>
-                            <p class="text-emerald-400 font-bold text-sm mt-2">₹80</p>
+                            <p class="text-emerald-400 font-bold text-sm mt-1">₹80</p>
                         </div>
                     </div>
                     <div class="bg-[#0b0f19] border border-slate-700 rounded-xl overflow-hidden flex flex-col">
-                        <img src="https://images.unsplash.com/photo-1603133872878-684f208fb84b?w=500&auto=format&fit=crop&q=60" alt="Egg Fried Rice" class="w-full h-32 object-cover">
+                        <img src="https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=500&auto=format&fit=crop&q=60" alt="Paneer Masala" class="w-full h-32 object-cover">
                         <div class="p-3 flex flex-col flex-1 justify-between">
-                            <p class="font-bold text-white text-sm">Egg Fried Rice</p>
-                            <p class="text-emerald-400 font-bold text-sm mt-2">₹90</p>
+                            <span class="text-[10px] text-emerald-400 font-semibold uppercase">Dinner</span>
+                            <p class="font-bold text-white text-sm">Paneer Butter Masala</p>
+                            <p class="text-emerald-400 font-bold text-sm mt-1">₹130</p>
                         </div>
                     </div>
                     <div class="bg-[#0b0f19] border border-slate-700 rounded-xl overflow-hidden flex flex-col">
-                        <img src="https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=500&auto=format&fit=crop&q=60" alt="Masala Dosa" class="w-full h-32 object-cover">
+                        <img src="https://images.unsplash.com/photo-1544787219-7f47ccb76574?w=500&auto=format&fit=crop&q=60" alt="Badam Milk" class="w-full h-32 object-cover">
                         <div class="p-3 flex flex-col flex-1 justify-between">
-                            <p class="font-bold text-white text-sm">Masala Dosa</p>
-                            <p class="text-emerald-400 font-bold text-sm mt-2">₹50</p>
+                            <span class="text-[10px] text-emerald-400 font-semibold uppercase">Drinks</span>
+                            <p class="font-bold text-white text-sm">Cold Badam Milk</p>
+                            <p class="text-emerald-400 font-bold text-sm mt-1">₹40</p>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Tab 4: Analytics -->
+            <!-- Tab 3: Analytics -->
             <div id="tab-analytics" class="hidden bg-[#111827] border border-slate-800 rounded-2xl p-5 shadow-sm space-y-4">
                 <h3 class="font-bold text-sm text-white"><i class="fa-solid fa-wallet text-emerald-400 mr-2"></i> System Analytics & Reports</h3>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -208,7 +235,7 @@
                 </div>
             </div>
 
-            <!-- Tab 5: SMS Logs -->
+            <!-- Tab 4: SMS Logs -->
             <div id="tab-smslogs" class="hidden bg-[#111827] border border-slate-800 rounded-2xl p-5 shadow-sm space-y-4">
                 <h3 class="font-bold text-sm text-white"><i class="fa-solid fa-comment-sms text-emerald-400 mr-2"></i> Twilio SMS Dispatch Simulation Logs</h3>
                 <div class="overflow-x-auto">
@@ -218,7 +245,7 @@
                                 <th class="py-3">Timestamp</th>
                                 <th class="py-3">Phone Number</th>
                                 <th class="py-3">Student Name</th>
-                                <th class="py-3">SMS Message Type</th>
+                                <th class="py-3">SMS Message</th>
                                 <th class="py-3">Twilio Status</th>
                             </tr>
                         </thead>
@@ -234,15 +261,15 @@
 
     <!-- JavaScript Logic -->
     <script>
-        let currentOrder = JSON.parse(localStorage.getItem('smart_mess_current_order')) || null;
+        let queueList = JSON.parse(localStorage.getItem('smart_mess_queue')) || [];
         let smsLogList = JSON.parse(localStorage.getItem('smart_mess_sms_logs')) || [];
         let completedOrdersCount = parseInt(localStorage.getItem('smart_mess_completed_count')) || 0;
         let totalRevenue = parseInt(localStorage.getItem('smart_mess_revenue')) || 0;
         let tokenCounter = parseInt(localStorage.getItem('smart_mess_token_counter')) || 101;
-        let countdownInterval = null;
+        let timerInterval = null;
 
         function saveData() {
-            localStorage.setItem('smart_mess_current_order', JSON.stringify(currentOrder));
+            localStorage.setItem('smart_mess_queue', JSON.stringify(queueList));
             localStorage.setItem('smart_mess_sms_logs', JSON.stringify(smsLogList));
             localStorage.setItem('smart_mess_completed_count', completedOrdersCount);
             localStorage.setItem('smart_mess_revenue', totalRevenue);
@@ -250,22 +277,22 @@
         }
 
         function clearStoredData() {
-            if(confirm("Are you sure you want to clear all stored data?")) {
+            if(confirm("Are you sure you want to clear stored queue and logs?")) {
                 localStorage.clear();
-                currentOrder = null;
+                queueList = [];
                 smsLogList = [];
                 completedOrdersCount = 0;
                 totalRevenue = 0;
                 tokenCounter = 101;
-                renderActiveOrder();
+                renderQueue();
                 renderSMSLogs();
                 updateAnalytics();
-                alert("Storage cleared successfully!");
+                alert("Data cleared successfully!");
             }
         }
 
         function switchTab(tabId) {
-            ['dashboard', 'simulation', 'menu', 'analytics', 'smslogs'].forEach(t => {
+            ['dashboard', 'menu', 'analytics', 'smslogs'].forEach(t => {
                 const tabEl = document.getElementById(`tab-${t}`);
                 if(tabEl) tabEl.classList.add('hidden');
                 
@@ -282,32 +309,6 @@
             if(activeBtn) {
                 activeBtn.className = "w-full text-left flex items-center gap-3 px-3.5 py-2.5 rounded-xl bg-emerald-500/10 text-emerald-400 text-xs font-bold border border-emerald-500/25 transition cursor-pointer";
             }
-
-            if(tabId === 'simulation') {
-                setTimeout(init3DFull, 50);
-            }
-        }
-
-        function renderActiveOrder() {
-            const display = document.getElementById('activeOrderDisplay');
-            if(!currentOrder) {
-                display.innerHTML = `<p class="text-slate-500 italic text-xs">No active order right now. Generate a token!</p>`;
-                document.getElementById('timerStatusLabel').innerText = "Idle";
-                document.getElementById('simulationStatusText').innerText = "Waiting for order...";
-                return;
-            }
-
-            display.innerHTML = `
-                <div class="flex justify-between items-center text-xs">
-                    <span class="font-mono font-bold text-emerald-400 text-sm">${currentOrder.token}</span>
-                    <span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-bold">${currentOrder.status}</span>
-                </div>
-                <div class="text-left space-y-1">
-                    <p class="font-bold text-white">${currentOrder.name} <span class="text-[10px] text-slate-400 font-mono">(${currentOrder.roll})</span></p>
-                    <p class="text-slate-300">Item: <span class="text-emerald-400 font-medium">${currentOrder.food}</span></p>
-                    <p class="text-cyan-400 font-mono font-bold">Time Remaining: <span id="timerCountdown">03:00</span></p>
-                </div>
-            `;
         }
 
         function updateAnalytics() {
@@ -329,99 +330,114 @@
             else if(food.includes('₹130')) price = 130;
             else if(food.includes('₹80')) price = 80;
             else if(food.includes('₹90')) price = 90;
+            else if(food.includes('₹45')) price = 45;
+            else if(food.includes('₹40')) price = 40;
+            else if(food.includes('₹30')) price = 30;
+            else if(food.includes('₹70')) price = 70;
+            else if(food.includes('₹25')) price = 25;
 
             totalRevenue += price;
             updateAnalytics();
 
-            currentOrder = {
+            const newOrder = {
                 token, name, roll, phone, food,
                 status: "Preparing 🍳",
                 timeLeft: 180 // 3 minutes in seconds
             };
-            saveData();
-            renderActiveOrder();
-            startCountdown();
 
-            // Log Initial Token Generation SMS
+            queueList.push(newOrder);
+            saveData();
+            renderQueue();
+
             smsLogList.unshift({
                 time: new Date().toLocaleTimeString(),
                 phone: phone,
                 name: name,
-                type: "Token Confirmed",
+                type: "Token Booked (Timer 3m)",
                 status: "Sent ✅"
             });
             saveData();
             renderSMSLogs();
 
-            alert(`📱 [TWILIO SMS]\nToken ${token} generated for ${name}. Timer started for 3 minutes!`);
+            alert(`📱 [TWILIO SMS SENT]\nToken ${token} booked for ${name}. 3-min preparation timer started!`);
             document.getElementById('studentName').value = '';
             document.getElementById('rollNum').value = '';
             document.getElementById('phoneNum').value = '';
         });
 
-        function startCountdown() {
-            if(countdownInterval) clearInterval(countdownInterval);
-            document.getElementById('timerStatusLabel').innerText = "Running (3 Mins)";
-            document.getElementById('simulationStatusText').innerText = "Student approaching counter...";
+        function renderQueue() {
+            const tbody = document.getElementById('waitingQueueTableBody');
+            const countLabel = document.getElementById('queueCountLabel');
+            if(!tbody) return;
 
-            countdownInterval = setInterval(() => {
-                if(!currentOrder) {
-                    clearInterval(countdownInterval);
-                    return;
-                }
+            tbody.innerHTML = '';
+            countLabel.innerText = `${queueList.length} Active`;
 
-                currentOrder.timeLeft--;
-                let mins = Math.floor(currentOrder.timeLeft / 60);
-                let secs = currentOrder.timeLeft % 60;
-                let timerEl = document.getElementById('timerCountdown');
-                if(timerEl) {
-                    timerEl.innerText = `${mins < 10 ? '0' : ''}${mins}:${secs < 10 ? '0' : ''}${secs}`;
-                }
+            if(queueList.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="py-6 text-center text-slate-500 italic">Queue is empty. Place an order!</td></tr>`;
+                return;
+            }
 
-                if(currentOrder.timeLeft <= 0) {
-                    clearInterval(countdownInterval);
-                    triggerOrderReadySMS();
-                }
-            }, 1000);
+            queueList.forEach((order, index) => {
+                let mins = Math.floor(order.timeLeft / 60);
+                let secs = order.timeLeft % 60;
+                let timeStr = `${mins < 10 ? '0' : ''}${mins}:${secs < 10 ? '0' : ''}${secs}`;
+
+                const tr = document.createElement('tr');
+                tr.className = "border-b border-slate-800/50 text-slate-300";
+                tr.innerHTML = `
+                    <td class="py-2.5 font-mono font-bold text-emerald-400">${order.token}</td>
+                    <td class="py-2.5 font-semibold">${order.name}<br><span class="text-[10px] text-slate-500 font-mono">${order.roll}</span></td>
+                    <td class="py-2.5">${order.food}</td>
+                    <td class="py-2.5 font-mono text-cyan-400">${timeStr}</td>
+                    <td class="py-2.5"><span class="px-2 py-0.5 rounded text-[10px] font-bold ${order.status.includes('Ready') ? 'bg-emerald-500/20 text-emerald-300' : 'bg-amber-500/20 text-amber-300'}">${order.status}</span></td>
+                `;
+                tbody.appendChild(tr);
+            });
         }
 
-        function triggerOrderReadySMS() {
-            if(!currentOrder) return;
-            currentOrder.status = "Order Ready! 🟢";
-            saveData();
-            renderActiveOrder();
-            document.getElementById('timerStatusLabel').innerText = "Ready for Collection";
-            document.getElementById('simulationStatusText').innerText = "Food is Ready! Student collecting...";
+        // Global Timer loop to manage 3 minutes countdown for all active orders
+        setInterval(() => {
+            let updated = false;
+            queueList.forEach(order => {
+                if(order.timeLeft > 0) {
+                    order.timeLeft--;
+                    updated = true;
+                    if(order.timeLeft === 0 && !order.status.includes('Ready')) {
+                        order.status = "Ready! 🟢";
+                        triggerReadySMS(order);
+                    }
+                }
+            });
+            if(updated) {
+                saveData();
+                renderQueue();
+            }
+        }, 1000);
 
+        function triggerReadySMS(order) {
             smsLogList.unshift({
                 time: new Date().toLocaleTimeString(),
-                phone: currentOrder.phone,
-                name: currentOrder.name,
-                type: "Your food order is ready!",
+                phone: order.phone,
+                name: order.name,
+                type: "Your food order is ready! Take it",
                 status: "Delivered ✅"
             });
             saveData();
             renderSMSLogs();
-
-            alert(`🚨 [TWILIO SMS ALERT TO +91 ${currentOrder.phone}]\n\n"Dear ${currentOrder.name}, Your food order is ready! Please collect your ${currentOrder.food} from counter now."`);
         }
 
-        function simulateCollectionNow() {
-            if(!currentOrder) {
-                alert("No active order to collect!");
+        function serveNextOrder() {
+            if(queueList.length === 0) {
+                alert("No students in the queue!");
                 return;
             }
-            if(countdownInterval) clearInterval(countdownInterval);
+            const served = queueList.shift();
             completedOrdersCount++;
             updateAnalytics();
-
-            alert(`✅ Student ${currentOrder.name} collected the food and left the counter.`);
-            currentOrder = null;
             saveData();
-            renderActiveOrder();
-            renderSMSLogs();
-            document.getElementById('timerStatusLabel').innerText = "Idle";
-            document.getElementById('simulationStatusText').innerText = "Waiting for order...";
+            renderQueue();
+            alert(`✅ Student ${served.name} (${served.token}) collected food and left quietly.`);
         }
 
         function renderSMSLogs() {
@@ -446,7 +462,7 @@
             });
         }
 
-        // Single Person 3D Initializer
+        // 3D Scene Initialization
         function init3D() {
             const container = document.getElementById('canvas-container');
             if(!container) return;
@@ -458,30 +474,23 @@
             renderer.setSize(container.clientWidth, container.clientHeight);
             container.appendChild(renderer.domElement);
 
-            const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
             scene.add(ambientLight);
-            const pointLight = new THREE.PointLight(0x10b981, 1, 50);
+            const pointLight = new THREE.PointLight(0x10b981, 1.2, 50);
             pointLight.position.set(0, 10, 5);
             scene.add(pointLight);
 
-            const gridHelper = new THREE.GridHelper(30, 30, 0x10b981, 0x1f2937);
+            const gridHelper = new THREE.GridHelper(20, 20, 0x10b981, 0x1f2937);
             scene.add(gridHelper);
 
             // Counter Desk
-            const deskGeo = new THREE.BoxGeometry(5, 0.8, 1.5);
+            const deskGeo = new THREE.BoxGeometry(4, 0.7, 1.2);
             const deskMat = new THREE.MeshStandardMaterial({ color: 0x065f46 });
             const desk = new THREE.Mesh(deskGeo, deskMat);
-            desk.position.set(0, 0.4, -3);
+            desk.position.set(0, 0.35, -2);
             scene.add(desk);
 
-            // Single Student Avatar
-            const avGeo = new THREE.CylinderGeometry(0.35, 0.35, 1.3, 16);
-            const avMat = new THREE.MeshStandardMaterial({ color: 0x10b981 });
-            const avatar = new THREE.Mesh(avGeo, avMat);
-            avatar.position.set(0, 0.65, -1);
-            scene.add(avatar);
-
-            camera.position.set(0, 4, 5);
+            camera.position.set(0, 3.5, 4);
             camera.lookAt(0, 0, -2);
 
             function animate() {
@@ -491,18 +500,11 @@
             animate();
         }
 
-        function init3DFull() {
-            init3D(); // Re-use single person clean view
-        }
-
         window.onload = () => {
             init3D();
-            renderActiveOrder();
+            renderQueue();
             renderSMSLogs();
             updateAnalytics();
-            if(currentOrder && currentOrder.timeLeft > 0) {
-                startCountdown();
-            }
         };
     </script>
 </body>
