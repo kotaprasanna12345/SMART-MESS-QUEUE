@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smart Mess Queue Management System - Full Fix</title>
+    <title>Smart Mess Queue Management System - Single Person 3D & SMS</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -23,12 +23,12 @@
                 </div>
                 <div>
                     <h1 class="font-bold text-sm sm:text-base tracking-wide text-white">SMART MESS QUEUE MANAGEMENT SYSTEM</h1>
-                    <p class="text-[11px] text-slate-400">Real-time token dispatching, 3D simulation & precise time slots</p>
+                    <p class="text-[11px] text-slate-400">Single Person 3D Simulation, 3 Min SMS Trigger & Local Storage</p>
                 </div>
             </div>
             <div class="flex items-center space-x-3">
                 <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Twilio Connected & Active
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Twilio Connected
                 </span>
             </div>
         </div>
@@ -36,8 +36,8 @@
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-1 w-full grid grid-cols-1 lg:grid-cols-4 gap-6">
         
-        <!-- Sidebar Navigation -->
-        <aside class="lg:col-span-1 space-y-2">
+        <!-- Sidebar Navigation & Data Storage Control -->
+        <aside class="lg:col-span-1 space-y-4">
             <div class="bg-[#111827] border border-slate-800 rounded-2xl p-3 shadow-sm">
                 <nav class="space-y-1">
                     <button onclick="switchTab('dashboard')" id="nav-dashboard" class="w-full text-left flex items-center gap-3 px-3.5 py-2.5 rounded-xl bg-emerald-500/10 text-emerald-400 text-xs font-bold border border-emerald-500/25 transition cursor-pointer">
@@ -57,18 +57,27 @@
                     </button>
                 </nav>
             </div>
+
+            <!-- Data Storage Box in Sidebar -->
+            <div class="bg-[#111827] border border-slate-800 rounded-2xl p-4 shadow-sm space-y-3">
+                <h4 class="text-xs font-bold uppercase tracking-wider text-slate-300"><i class="fa-solid fa-database text-emerald-400 mr-2"></i> Local Data Storage</h4>
+                <p class="text-[11px] text-slate-400">Queue & SMS logs are securely saved in browser storage.</p>
+                <button onclick="clearStoredData()" class="w-full bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/30 font-bold py-2 px-3 rounded-xl text-xs transition cursor-pointer">
+                    Clear Stored Data 🗑️
+                </button>
+            </div>
         </aside>
 
         <!-- Main Content Area -->
         <main class="lg:col-span-3 space-y-6">
 
-            <!-- Tab 1: Live Dashboard & 3D Simulation -->
+            <!-- Tab 1: Live Dashboard & Single Person 3D Simulation -->
             <div id="tab-dashboard" class="space-y-6">
-                <!-- 3D Simulation Canvas Box -->
+                <!-- 3D Simulation Canvas Box (Single Person) -->
                 <div class="bg-[#111827] border border-slate-800 rounded-2xl p-4 shadow-sm">
                     <div class="flex items-center justify-between mb-3">
-                        <h3 class="font-bold text-xs uppercase tracking-wider text-slate-300"><i class="fa-solid fa-cube text-emerald-400 mr-2"></i> 3D Mess Hall & SMS Food Collection Simulation</h3>
-                        <span class="text-[10px] text-emerald-400 font-mono">Live Interactive View</span>
+                        <h3 class="font-bold text-xs uppercase tracking-wider text-slate-300"><i class="fa-solid fa-cube text-emerald-400 mr-2"></i> 3D Counter View (Single Active Student)</h3>
+                        <span id="simulationStatusText" class="text-[10px] text-emerald-400 font-mono">Waiting for order...</span>
                     </div>
                     <div id="canvas-container" class="w-full h-64 rounded-xl overflow-hidden bg-[#07090f] border border-slate-800 relative"></div>
                 </div>
@@ -77,7 +86,7 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <!-- Issue Token Form -->
                     <div class="bg-[#111827] border border-slate-800 rounded-2xl p-5 shadow-sm">
-                        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-300 mb-4"><i class="fa-solid fa-ticket mr-2 text-emerald-400"></i> Issue Student Token & Trigger SMS</h3>
+                        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-300 mb-4"><i class="fa-solid fa-ticket mr-2 text-emerald-400"></i> Issue Student Token & 3-Min SMS</h3>
                         <form id="tokenForm" class="space-y-3">
                             <div>
                                 <label class="block text-[11px] font-medium text-slate-400 mb-1">Student Name</label>
@@ -103,34 +112,27 @@
                                 </select>
                             </div>
                             <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 px-4 rounded-xl text-xs transition shadow-lg shadow-emerald-600/20 cursor-pointer">
-                                Generate Token & Send Twilio SMS 🚀
+                                Generate Token & Start 3-Min Timer 🚀
                             </button>
                         </form>
                     </div>
 
-                    <!-- Active Queue Log with Time Slots -->
-                    <div class="bg-[#111827] border border-slate-800 rounded-2xl p-5 shadow-sm flex flex-col">
-                        <div class="flex items-center justify-between mb-4">
-                            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-300"><i class="fa-solid fa-list-ol mr-2 text-emerald-400"></i> Active Queue & Slots (3 Mins / Person)</h3>
-                            <button onclick="serveNextOrder()" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-1.5 px-3 rounded-xl text-[11px] transition cursor-pointer">
-                                Serve Next ⚡
-                            </button>
+                    <!-- Active Queue & 3-Min Countdown Status -->
+                    <div class="bg-[#111827] border border-slate-800 rounded-2xl p-5 shadow-sm flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-xs font-bold uppercase tracking-wider text-slate-300"><i class="fa-solid fa-stopwatch mr-2 text-emerald-400"></i> Active Order Status (3 Mins)</h3>
+                                <button onclick="simulateCollectionNow()" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-1.5 px-3 rounded-xl text-[11px] transition cursor-pointer">
+                                    Simulate Collection ⚡
+                                </button>
+                            </div>
+                            <div id="activeOrderDisplay" class="bg-[#0b0f19] border border-slate-800 rounded-xl p-4 text-center space-y-3">
+                                <p class="text-slate-500 italic text-xs">No active order right now. Generate a token!</p>
+                            </div>
                         </div>
-                        <div class="overflow-x-auto flex-1">
-                            <table class="w-full text-left border-collapse">
-                                <thead>
-                                    <tr class="border-b border-slate-800 text-slate-400 text-[11px] uppercase tracking-wider">
-                                        <th class="py-2">Token</th>
-                                        <th class="py-2">Student & Roll</th>
-                                        <th class="py-2">Food Item</th>
-                                        <th class="py-2">Time Slot (3m)</th>
-                                        <th class="py-2 text-right">Status</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="queueTableBody" class="text-xs">
-                                    <tr><td colspan="5" class="py-8 text-center text-slate-500 italic">Queue is currently empty. Generate a token to view!</td></tr>
-                                </tbody>
-                            </table>
+                        <div class="mt-4 pt-3 border-t border-slate-800 text-[11px] text-slate-400 flex justify-between">
+                            <span>Auto SMS Trigger: <strong class="text-emerald-400">After 3 Mins</strong></span>
+                            <span>Status: <strong class="text-cyan-400" id="timerStatusLabel">Idle</strong></span>
                         </div>
                     </div>
                 </div>
@@ -138,7 +140,7 @@
 
             <!-- Tab 2: Dedicated 3D View Simulation -->
             <div id="tab-simulation" class="hidden bg-[#111827] border border-slate-800 rounded-2xl p-5 shadow-sm space-y-4">
-                <h3 class="font-bold text-sm text-white"><i class="fa-solid fa-cube text-emerald-400 mr-2"></i> Dedicated 3D Mess Hall View</h3>
+                <h3 class="font-bold text-sm text-white"><i class="fa-solid fa-cube text-emerald-400 mr-2"></i> Dedicated 3D Mess Counter View</h3>
                 <div id="canvas-container-full" class="w-full h-[450px] rounded-xl overflow-hidden bg-[#07090f] border border-slate-800"></div>
             </div>
 
@@ -146,7 +148,6 @@
             <div id="tab-menu" class="hidden bg-[#111827] border border-slate-800 rounded-2xl p-5 shadow-sm space-y-4">
                 <h3 class="font-bold text-sm text-white mb-4"><i class="fa-solid fa-utensils text-emerald-400 mr-2"></i> Complete Mess Food Menu & Pricing Catalog</h3>
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
-                    <!-- Item 1 -->
                     <div class="bg-[#0b0f19] border border-slate-700 rounded-xl overflow-hidden flex flex-col">
                         <img src="https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=500&auto=format&fit=crop&q=60" alt="Chicken Biryani" class="w-full h-32 object-cover">
                         <div class="p-3 flex flex-col flex-1 justify-between">
@@ -154,7 +155,6 @@
                             <p class="text-emerald-400 font-bold text-sm mt-2">₹150</p>
                         </div>
                     </div>
-                    <!-- Item 2 -->
                     <div class="bg-[#0b0f19] border border-slate-700 rounded-xl overflow-hidden flex flex-col">
                         <img src="https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?w=500&auto=format&fit=crop&q=60" alt="Special Thali" class="w-full h-32 object-cover">
                         <div class="p-3 flex flex-col flex-1 justify-between">
@@ -162,7 +162,6 @@
                             <p class="text-emerald-400 font-bold text-sm mt-2">₹120</p>
                         </div>
                     </div>
-                    <!-- Item 3 -->
                     <div class="bg-[#0b0f19] border border-slate-700 rounded-xl overflow-hidden flex flex-col">
                         <img src="https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=500&auto=format&fit=crop&q=60" alt="Paneer Butter Masala" class="w-full h-32 object-cover">
                         <div class="p-3 flex flex-col flex-1 justify-between">
@@ -170,7 +169,6 @@
                             <p class="text-emerald-400 font-bold text-sm mt-2">₹130</p>
                         </div>
                     </div>
-                    <!-- Item 4 -->
                     <div class="bg-[#0b0f19] border border-slate-700 rounded-xl overflow-hidden flex flex-col">
                         <img src="https://images.unsplash.com/photo-1525351484163-7529414344d8?w=500&auto=format&fit=crop&q=60" alt="Veg Manchuria" class="w-full h-32 object-cover">
                         <div class="p-3 flex flex-col flex-1 justify-between">
@@ -178,7 +176,6 @@
                             <p class="text-emerald-400 font-bold text-sm mt-2">₹80</p>
                         </div>
                     </div>
-                    <!-- Item 5 -->
                     <div class="bg-[#0b0f19] border border-slate-700 rounded-xl overflow-hidden flex flex-col">
                         <img src="https://images.unsplash.com/photo-1603133872878-684f208fb84b?w=500&auto=format&fit=crop&q=60" alt="Egg Fried Rice" class="w-full h-32 object-cover">
                         <div class="p-3 flex flex-col flex-1 justify-between">
@@ -186,7 +183,6 @@
                             <p class="text-emerald-400 font-bold text-sm mt-2">₹90</p>
                         </div>
                     </div>
-                    <!-- Item 6 -->
                     <div class="bg-[#0b0f19] border border-slate-700 rounded-xl overflow-hidden flex flex-col">
                         <img src="https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=500&auto=format&fit=crop&q=60" alt="Masala Dosa" class="w-full h-32 object-cover">
                         <div class="p-3 flex flex-col flex-1 justify-between">
@@ -222,12 +218,12 @@
                                 <th class="py-3">Timestamp</th>
                                 <th class="py-3">Phone Number</th>
                                 <th class="py-3">Student Name</th>
-                                <th class="py-3">Assigned Slot</th>
+                                <th class="py-3">SMS Message Type</th>
                                 <th class="py-3">Twilio Status</th>
                             </tr>
                         </thead>
                         <tbody id="smsLogTableBody" class="text-xs">
-                            <tr><td colspan="5" class="py-8 text-center text-slate-500 italic">No SMS dispatched yet today.</td></tr>
+                            <tr><td colspan="5" class="py-8 text-center text-slate-500 italic">No SMS dispatched yet.</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -236,14 +232,37 @@
         </main>
     </div>
 
-    <!-- JavaScript Application Logic -->
+    <!-- JavaScript Logic -->
     <script>
-        let queueList = [];
-        let smsLogList = [];
-        let completedOrdersCount = 0;
-        let tokenCounter = 101;
-        let totalRevenue = 0;
-        const TIME_SLOT_MINS = 3; // Oka person ki exact 3 minutes
+        let currentOrder = JSON.parse(localStorage.getItem('smart_mess_current_order')) || null;
+        let smsLogList = JSON.parse(localStorage.getItem('smart_mess_sms_logs')) || [];
+        let completedOrdersCount = parseInt(localStorage.getItem('smart_mess_completed_count')) || 0;
+        let totalRevenue = parseInt(localStorage.getItem('smart_mess_revenue')) || 0;
+        let tokenCounter = parseInt(localStorage.getItem('smart_mess_token_counter')) || 101;
+        let countdownInterval = null;
+
+        function saveData() {
+            localStorage.setItem('smart_mess_current_order', JSON.stringify(currentOrder));
+            localStorage.setItem('smart_mess_sms_logs', JSON.stringify(smsLogList));
+            localStorage.setItem('smart_mess_completed_count', completedOrdersCount);
+            localStorage.setItem('smart_mess_revenue', totalRevenue);
+            localStorage.setItem('smart_mess_token_counter', tokenCounter);
+        }
+
+        function clearStoredData() {
+            if(confirm("Are you sure you want to clear all stored data?")) {
+                localStorage.clear();
+                currentOrder = null;
+                smsLogList = [];
+                completedOrdersCount = 0;
+                totalRevenue = 0;
+                tokenCounter = 101;
+                renderActiveOrder();
+                renderSMSLogs();
+                updateAnalytics();
+                alert("Storage cleared successfully!");
+            }
+        }
 
         function switchTab(tabId) {
             ['dashboard', 'simulation', 'menu', 'analytics', 'smslogs'].forEach(t => {
@@ -264,69 +283,36 @@
                 activeBtn.className = "w-full text-left flex items-center gap-3 px-3.5 py-2.5 rounded-xl bg-emerald-500/10 text-emerald-400 text-xs font-bold border border-emerald-500/25 transition cursor-pointer";
             }
 
-            // Force Resize/Init ThreeJS when switching to tab-simulation
             if(tabId === 'simulation') {
                 setTimeout(init3DFull, 50);
             }
         }
 
-        // Calculate Time Slots Dynamically based on FIFO Position (3 Mins per person)
-        function calculateTimeSlot(index) {
-            let now = new Date();
-            now.setMinutes(now.getMinutes() + (index * TIME_SLOT_MINS));
-            let hours = now.getHours();
-            let minutes = now.getMinutes();
-            let ampm = hours >= 12 ? 'PM' : 'AM';
-            hours = hours % 12;
-            hours = hours ? hours : 12;
-            minutes = minutes < 10 ? '0' + minutes : minutes;
-            return `${hours}:${minutes} ${ampm}`;
-        }
-
-        function renderQueue() {
-            const tbody = document.getElementById('queueTableBody');
-            tbody.innerHTML = '';
-            
-            if(queueList.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" class="py-8 text-center text-slate-500 italic">Queue is currently empty. Generate a token to view!</td></tr>`;
+        function renderActiveOrder() {
+            const display = document.getElementById('activeOrderDisplay');
+            if(!currentOrder) {
+                display.innerHTML = `<p class="text-slate-500 italic text-xs">No active order right now. Generate a token!</p>`;
+                document.getElementById('timerStatusLabel').innerText = "Idle";
+                document.getElementById('simulationStatusText').innerText = "Waiting for order...";
                 return;
             }
 
-            queueList.forEach((item, idx) => {
-                let timeSlotStr = calculateTimeSlot(idx);
-                let statusBadge = "";
-                
-                if (idx === 0) {
-                    statusBadge = `<span class="px-2.5 py-1 rounded text-[10px] bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-bold animate-pulse">COLLECTING NOW 🟢</span>`;
-                } else {
-                    statusBadge = `<span class="px-2.5 py-1 rounded text-[10px] bg-amber-500/20 text-amber-300 border border-amber-500/30 font-medium">Waiting #${idx} ⏳</span>`;
-                }
-
-                const tr = document.createElement('tr');
-                tr.className = "border-b border-slate-800/80 text-slate-300 hover:bg-slate-800/40 transition";
-                tr.innerHTML = `
-                    <td class="py-3 font-mono font-bold text-emerald-400">${item.token}</td>
-                    <td class="py-3">
-                        <div class="font-semibold">${item.name}</div>
-                        <div class="text-[10px] text-slate-400 font-mono">${item.roll}</div>
-                    </td>
-                    <td class="py-3 font-medium text-slate-200">${item.food}</td>
-                    <td class="py-3 font-mono text-cyan-400 font-bold">${timeSlotStr}</td>
-                    <td class="py-3 text-right">${statusBadge}</td>
-                `;
-                tbody.appendChild(tr);
-            });
+            display.innerHTML = `
+                <div class="flex justify-between items-center text-xs">
+                    <span class="font-mono font-bold text-emerald-400 text-sm">${currentOrder.token}</span>
+                    <span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-bold">${currentOrder.status}</span>
+                </div>
+                <div class="text-left space-y-1">
+                    <p class="font-bold text-white">${currentOrder.name} <span class="text-[10px] text-slate-400 font-mono">(${currentOrder.roll})</span></p>
+                    <p class="text-slate-300">Item: <span class="text-emerald-400 font-medium">${currentOrder.food}</span></p>
+                    <p class="text-cyan-400 font-mono font-bold">Time Remaining: <span id="timerCountdown">03:00</span></p>
+                </div>
+            `;
         }
 
-        function serveNextOrder() {
-            if(queueList.length === 0) {
-                alert("Queue is empty!");
-                return;
-            }
-            queueList.shift();
-            completedOrdersCount++;
+        function updateAnalytics() {
             document.getElementById('analyticsTotalOrders').innerText = completedOrdersCount;
-            renderQueue();
+            document.getElementById('analyticsRevenue').innerText = `₹${totalRevenue}`;
         }
 
         document.getElementById('tokenForm').addEventListener('submit', (e) => {
@@ -345,37 +331,105 @@
             else if(food.includes('₹90')) price = 90;
 
             totalRevenue += price;
-            document.getElementById('analyticsRevenue').innerText = `₹${totalRevenue}`;
+            updateAnalytics();
 
-            queueList.push({ token, name, roll, phone, food });
-            renderQueue();
+            currentOrder = {
+                token, name, roll, phone, food,
+                status: "Preparing 🍳",
+                timeLeft: 180 // 3 minutes in seconds
+            };
+            saveData();
+            renderActiveOrder();
+            startCountdown();
 
-            let assignedSlot = calculateTimeSlot(queueList.length - 1);
-
-            // Trigger Twilio SMS simulation with custom SMS popup alert
+            // Log Initial Token Generation SMS
             smsLogList.unshift({
                 time: new Date().toLocaleTimeString(),
                 phone: phone,
                 name: name,
-                slot: assignedSlot,
-                status: `Twilio SMS Dispatched (Sent to +91 ${phone}) ✅`
+                type: "Token Confirmed",
+                status: "Sent ✅"
             });
+            saveData();
             renderSMSLogs();
 
-            // Browser alert notification simulating Twilio Gateway confirmation
-            alert(`📱 [TWILIO SMS GATEWAY SUCCESS]\n\nTo: +91 ${phone}\nDear ${name}, your Token ${token} is generated for ${food}. Your precise collection slot is at ${assignedSlot} (3 mins duration). Please collect at the counter!`);
-
+            alert(`📱 [TWILIO SMS]\nToken ${token} generated for ${name}. Timer started for 3 minutes!`);
             document.getElementById('studentName').value = '';
             document.getElementById('rollNum').value = '';
             document.getElementById('phoneNum').value = '';
         });
+
+        function startCountdown() {
+            if(countdownInterval) clearInterval(countdownInterval);
+            document.getElementById('timerStatusLabel').innerText = "Running (3 Mins)";
+            document.getElementById('simulationStatusText').innerText = "Student approaching counter...";
+
+            countdownInterval = setInterval(() => {
+                if(!currentOrder) {
+                    clearInterval(countdownInterval);
+                    return;
+                }
+
+                currentOrder.timeLeft--;
+                let mins = Math.floor(currentOrder.timeLeft / 60);
+                let secs = currentOrder.timeLeft % 60;
+                let timerEl = document.getElementById('timerCountdown');
+                if(timerEl) {
+                    timerEl.innerText = `${mins < 10 ? '0' : ''}${mins}:${secs < 10 ? '0' : ''}${secs}`;
+                }
+
+                if(currentOrder.timeLeft <= 0) {
+                    clearInterval(countdownInterval);
+                    triggerOrderReadySMS();
+                }
+            }, 1000);
+        }
+
+        function triggerOrderReadySMS() {
+            if(!currentOrder) return;
+            currentOrder.status = "Order Ready! 🟢";
+            saveData();
+            renderActiveOrder();
+            document.getElementById('timerStatusLabel').innerText = "Ready for Collection";
+            document.getElementById('simulationStatusText').innerText = "Food is Ready! Student collecting...";
+
+            smsLogList.unshift({
+                time: new Date().toLocaleTimeString(),
+                phone: currentOrder.phone,
+                name: currentOrder.name,
+                type: "Your food order is ready!",
+                status: "Delivered ✅"
+            });
+            saveData();
+            renderSMSLogs();
+
+            alert(`🚨 [TWILIO SMS ALERT TO +91 ${currentOrder.phone}]\n\n"Dear ${currentOrder.name}, Your food order is ready! Please collect your ${currentOrder.food} from counter now."`);
+        }
+
+        function simulateCollectionNow() {
+            if(!currentOrder) {
+                alert("No active order to collect!");
+                return;
+            }
+            if(countdownInterval) clearInterval(countdownInterval);
+            completedOrdersCount++;
+            updateAnalytics();
+
+            alert(`✅ Student ${currentOrder.name} collected the food and left the counter.`);
+            currentOrder = null;
+            saveData();
+            renderActiveOrder();
+            renderSMSLogs();
+            document.getElementById('timerStatusLabel').innerText = "Idle";
+            document.getElementById('simulationStatusText').innerText = "Waiting for order...";
+        }
 
         function renderSMSLogs() {
             const tbody = document.getElementById('smsLogTableBody');
             if(!tbody) return;
             tbody.innerHTML = '';
             if(smsLogList.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" class="py-8 text-center text-slate-500 italic">No SMS dispatched yet today.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="5" class="py-8 text-center text-slate-500 italic">No SMS dispatched yet.</td></tr>`;
                 return;
             }
             smsLogList.forEach(log => {
@@ -385,14 +439,14 @@
                     <td class="py-3 font-mono text-slate-400">${log.time}</td>
                     <td class="py-3 font-mono">${log.phone}</td>
                     <td class="py-3 font-semibold">${log.name}</td>
-                    <td class="py-3 font-mono text-cyan-400">${log.slot}</td>
+                    <td class="py-3 text-cyan-400 font-medium">${log.type}</td>
                     <td class="py-3 text-emerald-400 font-semibold">${log.status}</td>
                 `;
                 tbody.appendChild(tr);
             });
         }
 
-        // 3D Three.js Initializers
+        // Single Person 3D Initializer
         function init3D() {
             const container = document.getElementById('canvas-container');
             if(!container) return;
@@ -413,21 +467,21 @@
             const gridHelper = new THREE.GridHelper(30, 30, 0x10b981, 0x1f2937);
             scene.add(gridHelper);
 
-            const deskGeo = new THREE.BoxGeometry(6, 0.8, 1.5);
+            // Counter Desk
+            const deskGeo = new THREE.BoxGeometry(5, 0.8, 1.5);
             const deskMat = new THREE.MeshStandardMaterial({ color: 0x065f46 });
             const desk = new THREE.Mesh(deskGeo, deskMat);
-            desk.position.set(0, 0.4, -4);
+            desk.position.set(0, 0.4, -3);
             scene.add(desk);
 
-            for(let i=0; i<5; i++) {
-                const avGeo = new THREE.CylinderGeometry(0.3, 0.3, 1.2, 16);
-                const avMat = new THREE.MeshStandardMaterial({ color: i === 0 ? 0x10b981 : 0x3b82f6 });
-                const avatar = new THREE.Mesh(avGeo, avMat);
-                avatar.position.set(0, 0.6, i * 1.2 - 1);
-                scene.add(avatar);
-            }
+            // Single Student Avatar
+            const avGeo = new THREE.CylinderGeometry(0.35, 0.35, 1.3, 16);
+            const avMat = new THREE.MeshStandardMaterial({ color: 0x10b981 });
+            const avatar = new THREE.Mesh(avGeo, avMat);
+            avatar.position.set(0, 0.65, -1);
+            scene.add(avatar);
 
-            camera.position.set(0, 5, 6);
+            camera.position.set(0, 4, 5);
             camera.lookAt(0, 0, -2);
 
             function animate() {
@@ -438,53 +492,17 @@
         }
 
         function init3DFull() {
-            const container = document.getElementById('canvas-container-full');
-            if(!container) return;
-            container.innerHTML = '';
-
-            const scene = new THREE.Scene();
-            const camera = new THREE.PerspectiveCamera(60, container.clientWidth / container.clientHeight, 0.1, 1000);
-            const renderer = new THREE.WebGLRenderer({ antialias: true });
-            renderer.setSize(container.clientWidth, container.clientHeight);
-            container.appendChild(renderer.domElement);
-
-            const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
-            scene.add(ambientLight);
-            const pointLight = new THREE.PointLight(0x10b981, 1.2, 60);
-            pointLight.position.set(0, 12, 5);
-            scene.add(pointLight);
-
-            const gridHelper = new THREE.GridHelper(40, 40, 0x10b981, 0x1f2937);
-            scene.add(gridHelper);
-
-            // Counter Desk
-            const deskGeo = new THREE.BoxGeometry(8, 1, 2);
-            const deskMat = new THREE.MeshStandardMaterial({ color: 0x047857 });
-            const desk = new THREE.Mesh(deskGeo, deskMat);
-            desk.position.set(0, 0.5, -5);
-            scene.add(desk);
-
-            // Queue Avatars representing students waiting
-            for(let i=0; i<8; i++) {
-                const avGeo = new THREE.CylinderGeometry(0.35, 0.35, 1.4, 16);
-                const avMat = new THREE.MeshStandardMaterial({ color: i === 0 ? 0x10b981 : 0x3b82f6 });
-                const avatar = new THREE.Mesh(avGeo, avMat);
-                avatar.position.set(0, 0.7, i * 1.3 - 2);
-                scene.add(avatar);
-            }
-
-            camera.position.set(0, 6, 8);
-            camera.lookAt(0, 0, -3);
-
-            function animateFull() {
-                requestAnimationFrame(animateFull);
-                renderer.render(scene, camera);
-            }
-            animateFull();
+            init3D(); // Re-use single person clean view
         }
 
         window.onload = () => {
             init3D();
+            renderActiveOrder();
+            renderSMSLogs();
+            updateAnalytics();
+            if(currentOrder && currentOrder.timeLeft > 0) {
+                startCountdown();
+            }
         };
     </script>
 </body>
