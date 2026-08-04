@@ -111,18 +111,18 @@
                 <h2>SMART MESS QUEUE MANAGER (R23 Advanced)</h2>
                 <p>Queue > Sequential Timers > AI Predictor > Voice TTS > QR Ticketing</p>
             </div>
-            <div class="badge">✨ Sequential 2M Active (Download Ready)</div>
+            <div class="badge">✨ Sequential 2M Active (Excel Export Ready)</div>
         </header>
 
         <div class="banner">
             <div class="banner-left">
                 <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 100-6 3 3 0 000 6z"></path></svg>
                 <div>
-                    <h3>VOICE TTS & FILE DOWNLOAD LAYER</h3>
-                    <p>Queue data can now be exported directly as a downloadable JSON file.</p>
+                    <h3>EXCEL DATA EXPORT LAYER</h3>
+                    <p>Go to 'File I/O & Storage' tab to download data directly as an Excel (.csv) file.</p>
                 </div>
             </div>
-            <div class="banner-right">Download Enabled</div>
+            <div class="banner-right">Excel Ready</div>
         </div>
 
         <!-- Tab 1: Dashboard -->
@@ -216,8 +216,8 @@
         <div id="tab-fileio" class="tab-content">
             <div class="card" style="position: relative;">
                 <div class="card-title" style="justify-content: space-between;">
-                    <span>💾 Persistent Local Storage View & Download</span>
-                    <button onclick="downloadJSON()" style="background:linear-gradient(135deg, #10b981, #059669); color:#fff; border:none; padding:6px 14px; border-radius:6px; font-size:11px; cursor:pointer; font-weight:700; box-shadow: 0 2px 10px rgba(16,185,129,0.4);">📥 Download Data (JSON)</button>
+                    <span>💾 Persistent Storage & Excel Export</span>
+                    <button onclick="downloadExcel()" style="background:linear-gradient(135deg, #10b981, #059669); color:#fff; border:none; padding:6px 14px; border-radius:6px; font-size:11px; cursor:pointer; font-weight:700; box-shadow: 0 2px 10px rgba(16,185,129,0.4);">📊 Download Excel (CSV)</button>
                 </div>
                 <textarea id="fileViewer" class="form-control" style="height: 200px; font-family: monospace; font-size: 11px;" readonly></textarea>
             </div>
@@ -276,11 +276,17 @@
             }
         }
 
-        function downloadJSON() {
-            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(queueData, null, 2));
+        function downloadExcel() {
+            let csvContent = "Token,Name,Roll Number,Phone,Food,TimeLeft(s),Active,Status\n";
+            queueData.forEach(item => {
+                csvContent += `"${item.token}","${item.name}","${item.roll}","${item.phone}","${item.food}","${item.timeLeft}","${item.active}","${item.status}"\n`;
+            });
+
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
             const downloadAnchor = document.createElement('a');
-            downloadAnchor.setAttribute("href", dataStr);
-            downloadAnchor.setAttribute("download", "smart_mess_queue_data.json");
+            downloadAnchor.setAttribute("href", url);
+            downloadAnchor.setAttribute("download", "smart_mess_queue_data.csv");
             document.body.appendChild(downloadAnchor);
             downloadAnchor.click();
             downloadAnchor.remove();
