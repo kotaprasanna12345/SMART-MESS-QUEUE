@@ -420,7 +420,7 @@
 
         document.getElementById('queueForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            const name = document.getElementById('sName5').value || document.getElementById('sName').value;
+            const name = document.getElementById('sName').value;
             const roll = document.getElementById('sRoll').value;
             const phone = document.getElementById('sPhone').value;
             const food = document.getElementById('sFood').value;
@@ -470,7 +470,7 @@
         }
 
         document.getElementById('serveBtn').addEventListener('click', function() {
-            if (queueData.left > 0 || queueData.length > 0) {
+            if (queueData.length > 0) {
                 let served = queueData.shift();
                 served.status = 'Served ✅';
                 historyData.push(served);
@@ -520,7 +520,6 @@
             });
         }
 
-        renderQueryInputs();
         renderQueue();
     </script>
 </body>
