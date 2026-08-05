@@ -68,9 +68,11 @@
         .qr-wrapper { background: #fff; padding: 16px; border-radius: 10px; display: inline-block; margin: 16px 0; }
         .btn-close { background: #1a2234; color: #fff; border: none; padding: 9px 16px; border-radius: 8px; cursor: pointer; font-weight: 700; font-size: 11px; width: 100%; }
 
-        /* Price List Menu Styles */
-        .menu-category-title { font-size: 11px; color: #34d399; font-weight: 700; margin-top: 10px; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
-        .menu-item-row { display: flex; justify-content: space-between; font-size: 11px; color: #9ca3af; padding: 3px 0; border-bottom: 1px dashed #1a2234; }
+        /* Price List Menu Styles with Photos */
+        .menu-category-title { font-size: 11px; color: #34d399; font-weight: 700; margin-top: 10px; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .menu-item-row { display: flex; align-items: center; justify-content: space-between; font-size: 11px; color: #9ca3af; padding: 4px 0; border-bottom: 1px dashed #1a2234; }
+        .menu-item-info { display: flex; align-items: center; gap: 8px; }
+        .menu-item-info img { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; border: 1px solid #1a2234; }
         .menu-item-row span:last-child { color: #f3f4f6; font-weight: 600; }
     </style>
 </head>
@@ -180,39 +182,39 @@
                     </form>
                 </div>
 
-                <!-- Mess Food Prices & Menu Reference Side Box -->
+                <!-- Mess Food Prices & Photos Reference Side Box -->
                 <div class="card" style="max-height: 440px; overflow-y: auto;">
-                    <div class="card-title">💰 Mess Food Price List</div>
+                    <div class="card-title">💰 Mess Food Menu & Prices</div>
                     
                     <div class="menu-category-title">🍳 Breakfast</div>
-                    <div class="menu-item-row"><span>Idli Vada</span><span>₹40</span></div>
-                    <div class="menu-item-row"><span>Masala Dosa</span><span>₹50</span></div>
-                    <div class="menu-item-row"><span>Puri Bhaji</span><span>₹45</span></div>
-                    <div class="menu-item-row"><span>Upma / Poha</span><span>₹35</span></div>
+                    <div class="menu-item-row"><div class="menu-item-info"><img src="https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=100" alt="Idli"><span>Idli Vada</span></div><span>₹40</span></div>
+                    <div class="menu-item-row"><div class="menu-item-info"><img src="https://images.unsplash.com/photo-1668236543090-82eba5ee5976?w=100" alt="Dosa"><span>Masala Dosa</span></div><span>₹50</span></div>
+                    <div class="menu-item-row"><div class="menu-item-info"><img src="https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?w=100" alt="Puri"><span>Puri Bhaji</span></div><span>₹45</span></div>
+                    <div class="menu-item-row"><div class="menu-item-info"><img src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=100" alt="Upma"><span>Upma / Poha</span></div><span>₹35</span></div>
 
                     <div class="menu-category-title">🍛 Lunch</div>
-                    <div class="menu-item-row"><span>Veg Meals</span><span>₹90</span></div>
-                    <div class="menu-item-row"><span>Chicken Biryani</span><span>₹160</span></div>
-                    <div class="menu-item-row"><span>Paneer Butter Masala</span><span>₹130</span></div>
-                    <div class="menu-item-row"><span>Egg Fried Rice</span><span>₹110</span></div>
+                    <div class="menu-item-row"><div class="menu-item-info"><img src="https://images.unsplash.com/photo-1610192244261-3f33de3b55e4?w=100" alt="Meals"><span>Veg Meals</span></div><span>₹90</span></div>
+                    <div class="menu-item-row"><div class="menu-item-info"><img src="https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=100" alt="Biryani"><span>Chicken Biryani</span></div><span>₹160</span></div>
+                    <div class="menu-item-row"><div class="menu-item-info"><img src="https://images.unsplash.com/photo-1588166524941-3bf61a9c41db?w=100" alt="Paneer"><span>Paneer Butter Masala</span></div><span>₹130</span></div>
+                    <div class="menu-item-row"><div class="menu-item-info"><img src="https://images.unsplash.com/photo-1603133872878-684f208fb84b?w=100" alt="Rice"><span>Egg Fried Rice</span></div><span>₹110</span></div>
 
                     <div class="menu-category-title">🍲 Dinner</div>
-                    <div class="menu-item-row"><span>Special Thali</span><span>₹120</span></div>
-                    <div class="menu-item-row"><span>Chapati with Curry</span><span>₹60</span></div>
-                    <div class="menu-item-row"><span>Mutton Biryani</span><span>₹220</span></div>
-                    <div class="menu-item-row"><span>Veg Fried Rice</span><span>₹90</span></div>
+                    <div class="menu-item-row"><div class="menu-item-info"><img src="https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=100" alt="Thali"><span>Special Thali</span></div><span>₹120</span></div>
+                    <div class="menu-item-row"><div class="menu-item-info"><img src="https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=100" alt="Chapati"><span>Chapati with Curry</span></div><span>₹60</span></div>
+                    <div class="menu-item-row"><div class="menu-item-info"><img src="https://images.unsplash.com/photo-1633964913295-ceb43826e7c9?w=100" alt="Mutton"><span>Mutton Biryani</span></div><span>₹220</span></div>
+                    <div class="menu-item-row"><div class="menu-item-info"><img src="https://images.unsplash.com/photo-1512058564366-18510be2db19?w=100" alt="Fried Rice"><span>Veg Fried Rice</span></div><span>₹90</span></div>
 
                     <div class="menu-category-title">🍟 Snacks</div>
-                    <div class="menu-item-row"><span>Mirchi Bajji (4 pcs)</span><span>₹30</span></div>
-                    <div class="menu-item-row"><span>Samosa (2 pcs)</span><span>₹25</span></div>
-                    <div class="menu-item-row"><span>French Fries</span><span>₹60</span></div>
+                    <div class="menu-item-row"><div class="menu-item-info"><img src="https://images.unsplash.com/photo-1601050690597-df0568f70950?w=100" alt="Bajji"><span>Mirchi Bajji (4 pcs)</span></div><span>₹30</span></div>
+                    <div class="menu-item-row"><div class="menu-item-info"><img src="https://images.unsplash.com/photo-1601050690597-df0568f70950?w=100" alt="Samosa"><span>Samosa (2 pcs)</span></div><span>₹25</span></div>
+                    <div class="menu-item-row"><div class="menu-item-info"><img src="https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=100" alt="Fries"><span>French Fries</span></div><span>₹60</span></div>
 
                     <div class="menu-category-title">☕ Tea, Coffee & Drinks</div>
-                    <div class="menu-item-row"><span>Hot Tea</span><span>₹15</span></div>
-                    <div class="menu-item-row"><span>Filter Coffee</span><span>₹20</span></div>
-                    <div class="menu-item-row"><span>Badam Milk</span><span>₹30</span></div>
-                    <div class="menu-item-row"><span>Fresh Lime Soda</span><span>₹25</span></div>
-                    <div class="menu-item-row"><span>Cool Drinks</span><span>₹30</span></div>
+                    <div class="menu-item-row"><div class="menu-item-info"><img src="https://images.unsplash.com/photo-1576092768241-dec231879fc3?w=100" alt="Tea"><span>Hot Tea</span></div><span>₹15</span></div>
+                    <div class="menu-item-row"><div class="menu-item-info"><img src="https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=100" alt="Coffee"><span>Filter Coffee</span></div><span>₹20</span></div>
+                    <div class="menu-item-row"><div class="menu-item-info"><img src="https://images.unsplash.com/photo-1541658016709-82535e94bc69?w=100" alt="Badam Milk"><span>Badam Milk</span></div><span>₹30</span></div>
+                    <div class="menu-item-row"><div class="menu-item-info"><img src="https://images.unsplash.com/photo-1551024709-8f23befc6f87?w=100" alt="Soda"><span>Fresh Lime Soda</span></div><span>₹25</span></div>
+                    <div class="menu-item-row"><div class="menu-item-info"><img src="https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=100" alt="Cold Drink"><span>Cool Drinks</span></div><span>₹30</span></div>
                 </div>
             </div>
 
