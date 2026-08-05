@@ -67,6 +67,11 @@
         .modal-content { background: #0d1322; border: 1px solid #1a2234; padding: 24px; border-radius: 14px; text-align: center; max-width: 320px; width: 100%; }
         .qr-wrapper { background: #fff; padding: 16px; border-radius: 10px; display: inline-block; margin: 16px 0; }
         .btn-close { background: #1a2234; color: #fff; border: none; padding: 9px 16px; border-radius: 8px; cursor: pointer; font-weight: 700; font-size: 11px; width: 100%; }
+
+        /* Price List Menu Styles */
+        .menu-category-title { font-size: 11px; color: #34d399; font-weight: 700; margin-top: 10px; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .menu-item-row { display: flex; justify-content: space-between; font-size: 11px; color: #9ca3af; padding: 3px 0; border-bottom: 1px dashed #1a2234; }
+        .menu-item-row span:last-child { color: #f3f4f6; font-weight: 600; }
     </style>
 </head>
 <body>
@@ -137,30 +142,91 @@
                             <input type="text" id="sPhone" class="form-control" placeholder="8106129837" required>
                         </div>
                         <div class="form-group">
-                            <label>Select Food Item</label>
+                            <label>Select Food Item (Breakfast, Lunch, Dinner, Snacks, Drinks)</label>
                             <select id="sFood" class="form-control">
-                                <option>Paneer Butter Masala - ₹130</option>
-                                <option>Chicken Biryani - ₹160</option>
-                                <option>Veg Meals - ₹90</option>
-                                <option>Idli Vada - ₹40</option>
+                                <optgroup label="🍳 Breakfast">
+                                    <option value="Idli Vada - ₹40">Idli Vada - ₹40</option>
+                                    <option value="Masala Dosa - ₹50">Masala Dosa - ₹50</option>
+                                    <option value="Puri Bhaji - ₹45">Puri Bhaji - ₹45</option>
+                                    <option value="Upma / Poha - ₹35">Upma / Poha - ₹35</option>
+                                </optgroup>
+                                <optgroup label="🍛 Lunch">
+                                    <option value="Veg Meals - ₹90">Veg Meals - ₹90</option>
+                                    <option value="Chicken Biryani - ₹160">Chicken Biryani - ₹160</option>
+                                    <option value="Paneer Butter Masala - ₹130">Paneer Butter Masala - ₹130</option>
+                                    <option value="Egg Fried Rice - ₹110">Egg Fried Rice - ₹110</option>
+                                </optgroup>
+                                <optgroup label="🍲 Dinner">
+                                    <option value="Special Thali - ₹120">Special Thali - ₹120</option>
+                                    <option value="Chapati with Curry - ₹60">Chapati with Curry - ₹60</option>
+                                    <option value="Mutton Biryani - ₹220">Mutton Biryani - ₹220</option>
+                                    <option value="Veg Fried Rice - ₹90">Veg Fried Rice - ₹90</option>
+                                </optgroup>
+                                <optgroup label="🍟 Snacks">
+                                    <option value="Mirchi Bajji (4 pcs) - ₹30">Mirchi Bajji (4 pcs) - ₹30</option>
+                                    <option value="Samosa (2 pcs) - ₹25">Samosa (2 pcs) - ₹25</option>
+                                    <option value="French Fries - ₹60">French Fries - ₹60</option>
+                                </optgroup>
+                                <optgroup label="☕ Tea, Coffee & Drinks">
+                                    <option value="Hot Tea - ₹15">Hot Tea - ₹15</option>
+                                    <option value="Filter Coffee - ₹20">Filter Coffee - ₹20</option>
+                                    <option value="Badam Milk - ₹30">Badam Milk - ₹30</option>
+                                    <option value="Fresh Lime Soda - ₹25">Fresh Lime Soda - ₹25</option>
+                                    <option value="Cool Drinks (ThumsUp/Pepsi) - ₹30">Cool Drinks (ThumsUp/Pepsi) - ₹30</option>
+                                </optgroup>
                             </select>
                         </div>
                         <button type="submit" class="btn-primary">Issue Token & Generate QR 🎫</button>
                     </form>
                 </div>
 
-                <div class="card">
-                    <div class="card-title" style="justify-content: space-between;">
-                        <span>📋 ACTIVE QUEUE DATA (Sequential 2M)</span>
-                        <button id="serveBtn" style="background:linear-gradient(135deg, #2563eb, #1d4ed8); color:#fff; border:none; padding:6px 12px; border-radius:6px; font-size:11px; cursor:pointer; font-weight:700;">Serve Next & Speak 🔊</button>
-                    </div>
-                    <table>
-                        <thead>
-                            <tr><th>TOKEN</th><th>STUDENT</th><th>FOOD</th><th>TIMER</th><th>QR CODE</th><th>STATUS</th></tr>
-                        </thead>
-                        <tbody id="queueTableBody"></tbody>
-                    </table>
+                <!-- Mess Food Prices & Menu Reference Side Box -->
+                <div class="card" style="max-height: 440px; overflow-y: auto;">
+                    <div class="card-title">💰 Mess Food Price List</div>
+                    
+                    <div class="menu-category-title">🍳 Breakfast</div>
+                    <div class="menu-item-row"><span>Idli Vada</span><span>₹40</span></div>
+                    <div class="menu-item-row"><span>Masala Dosa</span><span>₹50</span></div>
+                    <div class="menu-item-row"><span>Puri Bhaji</span><span>₹45</span></div>
+                    <div class="menu-item-row"><span>Upma / Poha</span><span>₹35</span></div>
+
+                    <div class="menu-category-title">🍛 Lunch</div>
+                    <div class="menu-item-row"><span>Veg Meals</span><span>₹90</span></div>
+                    <div class="menu-item-row"><span>Chicken Biryani</span><span>₹160</span></div>
+                    <div class="menu-item-row"><span>Paneer Butter Masala</span><span>₹130</span></div>
+                    <div class="menu-item-row"><span>Egg Fried Rice</span><span>₹110</span></div>
+
+                    <div class="menu-category-title">🍲 Dinner</div>
+                    <div class="menu-item-row"><span>Special Thali</span><span>₹120</span></div>
+                    <div class="menu-item-row"><span>Chapati with Curry</span><span>₹60</span></div>
+                    <div class="menu-item-row"><span>Mutton Biryani</span><span>₹220</span></div>
+                    <div class="menu-item-row"><span>Veg Fried Rice</span><span>₹90</span></div>
+
+                    <div class="menu-category-title">🍟 Snacks</div>
+                    <div class="menu-item-row"><span>Mirchi Bajji (4 pcs)</span><span>₹30</span></div>
+                    <div class="menu-item-row"><span>Samosa (2 pcs)</span><span>₹25</span></div>
+                    <div class="menu-item-row"><span>French Fries</span><span>₹60</span></div>
+
+                    <div class="menu-category-title">☕ Tea, Coffee & Drinks</div>
+                    <div class="menu-item-row"><span>Hot Tea</span><span>₹15</span></div>
+                    <div class="menu-item-row"><span>Filter Coffee</span><span>₹20</span></div>
+                    <div class="menu-item-row"><span>Badam Milk</span><span>₹30</span></div>
+                    <div class="menu-item-row"><span>Fresh Lime Soda</span><span>₹25</span></div>
+                    <div class="menu-item-row"><span>Cool Drinks</span><span>₹30</span></div>
                 </div>
+            </div>
+
+            <div class="card" style="margin-top: 20px;">
+                <div class="card-title" style="justify-content: space-between;">
+                    <span>📋 ACTIVE QUEUE DATA (Sequential 2M)</span>
+                    <button id="serveBtn" style="background:linear-gradient(135deg, #2563eb, #1d4ed8); color:#fff; border:none; padding:6px 12px; border-radius:6px; font-size:11px; cursor:pointer; font-weight:700;">Serve Next & Speak 🔊</button>
+                </div>
+                <table>
+                    <thead>
+                        <tr><th>TOKEN</th><th>STUDENT</th><th>FOOD</th><th>TIMER</th><th>QR CODE</th><th>STATUS</th></tr>
+                    </thead>
+                    <tbody id="queueTableBody"></tbody>
+                </table>
             </div>
         </div>
 
@@ -354,7 +420,7 @@
 
         document.getElementById('queueForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            const name = document.getElementById('sName').value;
+            const name = document.getElementById('sName5').value || document.getElementById('sName').value;
             const roll = document.getElementById('sRoll').value;
             const phone = document.getElementById('sPhone').value;
             const food = document.getElementById('sFood').value;
@@ -374,7 +440,6 @@
                 status: isFirst ? 'Preparing' : 'Waiting in Queue' 
             });
 
-            // Dynamically add SMS Log for EVERY new student token generated
             const nowTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
             smsLogs.unshift({
                 time: nowTime,
@@ -405,7 +470,7 @@
         }
 
         document.getElementById('serveBtn').addEventListener('click', function() {
-            if (queueData.length > 0) {
+            if (queueData.left > 0 || queueData.length > 0) {
                 let served = queueData.shift();
                 served.status = 'Served ✅';
                 historyData.push(served);
@@ -455,6 +520,7 @@
             });
         }
 
+        renderQueryInputs();
         renderQueue();
     </script>
 </body>
