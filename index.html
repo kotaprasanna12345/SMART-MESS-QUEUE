@@ -73,6 +73,7 @@
         .status-badge { padding: 4px 10px; border-radius: 6px; font-size: 10px; font-weight: 700; display: inline-block; }
         .status-prep { background: rgba(245,158,11,0.15); color: #fbbf24; border: 1px solid rgba(245,158,11,0.3); }
         .status-ready { background: rgba(16,185,129,0.15); color: #34d399; border: 1px solid rgba(16,185,129,0.3); }
+        .status-served { background: rgba(59,130,246,0.15); color: #60a5fa; border: 1px solid rgba(59,130,246,0.3); }
 
         .btn-action { background: #1a2234; color: #34d399; border: 1px solid #2d3748; padding: 6px 12px; border-radius: 6px; font-size: 11px; cursor: pointer; font-weight: 700; transition: 0.2s; }
         .btn-action:hover { background: #2d3748; color: #fff; }
@@ -111,18 +112,18 @@
                 <h2>SMART MESS QUEUE MANAGER (R23 Advanced)</h2>
                 <p>Queue > Sequential Timers > AI Predictor > Voice TTS > QR Ticketing</p>
             </div>
-            <div class="badge">✨ Sequential 2M Active (Excel Export Ready)</div>
+            <div class="badge">✨ Persistent History Active</div>
         </header>
 
         <div class="banner">
             <div class="banner-left">
                 <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 100-6 3 3 0 000 6z"></path></svg>
                 <div>
-                    <h3>EXCEL DATA EXPORT LAYER</h3>
-                    <p>Go to 'File I/O & Storage' tab to download data directly as an Excel (.csv) file.</p>
+                    <h3>PERMANENT STORAGE LAYER</h3>
+                    <p>Served tokens move to history archive automatically. Nothing is lost!</p>
                 </div>
             </div>
-            <div class="banner-right">Excel Ready</div>
+            <div class="banner-right">History Safe</div>
         </div>
 
         <!-- Tab 1: Dashboard -->
@@ -216,8 +217,8 @@
         <div id="tab-fileio" class="tab-content">
             <div class="card" style="position: relative;">
                 <div class="card-title" style="justify-content: space-between;">
-                    <span>💾 Persistent Storage & Excel Export</span>
-                    <button onclick="downloadExcel()" style="background:linear-gradient(135deg, #10b981, #059669); color:#fff; border:none; padding:6px 14px; border-radius:6px; font-size:11px; cursor:pointer; font-weight:700; box-shadow: 0 2px 10px rgba(16,185,129,0.4);">📊 Download Excel (CSV)</button>
+                    <span>💾 All-Day History & Excel Export</span>
+                    <button onclick="downloadExcel()" style="background:linear-gradient(135deg, #10b981, #059669); color:#fff; border:none; padding:6px 14px; border-radius:6px; font-size:11px; cursor:pointer; font-weight:700; box-shadow: 0 2px 10px rgba(16,185,129,0.4);">📊 Download Full Day Excel (CSV)</button>
                 </div>
                 <textarea id="fileViewer" class="form-control" style="height: 200px; font-family: monospace; font-size: 11px;" readonly></textarea>
             </div>
@@ -249,8 +250,9 @@
 
     <script>
         let queueData = JSON.parse(localStorage.getItem('mess_queue_data')) || [];
+        let historyData = JSON.parse(localStorage.getItem('mess_history_data')) || [];
 
-        if (queueData.length === 0) {
+        if (queueData.length === 0 && historyData.length === 0) {
             queueData = [
                 { token: 'T-119', name: 'sai', roll: '25B21A4601', phone: '8106129837', food: 'Chicken Biryani - ₹160', timeLeft: 120, active: true, status: 'Preparing' },
                 { token: 'T-120', name: 'prasu', roll: '25B21A4602', phone: '8106129837', food: 'Veg Meals - ₹90', timeLeft: 120, active: false, status: 'Waiting in Queue' }
@@ -262,6 +264,7 @@
 
         function saveData() {
             localStorage.setItem('mess_queue_data', JSON.stringify(queueData));
+            localStorage.setItem('mess_history_data', JSON.stringify(historyData));
         }
 
         function switchTab(tabId, el) {
@@ -272,21 +275,23 @@
 
             if(tabId === 'analytics') loadChart();
             if(tabId === 'fileio') {
-                document.getElementById('fileViewer').value = JSON.stringify(queueData, null, 2);
+                const combined = [...queueData, ...historyData];
+                document.getElementById('fileViewer').value = JSON.stringify(combined, null, 2);
             }
         }
 
         function downloadExcel() {
-            let csvContent = "Token,Name,Roll Number,Phone,Food,TimeLeft(s),Active,Status\n";
-            queueData.forEach(item => {
-                csvContent += `"${item.token}","${item.name}","${item.roll}","${item.phone}","${item.food}","${item.timeLeft}","${item.active}","${item.status}"\n`;
+            const combined = [...queueData, ...historyData];
+            let csvContent = "Token,Name,Roll Number,Phone,Food,Status\n";
+            combined.forEach(item => {
+                csvContent += `"${item.token}","${item.name}","${item.roll}","${item.phone}","${item.food}","${item.status}"\n`;
             });
 
             const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
             const url = URL.createObjectURL(blob);
             const downloadAnchor = document.createElement('a');
             downloadAnchor.setAttribute("href", url);
-            downloadAnchor.setAttribute("download", "smart_mess_queue_data.csv");
+            downloadAnchor.setAttribute("download", "smart_mess_full_day_data.csv");
             document.body.appendChild(downloadAnchor);
             downloadAnchor.click();
             downloadAnchor.remove();
@@ -369,7 +374,8 @@
             const phone = document.getElementById('sPhone').value;
             const food = document.getElementById('sFood').value;
 
-            const nextTokenNum = 'T-' + (119 + queueData.length);
+            const totalCount = queueData.length + historyData.length + 119;
+            const nextTokenNum = 'T-' + totalCount;
             const isFirst = queueData.length === 0 || !queueData.some(q => q.status === 'Preparing');
 
             queueData.push({ 
@@ -406,6 +412,9 @@
         document.getElementById('serveBtn').addEventListener('click', function() {
             if (queueData.length > 0) {
                 let served = queueData.shift();
+                served.status = 'Served ✅';
+                historyData.push(served); // Save to history so it won't be lost!
+
                 if (queueData.length > 0) {
                     queueData[0].active = true;
                     queueData[0].status = 'Preparing';
@@ -422,12 +431,12 @@
 
         function trackStudent() {
             const val = document.getElementById('trackInput').value.trim();
-            const found = queueData.find(q => q.token.toLowerCase() === val.toLowerCase());
+            const found = queueData.find(q => q.token.toLowerCase() === val.toLowerCase()) || historyData.find(h => h.token.toLowerCase() === val.toLowerCase());
             const res = document.getElementById('trackResult');
             if(found) {
-                res.innerHTML = `Found! Token: ${found.token}, Status: ${found.status}, Time Left: ${Math.floor(found.timeLeft/60)}m ${found.timeLeft%60}s`;
+                res.innerHTML = `Found! Token: ${found.token}, Status: ${found.status}`;
             } else {
-                res.innerHTML = `Token not found in active queue.`;
+                res.innerHTML = `Token not found.`;
             }
         }
 
