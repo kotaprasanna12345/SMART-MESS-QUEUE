@@ -101,7 +101,7 @@
                 <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 100-6 3 3 0 000 6z"></path></svg>
                 <div>
                     <h3>PERMANENT STORAGE LAYER</h3>
-                    <p>Served tokens and SMS logs are fully preserved. Nothing gets lost!</p>
+                    <p>Served tokens and SMS logs are fully preserved. Total records safe for Excel export!</p>
                 </div>
             </div>
             <div class="banner-right">History Safe</div>
@@ -243,8 +243,12 @@
 
             if(tabId === 'analytics') loadChart();
             if(tabId === 'fileio') {
-                const combined = { activeQueue: queueData, historyArchive: historyData };
-                document.getElementById('fileViewer').value = JSON.stringify(combined, null, 2);
+                const combinedStorage = { 
+                    activeQueue: queueData, 
+                    historyArchive: historyData,
+                    smsLogsArchive: smsLogs
+                };
+                document.getElementById('fileViewer').value = JSON.stringify(combinedStorage, null, 2);
             }
             if(tabId === 'smslogs') {
                 renderSMSLogs();
@@ -370,16 +374,17 @@
                 status: isFirst ? 'Preparing' : 'Waiting in Queue' 
             });
 
-            // Dynamically add SMS Log for every new student
+            // Dynamically add SMS Log for EVERY new student token generated
             const nowTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
             smsLogs.unshift({
                 time: nowTime,
                 phone: phone,
-                message: `Token ${nextTokenNum} issued for ${name} (${food}).`,
+                message: `Token ${nextTokenNum} issued for ${name} (${food}). SMS Dispatched.`,
                 status: 'Sent ✅'
             });
 
             renderQueue();
+            saveData();
             showQR(nextTokenNum, name, roll, food);
             this.reset();
         });
