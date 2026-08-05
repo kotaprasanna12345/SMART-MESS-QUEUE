@@ -101,7 +101,7 @@
                 <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 100-6 3 3 0 000 6z"></path></svg>
                 <div>
                     <h3>PERMANENT STORAGE LAYER</h3>
-                    <p>Served tokens automatically move to history archive. Total records safe for Excel export!</p>
+                    <p>Served tokens and SMS logs are fully preserved. Nothing gets lost!</p>
                 </div>
             </div>
             <div class="banner-right">History Safe</div>
@@ -197,9 +197,7 @@
                 <div class="card-title">💬 Twilio SMS Dispatch Logs</div>
                 <table>
                     <thead><tr><th>TIME</th><th>PHONE</th><th>MESSAGE</th><th>STATUS</th></tr></thead>
-                    <tbody id="smsTableBody">
-                        <tr><td>10:45 AM</td><td>8106129837</td><td>Token generated successfully & stored.</td><td>Sent ✅</td></tr>
-                    </tbody>
+                    <tbody id="smsTableBody"></tbody>
                 </table>
             </div>
         </div>
@@ -217,6 +215,9 @@
     <script>
         let queueData = JSON.parse(localStorage.getItem('mess_queue_data')) || [];
         let historyData = JSON.parse(localStorage.getItem('mess_history_data')) || [];
+        let smsLogs = JSON.parse(localStorage.getItem('mess_sms_logs')) || [
+            { time: '10:45 AM', phone: '8106129837', message: 'Token generated successfully & stored.', status: 'Sent ✅' }
+        ];
 
         if (queueData.length === 0 && historyData.length === 0) {
             queueData = [
@@ -231,6 +232,7 @@
         function saveData() {
             localStorage.setItem('mess_queue_data', JSON.stringify(queueData));
             localStorage.setItem('mess_history_data', JSON.stringify(historyData));
+            localStorage.setItem('mess_sms_logs', JSON.stringify(smsLogs));
         }
 
         function switchTab(tabId, el) {
@@ -241,9 +243,22 @@
 
             if(tabId === 'analytics') loadChart();
             if(tabId === 'fileio') {
-                const combined = [...queueData, ...historyData];
+                const combined = { activeQueue: queueData, historyArchive: historyData };
                 document.getElementById('fileViewer').value = JSON.stringify(combined, null, 2);
             }
+            if(tabId === 'smslogs') {
+                renderSMSLogs();
+            }
+        }
+
+        function renderSMSLogs() {
+            const tbody = document.getElementById('smsTableBody');
+            tbody.innerHTML = '';
+            smsLogs.forEach(log => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `<td>${log.time}</td><td>${log.phone}</td><td>${log.message}</td><td>${log.status}</td>`;
+                tbody.appendChild(tr);
+            });
         }
 
         function downloadExcel() {
@@ -355,6 +370,15 @@
                 status: isFirst ? 'Preparing' : 'Waiting in Queue' 
             });
 
+            // Dynamically add SMS Log for every new student
+            const nowTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            smsLogs.unshift({
+                time: nowTime,
+                phone: phone,
+                message: `Token ${nextTokenNum} issued for ${name} (${food}).`,
+                status: 'Sent ✅'
+            });
+
             renderQueue();
             showQR(nextTokenNum, name, roll, food);
             this.reset();
@@ -379,7 +403,7 @@
             if (queueData.length > 0) {
                 let served = queueData.shift();
                 served.status = 'Served ✅';
-                historyData.push(served); // Moves served student to history archive!
+                historyData.push(served);
 
                 if (queueData.length > 0) {
                     queueData[0].active = true;
