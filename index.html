@@ -11,7 +11,6 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
         body { background: #07090e; color: #f3f4f6; display: flex; height: 100vh; overflow: hidden; }
         
-        /* Sidebar */
         aside { width: 280px; background: #0d1322; border-right: 1px solid #1a2234; display: flex; flex-direction: column; padding: 20px; overflow-y: auto; }
         .logo-area { display: flex; align-items: center; gap: 12px; margin-bottom: 30px; }
         .logo-icon { background: linear-gradient(135deg, #10b981, #059669); color: #000; width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 700; box-shadow: 0 0 15px rgba(16,185,129,0.4); }
@@ -22,12 +21,11 @@
         .nav-item { display: flex; align-items: center; gap: 12px; padding: 12px 16px; color: #9ca3af; text-decoration: none; border-radius: 10px; margin-bottom: 6px; font-size: 13px; font-weight: 600; transition: 0.3s; cursor: pointer; border: none; background: transparent; width: 100%; text-align: left; }
         .nav-item:hover, .nav-item.active { background: linear-gradient(90deg, rgba(16,185,129,0.15), transparent); color: #10b981; border-left: 3px solid #10b981; }
 
-        /* Main Content */
         main { flex: 1; display: flex; flex-direction: column; overflow-y: auto; padding: 24px; background: radial-gradient(circle at top right, #111827, #07090e); }
         header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; background: #0d1322; padding: 16px 24px; border-radius: 14px; border: 1px solid #1a2234; box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
         .header-title h2 { font-size: 17px; font-weight: 700; color: #fff; letter-spacing: 0.3px; }
         .header-title p { font-size: 11px; color: #9ca3af; margin-top: 2px; }
-        .badge { background: rgba(16,185,129,0.1); color: #34d399; padding: 6px 14px; border-radius: 20px; font-size: 11px; font-weight: 700; border: 1px solid rgba(16,185,129,0.3); box-shadow: 0 0 10px rgba(16,185,129,0.1); }
+        .badge { background: rgba(16,185,129,0.1); color: #34d399; padding: 6px 14px; border-radius: 20px; font-size: 11px; font-weight: 700; border: 1px solid rgba(16,185,129,0.3); }
 
         .banner { background: #0d1322; border: 1px solid #1a2234; border-radius: 14px; padding: 16px 24px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
         .banner-left { display: flex; align-items: center; gap: 16px; }
@@ -39,56 +37,40 @@
         .tab-content { display: none; }
         .tab-content.active { display: block; }
 
-        /* Grid Layout */
         .grid-container { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
         .card { background: #0d1322; border: 1px solid #1a2234; border-radius: 14px; padding: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.2); }
-        .card-title { font-size: 14px; font-weight: 700; color: #fff; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; letter-spacing: 0.3px; }
+        .card-title { font-size: 14px; font-weight: 700; color: #fff; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
 
-        /* Simulation */
-        .simulation-card { background: #0d1322; border: 1px solid #1a2234; border-radius: 14px; padding: 20px; margin-bottom: 20px; box-shadow: 0 4px 25px rgba(0,0,0,0.4); }
+        .simulation-card { background: #0d1322; border: 1px solid #1a2234; border-radius: 14px; padding: 20px; margin-bottom: 20px; }
         .canvas-box { width: 100%; height: 220px; background: radial-gradient(circle at center, #0f172a 0%, #030712 100%); border-radius: 10px; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; border: 1px solid #1a2234; }
         
-        .grid-floor { position: absolute; width: 200%; height: 200%; background-image: linear-gradient(rgba(16,185,129,0.07) 1px, transparent 1px), linear-gradient(90deg, rgba(16,185,129,0.07) 1px, transparent 1px); background-size: 30px 30px; transform: perspective(350px) rotateX(65deg); animation: floorMove 10s linear infinite; }
-        @keyframes floorMove { 0% { background-position: 0 0; } 100% { background-position: 0 60px; } }
-
+        .grid-floor { position: absolute; width: 200%; height: 200%; background-image: linear-gradient(rgba(16,185,129,0.07) 1px, transparent 1px), linear-gradient(90deg, rgba(16,185,129,0.07) 1px, transparent 1px); background-size: 30px 30px; transform: perspective(350px) rotateX(65deg); }
         .counter-zone { position: absolute; top: 15px; display: flex; flex-direction: column; align-items: center; z-index: 5; }
-        .counter-glow { width: 110px; height: 26px; background: rgba(16,185,129,0.2); border: 1px solid #10b981; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #34d399; font-weight: 800; box-shadow: 0 0 15px rgba(16,185,129,0.5); text-shadow: 0 0 8px rgba(52,211,153,0.6); }
-        
-        .queue-path { position: absolute; top: 45px; bottom: 20px; width: 4px; background: linear-gradient(to bottom, #10b981, rgba(16,185,129,0.1)); border-radius: 2px; box-shadow: 0 0 10px #10b981; }
+        .counter-glow { width: 110px; height: 26px; background: rgba(16,185,129,0.2); border: 1px solid #10b981; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #34d399; font-weight: 800; }
+        .queue-path { position: absolute; top: 45px; bottom: 20px; width: 4px; background: linear-gradient(to bottom, #10b981, rgba(16,185,129,0.1)); border-radius: 2px; }
+        .sim-student { position: absolute; bottom: 20px; background: linear-gradient(135deg, #3b82f6, #1d4ed8); border: 2px solid #60a5fa; border-radius: 50px; padding: 6px 14px; font-size: 11px; font-weight: 700; color: #fff; display: flex; align-items: center; gap: 6px; transition: all 1s cubic-bezier(0.4, 0, 0.2, 1); z-index: 10; }
 
-        .sim-student { position: absolute; bottom: 20px; background: linear-gradient(135deg, #3b82f6, #1d4ed8); border: 2px solid #60a5fa; border-radius: 50px; padding: 6px 14px; font-size: 11px; font-weight: 700; color: #fff; box-shadow: 0 0 20px rgba(59,130,246,0.7); display: flex; align-items: center; gap: 6px; transition: all 1s cubic-bezier(0.4, 0, 0.2, 1); z-index: 10; }
-
-        /* Form Controls */
         .form-group { margin-bottom: 12px; }
         .form-group label { display: block; font-size: 11px; color: #9ca3af; margin-bottom: 5px; font-weight: 600; }
-        .form-control { width: 100%; padding: 10px 14px; background: #030712; border: 1px solid #1a2234; border-radius: 8px; color: #fff; font-size: 12px; outline: none; transition: 0.3s; }
-        .form-control:focus { border-color: #10b981; box-shadow: 0 0 10px rgba(16,185,129,0.2); }
-        .btn-primary { width: 100%; background: linear-gradient(135deg, #10b981, #059669); color: #fff; border: none; padding: 11px; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 12px; transition: 0.3s; margin-top: 6px; box-shadow: 0 4px 15px rgba(16,185,129,0.3); }
-        .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(16,185,129,0.4); }
+        .form-control { width: 100%; padding: 10px 14px; background: #030712; border: 1px solid #1a2234; border-radius: 8px; color: #fff; font-size: 12px; outline: none; }
+        .btn-primary { width: 100%; background: linear-gradient(135deg, #10b981, #059669); color: #fff; border: none; padding: 11px; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 12px; margin-top: 6px; }
 
-        /* Tables */
         table { width: 100%; border-collapse: collapse; margin-top: 8px; }
-        th { text-align: left; font-size: 10px; color: #6b7280; font-weight: 700; padding-bottom: 10px; border-bottom: 1px solid #1a2234; letter-spacing: 0.5px; }
+        th { text-align: left; font-size: 10px; color: #6b7280; font-weight: 700; padding-bottom: 10px; border-bottom: 1px solid #1a2234; }
         td { padding: 12px 0; font-size: 12px; border-bottom: 1px solid #1a2234; color: #d1d5db; vertical-align: middle; }
         .status-badge { padding: 4px 10px; border-radius: 6px; font-size: 10px; font-weight: 700; display: inline-block; }
         .status-prep { background: rgba(245,158,11,0.15); color: #fbbf24; border: 1px solid rgba(245,158,11,0.3); }
         .status-ready { background: rgba(16,185,129,0.15); color: #34d399; border: 1px solid rgba(16,185,129,0.3); }
-        .status-served { background: rgba(59,130,246,0.15); color: #60a5fa; border: 1px solid rgba(59,130,246,0.3); }
+        .btn-action { background: #1a2234; color: #34d399; border: 1px solid #2d3748; padding: 6px 12px; border-radius: 6px; font-size: 11px; cursor: pointer; font-weight: 700; }
 
-        .btn-action { background: #1a2234; color: #34d399; border: 1px solid #2d3748; padding: 6px 12px; border-radius: 6px; font-size: 11px; cursor: pointer; font-weight: 700; transition: 0.2s; }
-        .btn-action:hover { background: #2d3748; color: #fff; }
-
-        /* Modal */
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(5px); align-items: center; justify-content: center; z-index: 100; }
-        .modal-content { background: #0d1322; border: 1px solid #1a2234; padding: 24px; border-radius: 14px; text-align: center; max-width: 320px; width: 100%; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .qr-wrapper { background: #fff; padding: 16px; border-radius: 10px; display: inline-block; margin: 16px 0; box-shadow: 0 0 15px rgba(255,255,255,0.1); }
-        .btn-close { background: #1a2234; color: #fff; border: none; padding: 9px 16px; border-radius: 8px; cursor: pointer; font-weight: 700; font-size: 11px; width: 100%; transition: 0.2s; }
-        .btn-close:hover { background: #2d3748; }
+        .modal-content { background: #0d1322; border: 1px solid #1a2234; padding: 24px; border-radius: 14px; text-align: center; max-width: 320px; width: 100%; }
+        .qr-wrapper { background: #fff; padding: 16px; border-radius: 10px; display: inline-block; margin: 16px 0; }
+        .btn-close { background: #1a2234; color: #fff; border: none; padding: 9px 16px; border-radius: 8px; cursor: pointer; font-weight: 700; font-size: 11px; width: 100%; }
     </style>
 </head>
 <body>
 
-    <!-- Sidebar -->
     <aside>
         <div class="logo-area">
             <div class="logo-icon">🍽️</div>
@@ -105,7 +87,6 @@
         <button onclick="switchTab('smslogs', this)" class="nav-item">💬 Twilio SMS Logs</button>
     </aside>
 
-    <!-- Main Section -->
     <main>
         <header>
             <div class="header-title">
@@ -120,22 +101,19 @@
                 <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 100-6 3 3 0 000 6z"></path></svg>
                 <div>
                     <h3>PERMANENT STORAGE LAYER</h3>
-                    <p>Served tokens move to history archive automatically. Nothing is lost!</p>
+                    <p>Served tokens automatically move to history archive. Total records safe for Excel export!</p>
                 </div>
             </div>
             <div class="banner-right">History Safe</div>
         </div>
 
-        <!-- Tab 1: Dashboard -->
         <div id="tab-dashboard" class="tab-content active">
             <div class="simulation-card">
                 <div class="card-title">🚀 LIVE 3D QUEUE ANIMATION SIMULATION</div>
                 <div class="canvas-box">
                     <div class="grid-floor"></div>
                     <div class="queue-path"></div>
-                    <div class="counter-zone">
-                        <div class="counter-glow">COUNTER PICKUP</div>
-                    </div>
+                    <div class="counter-zone"><div class="counter-glow">COUNTER PICKUP</div></div>
                     <div class="sim-student" id="simStudent">
                         <span>🟢</span> <span id="simTokenText">All Clear - Ready</span>
                     </div>
@@ -174,18 +152,11 @@
                 <div class="card">
                     <div class="card-title" style="justify-content: space-between;">
                         <span>📋 ACTIVE QUEUE DATA (Sequential 2M)</span>
-                        <button id="serveBtn" style="background:linear-gradient(135deg, #2563eb, #1d4ed8); color:#fff; border:none; padding:6px 12px; border-radius:6px; font-size:11px; cursor:pointer; font-weight:700; box-shadow: 0 2px 10px rgba(37,99,235,0.4);">Serve Next & Speak 🔊</button>
+                        <button id="serveBtn" style="background:linear-gradient(135deg, #2563eb, #1d4ed8); color:#fff; border:none; padding:6px 12px; border-radius:6px; font-size:11px; cursor:pointer; font-weight:700;">Serve Next & Speak 🔊</button>
                     </div>
                     <table>
                         <thead>
-                            <tr>
-                                <th>TOKEN</th>
-                                <th>STUDENT</th>
-                                <th>FOOD</th>
-                                <th>TIMER</th>
-                                <th>QR CODE</th>
-                                <th>STATUS</th>
-                            </tr>
+                            <tr><th>TOKEN</th><th>STUDENT</th><th>FOOD</th><th>TIMER</th><th>QR CODE</th><th>STATUS</th></tr>
                         </thead>
                         <tbody id="queueTableBody"></tbody>
                     </table>
@@ -193,7 +164,6 @@
             </div>
         </div>
 
-        <!-- Tab 2: Analytics -->
         <div id="tab-analytics" class="tab-content">
             <div class="card">
                 <div class="card-title">📈 Peak Hours Traffic Analytics</div>
@@ -201,7 +171,6 @@
             </div>
         </div>
 
-        <!-- Tab 3: Tracker -->
         <div id="tab-tracker" class="tab-content">
             <div class="card">
                 <div class="card-title">👤 Student Live Queue Position Tracker</div>
@@ -213,18 +182,16 @@
             </div>
         </div>
 
-        <!-- Tab 4: File I/O -->
         <div id="tab-fileio" class="tab-content">
             <div class="card" style="position: relative;">
                 <div class="card-title" style="justify-content: space-between;">
                     <span>💾 All-Day History & Excel Export</span>
-                    <button onclick="downloadExcel()" style="background:linear-gradient(135deg, #10b981, #059669); color:#fff; border:none; padding:6px 14px; border-radius:6px; font-size:11px; cursor:pointer; font-weight:700; box-shadow: 0 2px 10px rgba(16,185,129,0.4);">📊 Download Full Day Excel (CSV)</button>
+                    <button onclick="downloadExcel()" style="background:linear-gradient(135deg, #10b981, #059669); color:#fff; border:none; padding:6px 14px; border-radius:6px; font-size:11px; cursor:pointer; font-weight:700;">📊 Download Full Day Excel (CSV)</button>
                 </div>
                 <textarea id="fileViewer" class="form-control" style="height: 200px; font-family: monospace; font-size: 11px;" readonly></textarea>
             </div>
         </div>
 
-        <!-- Tab 5: SMS Logs -->
         <div id="tab-smslogs" class="tab-content">
             <div class="card">
                 <div class="card-title">💬 Twilio SMS Dispatch Logs</div>
@@ -238,7 +205,6 @@
         </div>
     </main>
 
-    <!-- QR Modal -->
     <div class="modal" id="qrModal">
         <div class="modal-content">
             <h3 style="font-size: 14px; color:#fff; font-weight: 700;" id="modalTitle">STUDENT MESS TOKEN QR</h3>
@@ -413,7 +379,7 @@
             if (queueData.length > 0) {
                 let served = queueData.shift();
                 served.status = 'Served ✅';
-                historyData.push(served); // Save to history so it won't be lost!
+                historyData.push(served); // Moves served student to history archive!
 
                 if (queueData.length > 0) {
                     queueData[0].active = true;
